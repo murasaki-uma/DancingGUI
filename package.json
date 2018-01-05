@@ -1,26 +1,29 @@
 {
-  "name": "roland",
+  "name": "DancingGUI",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "webpack -p --progress",
-    "start":"webpack-dev-server --port 3000 --hot --host 0.0.0.0"
+    "start": "webpack-dev-server --port 3000 --hot --host 0.0.0.0"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0-beta.36",
+    "@babel/preset-env": "^7.0.0-beta.36",
     "@types/three": "^0.84.35",
     "awesome-typescript-loader": "^3.4.1",
+    "babel": "^6.23.0",
     "source-map-loader": "^0.2.3",
     "three": "^0.88.0",
-    "typescript": "^2.6.2",
-    "webpack": "^3.10.0"
+    "typescript": "^2.6.2"
   },
   "devDependencies": {
     "ammo": "^3.0.0",
     "awesome-typescript-loader": "^3.4.1",
     "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
+    "babel-loader": "^8.0.0-beta.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.7",
     "dat.gui": "^0.6.1",

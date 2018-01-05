@@ -73,23 +73,15 @@ module.exports = {
             {
                 // 拡張子 .js の場合
                 test: /\.js$/,
-                use: [
-                    {
-                        // Babel を利用する
-                        loader: 'babel-loader',
-                        // Babel のオプションを指定する
-                        options: {
-                            presets: [
-                                // env を指定することで、ES2017 を ES5 に変換。
-                                // {modules: false}にしないと import 文が Babel によって CommonJS に変換され、
-                                // webpack の Tree Shaking 機能が使えない
-                                ['env']
-                            ],
-                            plugins: ['transform-class-properties']
-                        }
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env'],
+                        plugins: ["transform-class-properties"],
+
                     }
-                ],
-                exclude: /node_modules/,
+                }
 
             },
 

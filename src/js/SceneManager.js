@@ -1,6 +1,5 @@
 'use strict'
-import * as THREE from 'three';
-import Scene_Modi from "./Scene_Modi";
+import * as THREE from 'three'
 import 'imports-loader?THREE=three!../../node_modules/three/examples/js/controls/OrbitControls';
 import Gui from "./gui";
 export default class SceneManager{
@@ -10,13 +9,11 @@ export default class SceneManager{
         // this.bpmCalculater = bpmCalculater;
 
 
-        this.width = 884;
-        this.height= 1080;
+        this.width = window.innerWidth;
+        this.height= window.innerHeight;
         this.renderer = new THREE.WebGLRenderer({
             preserveDrawingBuffer: true,antialias:true,alpha:true
         });
-        this.renderer.autoClearColor = true;
-        this.renderer.preserveDrawingBuffer = true;
         this.debugCamera = new THREE.PerspectiveCamera(50,this.width/this.height,0.1,10000);
         this.DEBUG_MODE = true;
         this.activeCamera = null;
@@ -26,8 +23,9 @@ export default class SceneManager{
 
 
 
-        this.scene_Modi = new Scene_Modi(this);
 
+        this.scenes = [];
+        this.sceneNum = 0;
 
 
 
@@ -36,8 +34,7 @@ export default class SceneManager{
 
     init()
     {
-        window.addEventListener('resize',this.onWindowResize.bind(this));
-        window.addEventListener('keydown', this.onKeyDown.bind(this));
+
 
         this.debugCamera.position.set(0,10,10);
         this.renderer.setPixelRatio(1);
@@ -46,29 +43,22 @@ export default class SceneManager{
         this.renderer.antialias = true;
         this.renderer.domElement.id = "out";
         document.getElementById('render').appendChild( this.renderer.domElement );
-
+        window.addEventListener('resize',this.onWindowResize.bind(this));
+        window.addEventListener('keydown', this.onKeyDown.bind(this));
         window.addEventListener( 'click', this.onClick.bind(this), false );
 
 
-
-        this.gui.debugimgopacity.onChange((v)=>{
-            console.log(v);
-           document.getElementById('modicameraview').style.opacity = v;
-           if(v == 0)
-           {
-               document.getElementById('modicameraview').style.display = 'none';
-           } else
-           {
-               document.getElementById('modicameraview').style.display = 'block';
-           }
-
-        });
 
         let controls = new THREE.OrbitControls( this.debugCamera );
         controls.enableKeys = false;
         this.onWindowResize();
         this.cameraChange();
-        this.update();
+        // this.update();
+    }
+
+    addScene(scene)
+    {
+        this.scenes.push(scene);
     }
 
     onKeyDown(e)
@@ -82,9 +72,6 @@ export default class SceneManager{
         {
             this.saveCanvas('image/png');
         }
-
-        this.scene_Modi.onKeyDown(e);
-
 
 
     }
@@ -102,7 +89,7 @@ export default class SceneManager{
             this.activeCamera = this.debugCamera;
         }else
         {
-            this.activeCamera = this.scene_Modi.camera;
+            this.activeCamera = this.scenes[this.sceneNum].camera;
         }
 
 
@@ -112,42 +99,38 @@ export default class SceneManager{
     onWindowResize (e)
     {
 
-        // let x = window.innerWidth / this.width;
-        // let y = window.innerHeight / this.height;
-        //
-        // document.getElementById('render').style.transform = 'scale(' + x +',' + y + ')';
+        this.debugCamera.aspect = window.innerWidth / window.innerHeight;
+        this.debugCamera.updateProjectionMatrix();
+        this.renderer.setSize( window.innerWidth, window.innerHeight );
+        this.scenes[this.sceneNum].onWindowResize(e);
 
-    }
 
-    onBeat()
-    {
-        this.scene_Modi.onBeat();
     }
 
     onClick(e)
     {
-        this.scene_Modi.onClick(e);
+        this.scenes[this.sceneNum].onClick(e);
     }
 
-    update ()
+    update =()=>
     {
 
         this.frameCount++;
         // this.frameCount = this.frameCount % 60;
 
 
-        requestAnimationFrame(this.update.bind(this));
-        this.scene_Modi.update();
+        requestAnimationFrame(this.update);
+        this.scenes[this.sceneNum].update();
         if(this.DEBUG_MODE)
         {
-            // this.renderer.render(this.scene_Modi.scene,this.scene_Modi.camera);
+            this.renderer.render(this.scenes[this.sceneNum].scene,this.scenes[this.sceneNum].camera);
         } else
         {
             // this.renderer.render(this.scene_Modi.scene,this.debugCamera);
         }
 
 
-        this.renderer.render(this.scene_Modi.scene,this.activeCamera);
+        this.renderer.render(this.scenes[this.sceneNum].scene,this.activeCamera);
     }
 
 
