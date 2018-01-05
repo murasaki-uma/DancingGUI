@@ -1,0 +1,113 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPugPlugin = require('html-webpack-pug-plugin');
+const poststylus = require('poststylus');
+const webpack = require("webpack");
+const path = require("path");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+//node_modules\.bin\webpack-dev-server --port 3000 --hot --host 0.0.0.0
+
+module.exports = {
+    // メインとなるJavaScriptファイル（エントリーポイント）
+    // watch: true,
+    entry: './src/js/main.js',
+    // ファイルの出力設定
+    output: {
+        //  出力ファイルのディレクトリ名
+        path: `${__dirname}/docs`,
+        // 出力ファイル名
+        filename: 'bundle.js'
+    },
+
+
+
+    plugins: [
+        new ExtractTextPlugin("./css/main.css"),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            options: {
+                stylus: {
+                    use: [poststylus([ 'autoprefixer', 'rucksack-css' ])]
+                }
+            }
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: 'src/pug/index.pug',  // この行を変更
+            inject: true
+        }),
+
+    ],
+    module: {
+        rules: [
+            {
+                // 拡張子 .ts の場合
+                test: /\.ts$/,
+                // TypeScript をコンパイルする
+                use: 'awesome-typescript-loader'
+            },
+            // ソースマップファイルの処理
+            {
+                enforce: 'pre',
+                test: /\.js$/,
+                loader: 'source-map-loader'
+            },
+            {
+                test: /\.pug$/,
+                loader: ['raw-loader', 'pug-html-loader']
+            },
+            {
+                // Stylusファイル用の処理
+                test: /\.(css|sass|styl)/,
+                use: ExtractTextPlugin.extract({
+                    use: ["css-loader", "stylus-loader"]
+                })
+            },
+            {
+                test: /\.(jpg|png|gif|svg|)$/,
+                loader: ['url-loader']
+            },
+            {
+                test: /\.(glsl|vs|fs|frag|vert)$/,
+                loader: 'shader-loader'
+            },
+            {
+                // 拡張子 .js の場合
+                test: /\.js$/,
+                use: [
+                    {
+                        // Babel を利用する
+                        loader: 'babel-loader',
+                        // Babel のオプションを指定する
+                        options: {
+                            presets: [
+                                // env を指定することで、ES2017 を ES5 に変換。
+                                // {modules: false}にしないと import 文が Babel によって CommonJS に変換され、
+                                // webpack の Tree Shaking 機能が使えない
+                                ['env']
+                            ],
+                            plugins: ['transform-class-properties']
+                        }
+                    }
+                ],
+                exclude: /node_modules/,
+
+            },
+
+
+
+        ]
+    },
+    // import 文で .ts ファイルを解決するため
+    resolve: {
+        extensions: [
+            '.ts', '.js', '.json', '.pug', '.styl', '.glsl', '.frag', '.vert'
+        ],
+    },
+    devServer: {
+        contentBase: path.resolve(__dirname, 'docs'),
+        port: 3000,
+        host: "0.0.0.0"
+    },
+    // ソースマップを有効に
+    devtool: 'source-map'
+};

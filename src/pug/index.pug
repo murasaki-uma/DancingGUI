@@ -1,0 +1,27 @@
+doctype html
+html
+    head
+
+        meta(charset="utf-8" name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0")
+
+
+
+
+
+
+    body
+        header
+
+        main
+            #render
+                img(src='img/modicameraview.jpg')#modicameraview
+            canvas#bpm(width="442" height="100")
+
+            canvas#monitor(width="442" height="540")
+            #bpmCalculater
+                #BpmToFps
+                p fps
+                #BpmView
+                p bpm
+                button#input_tempo onBeat
+                button#bpmReset reset
