@@ -36,13 +36,13 @@ export default class SceneManager{
     {
 
 
-        this.debugCamera.position.set(0,10,10);
+        this.debugCamera.position.set(0,0,10);
         this.renderer.setPixelRatio(1);
         this.renderer.setSize(this.width,this.height);
 
         this.renderer.antialias = true;
         this.renderer.domElement.id = "out";
-        document.getElementById('render').appendChild( this.renderer.domElement );
+        document.getElementById('mainrender').appendChild( this.renderer.domElement );
         window.addEventListener('resize',this.onWindowResize.bind(this));
         window.addEventListener('keydown', this.onKeyDown.bind(this));
         window.addEventListener( 'click', this.onClick.bind(this), false );
@@ -73,6 +73,8 @@ export default class SceneManager{
             this.saveCanvas('image/png');
         }
 
+        console.log(e);
+
 
     }
 
@@ -93,6 +95,7 @@ export default class SceneManager{
         }
 
 
+        console.log(this.activeCamera);
     }
 
 
@@ -102,33 +105,42 @@ export default class SceneManager{
         this.debugCamera.aspect = window.innerWidth / window.innerHeight;
         this.debugCamera.updateProjectionMatrix();
         this.renderer.setSize( window.innerWidth, window.innerHeight );
-        this.scenes[this.sceneNum].onWindowResize(e);
+
+        if(this.scenes.length != 0)
+        {
+            this.scenes[this.sceneNum].onWindowResize(e);
+        }
+
 
 
     }
 
     onClick(e)
     {
-        this.scenes[this.sceneNum].onClick(e);
+        if(this.scenes.length != 0) {
+            this.scenes[this.sceneNum].onClick(e);
+        }
     }
 
-    update =()=>
+    update =() =>
     {
 
+        requestAnimationFrame(this.update);
         this.frameCount++;
         // this.frameCount = this.frameCount % 60;
 
 
-        requestAnimationFrame(this.update);
-        this.scenes[this.sceneNum].update();
+
+        if(this.scenes.length != 0) {
+            this.scenes[this.sceneNum].update();
+        }
         if(this.DEBUG_MODE)
         {
             this.renderer.render(this.scenes[this.sceneNum].scene,this.scenes[this.sceneNum].camera);
         } else
         {
-            // this.renderer.render(this.scene_Modi.scene,this.debugCamera);
+            this.renderer.render(this.scenes[this.sceneNum].scene,this.debugCamera);
         }
-
 
         this.renderer.render(this.scenes[this.sceneNum].scene,this.activeCamera);
     }

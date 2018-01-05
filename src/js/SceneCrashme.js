@@ -8,11 +8,15 @@ export default class SceneCrashme{
     constructor()
     {
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(50,this.width/this.height,0.1,10000);
+        this.camera = new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,0.1,10000);
+        this.time = 0;
+        this.init();
     }
 
-    onWindowResize(e)
+    init()
     {
+        this.camera.position.set(0,0,10);
+        this.camera.lookAt(new THREE.Vector3(0,0,0));
 
         let geo = new THREE.BoxGeometry(1,1,1);
         let mat = new THREE.MeshBasicMaterial({
@@ -21,6 +25,18 @@ export default class SceneCrashme{
 
         let mesh = new THREE.Mesh(geo,mat);
         this.scene.add(mesh);
+        this.scene.background = new THREE.Color( 0xcce0ff );
+
+    }
+
+    onClick(e)
+    {
+
+    }
+
+    onWindowResize(e)
+    {
+
 
 
 
@@ -29,6 +45,16 @@ export default class SceneCrashme{
 
     update()
     {
+
+        this.time ++;
+
+        // this.camera.position.set(
+        //     0,
+        //     0,
+        //     Math.sin(this.time*0.01) * 10
+        // );
+        //
+        // this.camera.lookAt(new THREE.Vector3(0,0,0));
 
     }
 }
