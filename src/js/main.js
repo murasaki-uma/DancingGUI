@@ -8,9 +8,9 @@ import SceneCrashme from './SceneCrashme';
 window.addEventListener('DOMContentLoaded',() => {
     console.log('awake');
 
-    const main = new SceneManager();
-    const sceneCrashme = new SceneCrashme();
+    const manager = new SceneManager();
+    const sceneCrashme = new SceneCrashme(manager);
 
-    main.addScene(sceneCrashme);
-    main.update();
+    manager.addScene(sceneCrashme);
+    manager.update();
 });

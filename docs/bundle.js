@@ -45138,14 +45138,14 @@ var _SceneCrashme = _interopRequireDefault(__webpack_require__(5));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var css = __webpack_require__(6);
+var css = __webpack_require__(8);
 
 window.addEventListener('DOMContentLoaded', function () {
   console.log('awake');
-  var main = new _SceneManager.default();
-  var sceneCrashme = new _SceneCrashme.default();
-  main.addScene(sceneCrashme);
-  main.update();
+  var manager = new _SceneManager.default();
+  var sceneCrashme = new _SceneCrashme.default(manager);
+  manager.addScene(sceneCrashme);
+  manager.update();
 });
 
 /***/ }),
@@ -45185,15 +45185,17 @@ function () {
     _classCallCheck(this, SceneManager);
 
     this.update = function () {
+      requestAnimationFrame(_this.update);
       _this.frameCount++; // this.frameCount = this.frameCount % 60;
 
-      requestAnimationFrame(_this.update);
-
-      _this.scenes[_this.sceneNum].update();
+      if (_this.scenes.length != 0) {
+        _this.scenes[_this.sceneNum].update();
+      }
 
       if (_this.DEBUG_MODE) {
         _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.scenes[_this.sceneNum].camera);
-      } else {// this.renderer.render(this.scene_Modi.scene,this.debugCamera);
+      } else {
+        _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.debugCamera);
       }
 
       _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.activeCamera);
@@ -45208,7 +45210,7 @@ function () {
       alpha: true
     });
     this.debugCamera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 10000);
-    this.DEBUG_MODE = true;
+    this.DEBUG_MODE = false;
     this.activeCamera = null;
     this.frameCount = 0;
     this.gui = new _gui.default();
@@ -45220,12 +45222,13 @@ function () {
   _createClass(SceneManager, [{
     key: "init",
     value: function init() {
-      this.debugCamera.position.set(0, 10, 10);
-      this.renderer.setPixelRatio(1);
+      this.debugCamera.position.set(0, 0, 10); // this.renderer.setPixelRatio(1);
+
+      this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(this.width, this.height);
       this.renderer.antialias = true;
       this.renderer.domElement.id = "out";
-      document.getElementById('render').appendChild(this.renderer.domElement);
+      document.getElementById('mainrender').appendChild(this.renderer.domElement);
       window.addEventListener('resize', this.onWindowResize.bind(this));
       window.addEventListener('keydown', this.onKeyDown.bind(this));
       window.addEventListener('click', this.onClick.bind(this), false);
@@ -45249,6 +45252,8 @@ function () {
       if (e.key == 's') {
         this.saveCanvas('image/png');
       }
+
+      console.log(e);
     }
   }, {
     key: "debug",
@@ -45264,6 +45269,8 @@ function () {
       } else {
         this.activeCamera = this.scenes[this.sceneNum].camera;
       }
+
+      console.log(this.activeCamera);
     }
   }, {
     key: "onWindowResize",
@@ -45271,12 +45278,17 @@ function () {
       this.debugCamera.aspect = window.innerWidth / window.innerHeight;
       this.debugCamera.updateProjectionMatrix();
       this.renderer.setSize(window.innerWidth, window.innerHeight);
-      this.scenes[this.sceneNum].onWindowResize(e);
+
+      if (this.scenes.length != 0) {
+        this.scenes[this.sceneNum].onWindowResize(e);
+      }
     }
   }, {
     key: "onClick",
     value: function onClick(e) {
-      this.scenes[this.sceneNum].onClick(e);
+      if (this.scenes.length != 0) {
+        this.scenes[this.sceneNum].onClick(e);
+      }
     }
   }, {
     key: "saveCanvas",
@@ -46478,29 +46490,91 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+var errorVertex = __webpack_require__(6);
+
+var errorFragment = __webpack_require__(7);
+
 var SceneCrashme =
 /*#__PURE__*/
 function () {
-  function SceneCrashme() {
+  function SceneCrashme(manager) {
     _classCallCheck(this, SceneCrashme);
 
+    this.manager = manager;
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 10000);
+    this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10000);
+    this.time = 0;
+    this.init();
+    this.errorGui;
+    this.errorOffsetAttribute;
   }
 
   _createClass(SceneCrashme, [{
-    key: "onWindowResize",
-    value: function onWindowResize(e) {
-      var geo = new THREE.BoxGeometry(1, 1, 1);
-      var mat = new THREE.MeshBasicMaterial({
-        color: 0xffffff * Math.random()
+    key: "init",
+    value: function init() {
+      this.camera.position.set(0, 0, 100);
+      this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+      var backgroundGeo = new THREE.PlaneGeometry(1000, 1000);
+      var backgroundMat = new THREE.MeshBasicMaterial({
+        color: 0x008080
       });
-      var mesh = new THREE.Mesh(geo, mat);
+      var background = new THREE.Mesh(backgroundGeo, backgroundMat);
+      background.position.set(0, 0, -5);
+      this.scene.add(background);
+      var texture = new THREE.TextureLoader().load('img/errorgui.png');
+      var instances = 20;
+      var bufferGeometry = new THREE.BoxBufferGeometry(36, 13, 1); // copying data from a simple box geometry, but you can specify a custom geometry if you want
+
+      var geometry = new THREE.InstancedBufferGeometry();
+      geometry.index = bufferGeometry.index;
+      geometry.attributes.position = bufferGeometry.attributes.position;
+      geometry.attributes.uv = bufferGeometry.attributes.uv; // per instance data
+
+      var offsets = [];
+      var orientations = [];
+      var vector = new THREE.Vector4();
+      var x, y, z;
+
+      for (var i = 0; i < instances; i++) {
+        // offsets
+        x = 0;
+        y = 0;
+        z = 0;
+        vector.set(x, y, z, 0).normalize();
+        offsets.push(x + vector.x, y + vector.y, z + vector.z);
+      }
+
+      this.errorOffsetAttribute = new THREE.InstancedBufferAttribute(new Float32Array(offsets), 3);
+      geometry.addAttribute('offset', this.errorOffsetAttribute);
+      var material = new THREE.ShaderMaterial({
+        uniforms: {
+          map: {
+            value: texture
+          }
+        },
+        vertexShader: errorVertex,
+        fragmentShader: errorFragment
+      });
+      var mesh = new THREE.Mesh(geometry, material);
       this.scene.add(mesh);
     }
   }, {
+    key: "onClick",
+    value: function onClick(e) {}
+  }, {
+    key: "onWindowResize",
+    value: function onWindowResize(e) {}
+  }, {
     key: "update",
-    value: function update() {}
+    value: function update() {
+      this.time++; // this.camera.position.set(
+      //     0,
+      //     0,
+      //     Math.sin(this.time*0.01) * 10
+      // );
+      //
+      // this.camera.lookAt(new THREE.Vector3(0,0,0));
+    }
   }]);
 
   return SceneCrashme;
@@ -46510,6 +46584,18 @@ exports.default = SceneCrashme;
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports) {
+
+module.exports = "precision highp float;\n//uniform mat4 modelViewMatrix;\n//uniform mat4 projectionMatrix;\n//attribute vec3 position;\nattribute vec3 offset;\n//attribute vec2 uv;\nvarying vec2 vUv;\nvoid main() {\n    vec3 vPosition = position;\n//    vec3 vcV = cross( orientation.xyz, vPosition );\n//    vPosition = vcV * ( 2.0 * orientation.w ) + ( cross( orientation.xyz, vcV ) * 2.0 + vPosition );\n    vUv = uv;\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset + vPosition, 1.0 );\n}"
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = "precision highp float;\nuniform sampler2D map;\nvarying vec2 vUv;\nvoid main() {\n    gl_FragColor = texture2D( map, vUv );\n}"
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

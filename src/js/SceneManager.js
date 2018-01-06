@@ -15,7 +15,7 @@ export default class SceneManager{
             preserveDrawingBuffer: true,antialias:true,alpha:true
         });
         this.debugCamera = new THREE.PerspectiveCamera(50,this.width/this.height,0.1,10000);
-        this.DEBUG_MODE = true;
+        this.DEBUG_MODE = false;
         this.activeCamera = null;
         this.frameCount = 0;
 
@@ -37,7 +37,8 @@ export default class SceneManager{
 
 
         this.debugCamera.position.set(0,0,10);
-        this.renderer.setPixelRatio(1);
+        // this.renderer.setPixelRatio(1);
+        this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize(this.width,this.height);
 
         this.renderer.antialias = true;
