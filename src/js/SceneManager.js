@@ -19,7 +19,7 @@ export default class SceneManager{
         this.activeCamera = null;
         this.frameCount = 0;
 
-        this.gui = new Gui();
+
 
 
 
@@ -27,7 +27,7 @@ export default class SceneManager{
         this.scenes = [];
         this.sceneNum = 0;
 
-
+        this.gui = new Gui();
 
         this.init();
     }
@@ -60,6 +60,7 @@ export default class SceneManager{
     addScene(scene)
     {
         this.scenes.push(scene);
+        this.cameraChange();
     }
 
     onKeyDown(e)
@@ -86,13 +87,19 @@ export default class SceneManager{
     }
     cameraChange()
     {
+        if(this.scenes.length > 0)
+        {
 
-        if(this.DEBUG_MODE)
-        {
-            this.activeCamera = this.debugCamera;
-        }else
-        {
-            this.activeCamera = this.scenes[this.sceneNum].camera;
+
+
+            if(this.DEBUG_MODE)
+            {
+                this.activeCamera = this.debugCamera;
+            }else
+            {
+                this.activeCamera = this.scenes[this.sceneNum].camera;
+            }
+
         }
 
 
@@ -134,16 +141,17 @@ export default class SceneManager{
 
         if(this.scenes.length != 0) {
             this.scenes[this.sceneNum].update();
-        }
-        if(this.DEBUG_MODE)
-        {
-            this.renderer.render(this.scenes[this.sceneNum].scene,this.scenes[this.sceneNum].camera);
-        } else
-        {
-            this.renderer.render(this.scenes[this.sceneNum].scene,this.debugCamera);
-        }
 
-        this.renderer.render(this.scenes[this.sceneNum].scene,this.activeCamera);
+            if(this.DEBUG_MODE)
+            {
+                this.renderer.render(this.scenes[this.sceneNum].scene,this.scenes[this.sceneNum].camera);
+            } else
+            {
+                this.renderer.render(this.scenes[this.sceneNum].scene,this.debugCamera);
+            }
+
+            this.renderer.render(this.scenes[this.sceneNum].scene,this.activeCamera);
+        }
     }
 
 

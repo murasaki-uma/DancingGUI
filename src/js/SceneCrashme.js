@@ -3,7 +3,7 @@
  */
 'use strict'
 import * as THREE from 'three'
-
+import CurlNoise from './curlNoise';
 const errorVertex = require('./GLSL/errorVertex.glsl');
 const errorFragment = require('./GLSL/errorFragment.glsl');
 
@@ -14,10 +14,18 @@ export default class SceneCrashme{
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,0.1,10000);
         this.time = 0;
-        this.init();
+
 
         this.errorGui;
         this.errorOffsetAttribute;
+
+        this.curlNoise = new CurlNoise();
+
+        this.errorGuiPos = new THREE.Vector3(0,0,0);
+        this.arrayErrorGuiPos = [];
+        this.instanceCount = 20;
+
+        this.init();
     }
 
     init()
@@ -42,13 +50,15 @@ export default class SceneCrashme{
 
 
         let texture = new THREE.TextureLoader().load('img/errorgui.png');
-        let instances = 20;
+        let instances = this.instanceCount;
         let bufferGeometry = new THREE.BoxBufferGeometry( 36, 13, 1 );
         // copying data from a simple box geometry, but you can specify a custom geometry if you want
         let geometry = new THREE.InstancedBufferGeometry();
         geometry.index = bufferGeometry.index;
         geometry.attributes.position = bufferGeometry.attributes.position;
         geometry.attributes.uv = bufferGeometry.attributes.uv;
+        let normal = bufferGeometry.attributes.normal.clone();
+        console.log(geometry.attributes);
         // per instance data
         let offsets = [];
         let orientations = [];
@@ -63,10 +73,13 @@ export default class SceneCrashme{
             vector.set( x, y, z, 0 ).normalize();
             offsets.push( x + vector.x, y + vector.y, z + vector.z );
 
+
+            // this.arrayErrorGuiPos.push(new THREE.Vector3(0,0,0));
+
         }
         this.errorOffsetAttribute = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 );
         geometry.addAttribute( 'offset', this.errorOffsetAttribute );
-
+        geometry.addAttribute('normal', normal);
         let material = new THREE.ShaderMaterial( {
             uniforms: {
                 map: { value: texture }
@@ -74,6 +87,15 @@ export default class SceneCrashme{
             vertexShader: errorVertex,
             fragmentShader: errorFragment
         } );
+
+        var materials = [
+            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
+            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
+            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
+            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
+            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
+            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
+        ];
         let mesh = new THREE.Mesh( geometry, material );
         this.scene.add( mesh );
 
@@ -91,7 +113,8 @@ export default class SceneCrashme{
     onWindowResize(e)
     {
 
-
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
 
 
     }
@@ -101,14 +124,43 @@ export default class SceneCrashme{
     {
 
         this.time ++;
+        let p = this.curlNoise.getCurlNoise(new THREE.Vector3(
+            this.errorOffsetAttribute.array[0]*0.011,
+            this.errorOffsetAttribute.array[1]*0.011,
+            this.time*0.005
+        ));
+        // p.multiplyScalar(1.1);
 
-        // this.camera.position.set(
-        //     0,
-        //     0,
-        //     Math.sin(this.time*0.01) * 10
-        // );
-        //
-        // this.camera.lookAt(new THREE.Vector3(0,0,0));
+        this.errorGuiPos.set(
+            p.x * 5,
+            p.z * 5,
+            0
+        );
+
+
+        this.arrayErrorGuiPos.unshift(this.errorGuiPos.clone());
+
+        // console.log(this.arrayErrorGuiPos.length);
+        if(this.arrayErrorGuiPos.length > this.instanceCount){
+            this.arrayErrorGuiPos.pop();
+        }
+        // console.log(this.arrayErrorGuiPos);
+        // this.arrayErrorGuiPos.pop();
+
+        for(let i = 0; i < this.arrayErrorGuiPos.length; i++ )
+        {
+
+            this.errorOffsetAttribute.array[(19-i)*3] = this.arrayErrorGuiPos[i].x;
+            this.errorOffsetAttribute.array[(19-i)*3+1] = this.arrayErrorGuiPos[i].y;
+            this.errorOffsetAttribute.array[(19-i)*3+2] = (20 - i)*2.0;
+
+        }
+
+
+
+        this.errorOffsetAttribute.needsUpdate = true;
+        // console.log(this.errorOffsetAttribute.array);
+
 
     }
 }

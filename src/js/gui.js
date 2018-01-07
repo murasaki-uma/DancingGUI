@@ -1,6 +1,33 @@
 /**
  * Created by PurpleUma on 2018/01/06.
  */
-export default class GUI{
+import dat from '../../node_modules/dat.gui/build/dat.gui.min'
 
+import guiValues from './guiValues'
+
+export default class GUI{
+    constructor()
+    {
+        this.values = new guiValues();
+        this.gui = new dat.GUI();
+
+        this.gui.width = 400;
+
+        this.gui.remember(this.values);
+        this.cameraAnimation = this.gui.addFolder('camera animation');
+
+
+        this.init();
+    }
+
+    init()
+    {
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosX',-30,30);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosY',-30,30);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosZ',-30,30);
+
+        this.cameraAnimation.add(this.values,'cameraAnimeation01LookX',-30,30);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01LookY',-30,30);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01LookZ',-30,30);
+    }
 }
