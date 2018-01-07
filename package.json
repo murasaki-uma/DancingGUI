@@ -13,6 +13,7 @@
     "@types/three": "^0.84.35",
     "awesome-typescript-loader": "^3.4.1",
     "babel": "^6.23.0",
+    "gsap": "^1.20.3",
     "source-map-loader": "^0.2.3",
     "three": "^0.88.0",
     "typescript": "^2.6.2"

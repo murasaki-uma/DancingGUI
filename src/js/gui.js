@@ -22,12 +22,12 @@ export default class GUI{
 
     init()
     {
-        this.cameraAnimation.add(this.values,'cameraAnimeation01PosX',-30,30);
-        this.cameraAnimation.add(this.values,'cameraAnimeation01PosY',-30,30);
-        this.cameraAnimation.add(this.values,'cameraAnimeation01PosZ',-30,30);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosX',-150,150);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosY',-150,150);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosZ',-150,150);
 
-        this.cameraAnimation.add(this.values,'cameraAnimeation01LookX',-30,30);
-        this.cameraAnimation.add(this.values,'cameraAnimeation01LookY',-30,30);
-        this.cameraAnimation.add(this.values,'cameraAnimeation01LookZ',-30,30);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01LookX',-150,150);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01LookY',-150,150);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01LookZ',-150,150);
     }
 }

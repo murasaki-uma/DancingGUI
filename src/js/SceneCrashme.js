@@ -6,7 +6,8 @@ import * as THREE from 'three'
 import CurlNoise from './curlNoise';
 const errorVertex = require('./GLSL/errorVertex.glsl');
 const errorFragment = require('./GLSL/errorFragment.glsl');
-
+// const
+import {TweenMax,Power2,Power4, TimelineLite} from "gsap";
 export default class SceneCrashme{
     constructor(manager)
     {
@@ -24,6 +25,8 @@ export default class SceneCrashme{
         this.errorGuiPos = new THREE.Vector3(0,0,0);
         this.arrayErrorGuiPos = [];
         this.instanceCount = 20;
+
+        this.cameraLookAt = new THREE.Vector3();
 
         this.init();
     }
@@ -105,6 +108,65 @@ export default class SceneCrashme{
 
     }
 
+    resetAnimation()
+    {
+        TweenMax.to(this.camera.position , 1.0 , {
+            x : 0,
+            y : 0,
+            z : 100,
+            // delay : 0.5 ,
+            ease :Power2.easeInOut
+        });
+
+        TweenMax.to(this.cameraLookAt , 1.0 , {
+            x : 0,
+            y : 0,
+            z : 0,
+            // delay : 0.5 ,
+            ease :Power2.easeInOut
+        });
+    }
+
+    cameraAnimation()
+    {
+        TweenMax.to(this.camera.position , 1.0 , {
+            x : this.manager.gui.values.cameraAnimeation01PosX,
+            y : this.manager.gui.values.cameraAnimeation01PosY,
+            z : this.manager.gui.values.cameraAnimeation01PosZ,
+            // delay : 0.5 ,
+            ease :Power2.easeInOut
+        });
+
+
+
+        TweenMax.to(this.cameraLookAt , 1.0 , {
+            x : this.manager.gui.values.cameraAnimeation01LookX,
+            y : this.manager.gui.values.cameraAnimeation01LookY,
+            z : this.manager.gui.values.cameraAnimeation01LookZ,
+            // delay : 0.5 ,
+            ease :Power2.easeInOut
+        });
+
+
+
+    }
+
+
+
+    onKeyDown(e)
+    {
+        if(e.key == 'a')
+        {
+            this.cameraAnimation();
+        }
+
+
+        if(e.key == 'r')
+        {
+            this.resetAnimation();
+        }
+    }
+
     onClick(e)
     {
 
@@ -123,6 +185,10 @@ export default class SceneCrashme{
     update()
     {
 
+
+        this.camera.lookAt(this.cameraLookAt);
+
+        this.camera.updateProjectionMatrix();
         this.time ++;
         let p = this.curlNoise.getCurlNoise(new THREE.Vector3(
             this.errorOffsetAttribute.array[0]*0.011,

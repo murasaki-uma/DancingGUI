@@ -77,6 +77,11 @@ export default class SceneManager{
 
         console.log(e);
 
+        if(this.scenes.length > 0)
+        {
+            this.scenes[this.sceneNum].onKeyDown(e);
+        }
+
 
     }
 
