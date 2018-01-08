@@ -7,6 +7,8 @@ import CurlNoise from './curlNoise';
 const errorVertex = require('./GLSL/errorVertex.glsl');
 const errorFragment = require('./GLSL/errorFragment.glsl');
 // const
+import GradationPlane from './GradationPlane';
+
 import {TweenMax,Power2,Power4, TimelineLite} from "gsap";
 export default class SceneCrashme{
     constructor(manager)
@@ -30,6 +32,8 @@ export default class SceneCrashme{
         this.errorGuiInterval = {value:0.0};
         this.backgroundPlane;
         this.backgroundScale = {value:1.0};
+
+
 
         this.init();
     }
@@ -123,6 +127,12 @@ export default class SceneCrashme{
             this.errorGui.material.uniforms.gradationColor.value.g = e[1]/255;
             this.errorGui.material.uniforms.gradationColor.value.b = e[2]/255;
         });
+
+
+
+
+        let gp = new GradationPlane(50,25);
+        this.scene.add(gp.getMesh());
 
 
     }

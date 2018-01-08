@@ -17,5 +17,7 @@ export default class guiValues{
         this.backgroundAnimationX = 0.0;
         this.backgroundAnimationY = 0.0;
         this.backgroundAnimationZ = -50.0;
+
+        // this.
     }
 }
