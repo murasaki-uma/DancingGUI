@@ -37,7 +37,8 @@ export default class GradationPlane
         let mat = new THREE.ShaderMaterial({
             uniforms:this.uniforms,
             fragmentShader:fragment,
-            vertexShader:vertex
+            vertexShader:vertex,
+            transparent:true
         });
 
 
@@ -58,10 +59,10 @@ export default class GradationPlane
         console.log('threthold')
 
 
-        TweenMax.to(this.gradThreshold , 1.0 , {
+        TweenMax.to(this.gradThreshold , 2.0 , {
             value:1.0,
             // delay : 0.5 ,
-            ease :Power2.easeInOut,
+            // ease :Power2.easeInOut,
             // onUpdate:()=>{console.log(this.gradThreshold.value)}
         });
     }
@@ -69,10 +70,10 @@ export default class GradationPlane
     reset()
     {
 
-        TweenMax.to(this.gradThreshold , 1.0 , {
+        TweenMax.to(this.gradThreshold , 2.0 , {
             value:0.0,
             // delay : 0.5 ,
-            ease :Power2.easeInOut
+            // ease :Power2.easeInOut
         });
 
     }
