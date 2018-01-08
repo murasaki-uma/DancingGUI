@@ -11,6 +11,7 @@ export default class guiValues{
         this.cameraAnimeation01LookZ = 0.0;
 
         this.errorGuiInterval = 20;
+        this.errorGuiColor = [ 0, 128, 255 ];
 
 
         this.backgroundAnimationX = 0.0;

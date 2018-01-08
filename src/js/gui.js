@@ -18,6 +18,9 @@ export default class GUI{
         this.errorGui = this.gui.addFolder('error gui');
         this.background = this.gui.addFolder('background');
 
+
+        this.errorGuiColor;
+
         this.init();
     }
 
@@ -38,5 +41,6 @@ export default class GUI{
 
 
         this.errorGui.add(this.values,'errorGuiInterval',0.80);
+        this.errorGuiColor = this.errorGui.addColor(this.values,'errorGuiColor');
     }
 }

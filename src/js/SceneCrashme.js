@@ -16,7 +16,6 @@ export default class SceneCrashme{
         this.camera = new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,0.1,10000);
         this.time = 0;
 
-
         this.errorGui;
         this.errorOffsetAttribute;
 
@@ -78,26 +77,34 @@ export default class SceneCrashme{
             x = 0;
             y = 0;
             z = 0;
-            vector.set( x, y, z, 0 ).normalize();
-            offsets.push( x + vector.x, y + vector.y, z + vector.z );
+            vector.set( x, y, z, i ).normalize();
+            offsets.push( x + vector.x, y + vector.y, z + vector.z, i );
             number.push(i);
             // this.arrayErrorGuiPos.push(new THREE.Vector3(0,0,0));
 
         }
-        this.errorOffsetAttribute = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 );
+        this.errorOffsetAttribute = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 4 );
 
-        let numberAttribute = new THREE.InstancedBufferAttribute( new Float32Array( number ), 1 );
+        // let numberAttribute = new THREE.InstancedBufferAttribute( new Int32Array( number ), 1 );
 
         geometry.addAttribute( 'offset', this.errorOffsetAttribute );
         geometry.addAttribute('normal', normal);
-        geometry.addAttribute('number', numberAttribute);
+        // geometry.addAttribute('number', numberAttribute);
         let material = new THREE.ShaderMaterial( {
             uniforms: {
-                map: { value: texture }
+                map: { value: texture },
+                gradationColor:{value : new THREE.Color(
+                    this.manager.gui.values.errorGuiColor[0]/255,
+                    this.manager.gui.values.errorGuiColor[1]/255,
+                    this.manager.gui.values.errorGuiColor[2]/255
+                )},
+                scale:this.backgroundScale
             },
             vertexShader: errorVertex,
             fragmentShader: errorFragment
         } );
+
+
 
         var materials = [
             new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
@@ -107,8 +114,15 @@ export default class SceneCrashme{
             new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
             new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
         ];
-        let mesh = new THREE.Mesh( geometry, material );
-        this.scene.add( mesh );
+        this.errorGui = new THREE.Mesh( geometry, material );
+        this.scene.add( this.errorGui );
+
+
+        this.manager.gui.errorGuiColor.onChange((e)=>{
+            this.errorGui.material.uniforms.gradationColor.value.r = e[0]/255;
+            this.errorGui.material.uniforms.gradationColor.value.g = e[1]/255;
+            this.errorGui.material.uniforms.gradationColor.value.b = e[2]/255;
+        });
 
 
     }
@@ -257,11 +271,9 @@ export default class SceneCrashme{
         for(let i = 0; i < this.arrayErrorGuiPos.length; i++ )
         {
 
-            this.errorOffsetAttribute.array[(19-i)*3] = this.arrayErrorGuiPos[i].x;
-            this.errorOffsetAttribute.array[(19-i)*3+1] = this.arrayErrorGuiPos[i].y;
-            this.errorOffsetAttribute.array[(19-i)*3+2] = -(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i;
-
-            // console.log(-(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i);
+            this.errorOffsetAttribute.array[(19-i)*4] = this.arrayErrorGuiPos[i].x;
+            this.errorOffsetAttribute.array[(19-i)*4+1] = this.arrayErrorGuiPos[i].y;
+            this.errorOffsetAttribute.array[(19-i)*4+2] = -(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i;
 
 
 
