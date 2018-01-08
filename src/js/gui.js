@@ -15,7 +15,8 @@ export default class GUI{
 
         this.gui.remember(this.values);
         this.cameraAnimation = this.gui.addFolder('camera animation');
-
+        this.errorGui = this.gui.addFolder('error gui');
+        this.background = this.gui.addFolder('background');
 
         this.init();
     }
@@ -29,5 +30,13 @@ export default class GUI{
         this.cameraAnimation.add(this.values,'cameraAnimeation01LookX',-150,150);
         this.cameraAnimation.add(this.values,'cameraAnimeation01LookY',-150,150);
         this.cameraAnimation.add(this.values,'cameraAnimeation01LookZ',-150,150);
+
+
+        this.background.add(this.values,'backgroundAnimationX',-150,150);
+        this.background.add(this.values,'backgroundAnimationY',-150,150);
+        this.background.add(this.values,'backgroundAnimationZ',-1000,500);
+
+
+        this.errorGui.add(this.values,'errorGuiInterval',0.80);
     }
 }

@@ -28,6 +28,10 @@ export default class SceneCrashme{
 
         this.cameraLookAt = new THREE.Vector3();
 
+        this.errorGuiInterval = {value:0.0};
+        this.backgroundPlane;
+        this.backgroundScale = {value:1.0};
+
         this.init();
     }
 
@@ -45,10 +49,10 @@ export default class SceneCrashme{
             color:0x008080
         });
 
-        let background = new THREE.Mesh(backgroundGeo,backgroundMat);
+        this.backgroundPlane = new THREE.Mesh(backgroundGeo,backgroundMat);
 
-        background.position.set(0,0,-5);
-        this.scene.add(background);
+        this.backgroundPlane.position.set(0,0,-5);
+        this.scene.add(this.backgroundPlane);
 
 
 
@@ -64,6 +68,7 @@ export default class SceneCrashme{
         console.log(geometry.attributes);
         // per instance data
         let offsets = [];
+        let number = [];
         let orientations = [];
         let vector = new THREE.Vector4();
         let x, y, z;
@@ -75,14 +80,17 @@ export default class SceneCrashme{
             z = 0;
             vector.set( x, y, z, 0 ).normalize();
             offsets.push( x + vector.x, y + vector.y, z + vector.z );
-
-
+            number.push(i);
             // this.arrayErrorGuiPos.push(new THREE.Vector3(0,0,0));
 
         }
         this.errorOffsetAttribute = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 );
+
+        let numberAttribute = new THREE.InstancedBufferAttribute( new Float32Array( number ), 1 );
+
         geometry.addAttribute( 'offset', this.errorOffsetAttribute );
         geometry.addAttribute('normal', normal);
+        geometry.addAttribute('number', numberAttribute);
         let material = new THREE.ShaderMaterial( {
             uniforms: {
                 map: { value: texture }
@@ -103,9 +111,6 @@ export default class SceneCrashme{
         this.scene.add( mesh );
 
 
-
-
-
     }
 
     resetAnimation()
@@ -114,7 +119,7 @@ export default class SceneCrashme{
             x : 0,
             y : 0,
             z : 100,
-            // delay : 0.5 ,
+            // delay : 2.0 ,
             ease :Power2.easeInOut
         });
 
@@ -123,6 +128,26 @@ export default class SceneCrashme{
             y : 0,
             z : 0,
             // delay : 0.5 ,
+            ease :Power2.easeInOut
+        });
+
+        TweenMax.to(this.errorGuiInterval , 1.0 , {
+            value : 1.0,
+            ease :Power2.easeInOut
+        });
+
+        TweenMax.to(this.backgroundPlane.position , 1.0 , {
+            x : 0,
+            y : 0,
+            z : 0,
+            // delay : 1.0 ,
+            ease :Power2.easeInOut
+        });
+
+
+        TweenMax.to(this.backgroundScale , 4.0 , {
+            value : 1.0,
+            // delay : 0.5,
             ease :Power2.easeInOut
         });
     }
@@ -137,20 +162,37 @@ export default class SceneCrashme{
             ease :Power2.easeInOut
         });
 
-
-
         TweenMax.to(this.cameraLookAt , 1.0 , {
             x : this.manager.gui.values.cameraAnimeation01LookX,
             y : this.manager.gui.values.cameraAnimeation01LookY,
             z : this.manager.gui.values.cameraAnimeation01LookZ,
-            // delay : 0.5 ,
+            // delay : 0.5,
             ease :Power2.easeInOut
         });
 
 
+        TweenMax.to(this.backgroundPlane.position , 2.5, {
+            x : this.manager.gui.values.backgroundAnimationX,
+            y : this.manager.gui.values.backgroundAnimationY,
+            z : this.manager.gui.values.backgroundAnimationZ,
+            // delay : 0.5,
+            ease :Power2.easeInOut
+        });
+
+
+        TweenMax.to(this.errorGuiInterval , 1.5 , {
+            value : this.manager.gui.values.errorGuiInterval,
+            // delay : 0.5,
+            ease :Power2.easeInOut
+        });
+
+        TweenMax.to(this.backgroundScale , 4.0 , {
+            value : 0.0,
+            // delay : 0.5,
+            ease :Power2.easeInOut
+        });
 
     }
-
 
 
     onKeyDown(e)
@@ -177,7 +219,6 @@ export default class SceneCrashme{
 
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
-
 
     }
 
@@ -218,12 +259,19 @@ export default class SceneCrashme{
 
             this.errorOffsetAttribute.array[(19-i)*3] = this.arrayErrorGuiPos[i].x;
             this.errorOffsetAttribute.array[(19-i)*3+1] = this.arrayErrorGuiPos[i].y;
-            this.errorOffsetAttribute.array[(19-i)*3+2] = (20 - i)*2.0;
+            this.errorOffsetAttribute.array[(19-i)*3+2] = -(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i;
+
+            // console.log(-(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i);
+
+
 
         }
 
-
-
+        this.backgroundPlane.scale.set(
+            this.backgroundScale.value,
+            this.backgroundScale.value,
+            this.backgroundScale.value
+        );
         this.errorOffsetAttribute.needsUpdate = true;
         // console.log(this.errorOffsetAttribute.array);
 
