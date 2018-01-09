@@ -1,11 +1,12 @@
 'use strict'
 import * as THREE from 'three'
-const vertex = require('./GLSL/gradationPlaneVertex.glsl');
-const fragment = require('./GLSL/gradationPlaneFrag.glsl');
+const vertex = require('./GLSL/errorAnimationVertex.glsl');
+const fragment = require('./GLSL/errorAnimationFragment.glsl');
 import {TweenMax,Power2,Power4, TimelineLite} from "gsap";
-export default class GradationPlane
+
+export default class ErrorGui
 {
-    constructor(width,height, gui)
+    constructor(width,height, gui, texture,grad)
     {
         this.gui = gui;
         this.width = width;
@@ -17,6 +18,11 @@ export default class GradationPlane
         this.gradThreshold = {value:0.0};
 
         this.scale = {value:1.0};
+
+        this.guiTexture = texture;
+        this.gradTexture = grad;
+        this.posisiton = new THREE.Vector3();
+        this.isWire = {value:true};
         this.init()
     }
 
@@ -25,16 +31,14 @@ export default class GradationPlane
 
 
         window.addEventListener('keydown', this.onKeyDown);
-        let noisetex = new THREE.TextureLoader().load('img/noise256.png');
-        noisetex.wrapS = THREE.RepeatWrapping;
-        noisetex.wrapT = THREE.RepeatWrapping;
-        noisetex.repeat.set(20,20);
+
         this.uniforms = {
-            gradationTex:{value:new THREE.TextureLoader().load('img/gradationGreen_Purple.png')},
-            map:{value:new THREE.TextureLoader().load('img/mail.png')},
-            colorNoise:{value:noisetex},
+            map:{value:this.guiTexture},
+            gradMap:{value:this.gradTexture},
             threshold:this.gradThreshold,
-            width :{value:this.width}
+            isWire:this.isWire,
+            width :{value:this.width},
+            height:{value:this.height}
         };
         let geo = new THREE.PlaneGeometry(this.width,this.height);
         let mat = new THREE.ShaderMaterial({
@@ -48,14 +52,6 @@ export default class GradationPlane
 
         this.mesh = new THREE.Mesh(geo,mat);
 
-
-        // this.mesh.position.set(
-        //     300,
-        //     0,
-        //     -1000
-        // );
-        //
-        // this.mesh.rotateY(-Math.PI/2);
 
 
 
@@ -125,7 +121,7 @@ export default class GradationPlane
 
 
             TweenMax.to(this.scale , 4.0, {
-                value : 0.01,
+                value : 0.001,
                 // delay : 0.5,
                 ease :Power2.easeInOut,
                 onUpdate:()=>{
@@ -169,7 +165,7 @@ export default class GradationPlane
     {
 
 
-        console.log(this.gradThreshold.value);
+        // console.log(this.gradThreshold.value);
     }
 
 

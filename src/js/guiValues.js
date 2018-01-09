@@ -2,6 +2,9 @@
 export default class guiValues{
     constructor()
     {
+
+        this.visibleDancingErrors = false;
+
         this.cameraAnimeation01PosX = 0.0;
         this.cameraAnimeation01PosY = 0.0;
         this.cameraAnimeation01PosZ = 0.0;
@@ -17,6 +20,11 @@ export default class guiValues{
         this.backgroundAnimationX = 0.0;
         this.backgroundAnimationY = 0.0;
         this.backgroundAnimationZ = -50.0;
+
+
+        this.gradThreshold = 0.0;
+        this.gradThresholdDulation = 2.0;
+
 
         // this.
     }

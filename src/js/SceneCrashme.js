@@ -4,6 +4,7 @@
 'use strict'
 import * as THREE from 'three'
 import CurlNoise from './curlNoise';
+import ErrorGui from './ErrorGui';
 const errorVertex = require('./GLSL/errorVertex.glsl');
 const errorFragment = require('./GLSL/errorFragment.glsl');
 // const
@@ -105,7 +106,8 @@ export default class SceneCrashme{
                 scale:this.backgroundScale
             },
             vertexShader: errorVertex,
-            fragmentShader: errorFragment
+            fragmentShader: errorFragment,
+            visible:this.manager.gui.values.visibleDancingErrors
         } );
 
 
@@ -131,8 +133,24 @@ export default class SceneCrashme{
 
 
 
-        let gp = new GradationPlane(50,25);
+        let gp = new GradationPlane(47.3,22.8,this.manager.gui);
         this.scene.add(gp.getMesh());
+
+
+        let errorTex = new THREE.TextureLoader().load('./img/errorgui.png');
+
+        let gradTex = new THREE.TextureLoader().load('./img/gradationGreen_Purple.png');
+
+
+        let error = new ErrorGui(36,13,this.manager.gui,errorTex,gradTex);
+
+
+        this.manager.gui.visibleDancingErrors.onChange((e)=>{
+            this.errorGui.material.visible = e;
+        });
+
+        this.scene.add(error.getMesh());
+
 
 
     }
@@ -211,7 +229,7 @@ export default class SceneCrashme{
         });
 
         TweenMax.to(this.backgroundScale , 4.0 , {
-            value : 0.0,
+            value : 0.001,
             // delay : 0.5,
             ease :Power2.easeInOut
         });

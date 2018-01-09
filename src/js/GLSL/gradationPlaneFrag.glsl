@@ -134,6 +134,7 @@ vec3 curlNoise( vec3 p ){
 varying vec2 vUv;
 uniform sampler2D gradationTex;
 uniform sampler2D colorNoise;
+uniform sampler2D map;
 uniform float threshold;
 uniform float width;
 varying vec3 vPosition;
@@ -169,7 +170,7 @@ void main() {
 
 
     float t_noise = snoise(vec3(vUv.xy,threshold)*1.5);
-    float threshold_x = -(threshold+t_noise*0.05)*width*2. +width;
+    float threshold_x = -(threshold+t_noise*0.03)*width*2. +width;
     if(vPosition.x < threshold_x)
     {
         discard;
@@ -180,9 +181,25 @@ void main() {
     d = clamp(d,0.,3.);
     d = d/3.;
 
+    if(d< 1.0)
+    {
+        if(snoise(vec3(vPosition.xy,d)*1.0) > 0.)
+        {
+            discard;
+        }
+    }
+
+
+    vec4 map = texture2D( map, vUv);
+    vec3 result = grad.xyz+noisetex.x*0.3;
+    result = mix(result, map.xyz,map.a);
 
 
 
-    gl_FragColor =vec4(grad.xyz+noisetex.x*0.3,d);
+
+
+
+
+    gl_FragColor =vec4(result,d);
 
 }

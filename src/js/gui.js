@@ -13,19 +13,30 @@ export default class GUI{
 
         this.gui.width = 400;
 
+
+
         this.gui.remember(this.values);
+
+        this.visibles = this.gui.addFolder('visibles');
+
         this.cameraAnimation = this.gui.addFolder('camera animation');
         this.errorGui = this.gui.addFolder('error gui');
         this.background = this.gui.addFolder('background');
 
 
+
+        this.visibleDancingErrors;
         this.errorGuiColor;
+        this.gradThreshold;
 
         this.init();
     }
 
     init()
     {
+
+        this.visibleDancingErrors = this.visibles.add(this.values,'visibleDancingErrors');
+
         this.cameraAnimation.add(this.values,'cameraAnimeation01PosX',-150,150);
         this.cameraAnimation.add(this.values,'cameraAnimeation01PosY',-150,150);
         this.cameraAnimation.add(this.values,'cameraAnimeation01PosZ',-150,150);
@@ -42,5 +53,11 @@ export default class GUI{
 
         this.errorGui.add(this.values,'errorGuiInterval',0.80);
         this.errorGuiColor = this.errorGui.addColor(this.values,'errorGuiColor');
+
+
+
+        this.gradThreshold = this.errorGui.add(this.values,'gradThreshold', 0.0,1.0);
+
+        this.errorGui.add(this.values,'gradThresholdDulation', 0.0,5.0);
     }
 }
