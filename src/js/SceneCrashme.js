@@ -110,8 +110,6 @@ export default class SceneCrashme{
             visible:this.manager.gui.values.visibleDancingErrors
         } );
 
-
-
         var materials = [
             new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
             new THREE.MeshLambertMaterial( { color: 0xff0000 } ),

@@ -46,19 +46,15 @@ export default class ErrorGui
             fragmentShader:fragment,
             vertexShader:vertex,
             transparent:true,
+            visible:false,
 
         });
-
-
+        
         this.mesh = new THREE.Mesh(geo,mat);
-
-
-
 
         this.gui.gradThreshold.onChange((e)=>{
             this.gradThreshold.value = e;
         })
-
 
 
     }
