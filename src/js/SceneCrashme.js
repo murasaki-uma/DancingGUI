@@ -145,6 +145,19 @@ export default class SceneCrashme{
         }
 
 
+        this.manager.gui.errorGuiSide.onChange((e)=>{
+            for(let error of this.errors)
+            {
+                error.sideColor.value.setRGB(
+                    e[0]/255,
+                    e[1]/255,
+                    e[2]/255,
+                );
+            }
+
+        });
+
+
         this.manager.gui.visibleDancingErrors.onChange((e)=>{
             this.errorGui.material.visible = e;
         });

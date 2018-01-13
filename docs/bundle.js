@@ -53107,7 +53107,7 @@ var _SceneCrashme = _interopRequireDefault(__webpack_require__(8));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var css = __webpack_require__(20);
+var css = __webpack_require__(21);
 
 window.addEventListener('DOMContentLoaded', function () {
   console.log('awake');
@@ -54453,6 +54453,7 @@ function () {
     this.gui.width = 400;
     this.gui.remember(this.values);
     this.visibles = this.gui.addFolder('visibles');
+    this.animationSettings = this.gui.addFolder('animation settings');
     this.cameraAnimation = this.gui.addFolder('camera animation');
     this.errorGui = this.gui.addFolder('error gui');
     this.background = this.gui.addFolder('background');
@@ -54460,7 +54461,10 @@ function () {
     this.visibleErrors;
     this.visibleMail;
     this.errorGuiColor;
+    this.errorGuiSide;
+    this.errorGuiBack;
     this.gradThreshold;
+    this.errorsLoiter;
     this.init();
   }
 
@@ -54470,6 +54474,7 @@ function () {
       this.visibleDancingErrors = this.visibles.add(this.values, 'visibleDancingErrors');
       this.visibleErrors = this.visibles.add(this.values, 'visibleErrors');
       this.visibleMail = this.visibles.add(this.values, 'visibleMail');
+      this.errorsLoiter = this.animationSettings.add(this.values, 'errorsLoiter');
       this.cameraAnimation.add(this.values, 'cameraAnimeation01PosX', -150, 150);
       this.cameraAnimation.add(this.values, 'cameraAnimeation01PosY', -150, 150);
       this.cameraAnimation.add(this.values, 'cameraAnimeation01PosZ', -150, 150);
@@ -54481,6 +54486,8 @@ function () {
       this.background.add(this.values, 'backgroundAnimationZ', -1000, 500);
       this.errorGui.add(this.values, 'errorGuiInterval', 0.80);
       this.errorGuiColor = this.errorGui.addColor(this.values, 'errorGuiColor');
+      this.errorGuiSide = this.errorGui.addColor(this.values, 'errorGuiSide');
+      this.errorGuiBack = this.errorGui.addColor(this.values, 'errorGuiBack');
       this.errorGui.add(this.values, 'errorPopUpRangeX_min', -300, 300);
       this.errorGui.add(this.values, 'errorPopUpRangeX_max', -300, 300);
       this.errorGui.add(this.values, 'errorPopUpRangeY_min', -100, 100);
@@ -54528,6 +54535,7 @@ var guiValues = function guiValues() {
   this.visibleDancingErrors = false;
   this.visibleErrors = false;
   this.visibleMail = false;
+  this.errorsLoiter = false;
   this.cameraAnimeation01PosX = 0.0;
   this.cameraAnimeation01PosY = 0.0;
   this.cameraAnimeation01PosZ = 0.0;
@@ -54536,6 +54544,8 @@ var guiValues = function guiValues() {
   this.cameraAnimeation01LookZ = 0.0;
   this.errorGuiInterval = 20;
   this.errorGuiColor = [0, 128, 255];
+  this.errorGuiSide = [0, 128, 255];
+  this.errorGuiBack = [0, 128, 255];
   this.errorPopUpRangeX_min = 0.0;
   this.errorPopUpRangeX_max = 0.0;
   this.errorPopUpRangeY_min = 0.0;
@@ -54576,7 +54586,7 @@ var _curlNoise = _interopRequireDefault(__webpack_require__(9));
 
 var _ErrorGui = _interopRequireDefault(__webpack_require__(11));
 
-var _GradationPlane = _interopRequireDefault(__webpack_require__(15));
+var _GradationPlane = _interopRequireDefault(__webpack_require__(16));
 
 var _gsap = __webpack_require__(1);
 
@@ -54590,9 +54600,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var errorVertex = __webpack_require__(18);
+var errorVertex = __webpack_require__(19);
 
-var errorFragment = __webpack_require__(19); // const
+var errorFragment = __webpack_require__(20); // const
 
 
 var SceneCrashme =
@@ -54694,14 +54704,41 @@ function () {
       this.scene.add(gp.getMesh());
       var errorTex = new THREE.TextureLoader().load('./img/errorgui.png');
       var gradTex = new THREE.TextureLoader().load('./img/gradationGreen_Purple.png');
+      var errorsize = 10;
 
-      for (var _i = 0; _i < 6; _i++) {
+      for (var _i = 0; _i < errorsize; _i++) {
         var error = new _ErrorGui.default(36, 13, this.manager.gui, errorTex, gradTex);
         this.errors.push(error);
-        error.radian = Math.PI * 2 / 6 * _i;
+        error.radian = Math.PI * 2 / errorsize * _i;
         this.scene.add(error.getMesh());
       }
 
+      this.manager.gui.errorGuiSide.onChange(function (e) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = _this.errors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var _error2 = _step.value;
+
+            _error2.sideColor.value.setRGB(e[0] / 255, e[1] / 255, e[2] / 255);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      });
       this.manager.gui.visibleDancingErrors.onChange(function (e) {
         _this.errorGui.material.visible = e;
       });
@@ -54806,27 +54843,27 @@ function () {
   }, {
     key: "update",
     value: function update(frame) {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator = this.errors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var _e = _step.value;
+        for (var _iterator2 = this.errors[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _e = _step2.value;
 
           _e.update(frame);
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
@@ -55392,6 +55429,8 @@ var vertex = __webpack_require__(13);
 
 var fragment = __webpack_require__(14);
 
+var fragment_color = __webpack_require__(15);
+
 var ErrorGui =
 /*#__PURE__*/
 function () {
@@ -55402,13 +55441,14 @@ function () {
 
     this.onKeyDown = function (e) {
       if (e.key == 't') {
-        _this.isStart = !_this.isStart;
+        // this.isStart = !this.isStart;
+        // if(this.isStart)
+        // {
+        _this.start(); // } else
+        // {
+        // this.reset();
+        // }
 
-        if (_this.isStart) {
-          _this.start();
-        } else {
-          _this.reset();
-        }
       }
 
       if (e.key == 'a') {
@@ -55429,20 +55469,7 @@ function () {
       }
 
       if (e.key == 'r') {
-        _gsap.TweenMax.to(_this.mesh.position, 2.5, {
-          z: 0,
-          // delay : 0.5,
-          ease: _gsap.Power2.easeInOut
-        });
-
-        _gsap.TweenMax.to(_this.scale, 4.0, {
-          value: 1,
-          // delay : 0.5,
-          ease: _gsap.Power2.easeInOut,
-          onUpdate: function onUpdate() {
-            _this.mesh.scale.set(_this.scale.value, _this.scale.value, _this.scale.value / i);
-          }
-        });
+        _this.reset();
       }
     };
 
@@ -55471,6 +55498,13 @@ function () {
     this.scale = {
       value: 0
     };
+    this.isLoiter = false;
+    this.modifiedPos = {
+      value: new THREE.Vector3()
+    };
+    this.sideColor = {
+      value: new THREE.Color()
+    };
     this.init();
   }
 
@@ -55495,14 +55529,12 @@ function () {
         height: {
           value: this.height
         },
-        modified: {
-          value: new THREE.Vector3(Math.random() * (this.gui.values.errorPopUpRangeX_max - this.gui.values.errorPopUpRangeX_min) + this.gui.values.errorPopUpRangeX_min, Math.random() * (this.gui.values.errorPopUpRangeY_max - this.gui.values.errorPopUpRangeY_min) + this.gui.values.errorPopUpRangeY_min, Math.random() * (this.gui.values.errorPopUpRangeZ_max - this.gui.values.errorPopUpRangeZ_min) + this.gui.values.errorPopUpRangeZ_min)
-        },
+        modified: this.modifiedPos,
         scale: {
           value: 0.0
         }
       };
-      var geo = new THREE.PlaneGeometry(this.width, this.height);
+      var geo = new THREE.BoxGeometry(this.width, this.height, 1);
       var mat = new THREE.ShaderMaterial({
         uniforms: this.uniforms,
         fragmentShader: fragment,
@@ -55513,7 +55545,35 @@ function () {
       this.gui.visibleErrors.onChange(function (e) {
         mat.visible = e;
       });
-      this.mesh = new THREE.Mesh(geo, mat); // this.mesh.translateX(Math.random() * (this.gui.values.errorPopUpRangeX_max-this.gui.values.errorPopUpRangeX_min)+this.gui.values.errorPopUpRangeX_min);
+      this.sideColor.value.setRGB(this.gui.values.errorGuiSide[0] / 255, this.gui.values.errorGuiSide[1] / 255, this.gui.values.errorGuiSide[2] / 255);
+      var sideUniforms = {
+        map: {
+          value: this.guiTexture
+        },
+        gradMap: {
+          value: this.gradTexture
+        },
+        threshold: this.gradThreshold,
+        isWire: this.isWire,
+        width: {
+          value: this.width
+        },
+        height: {
+          value: this.height
+        },
+        modified: this.modifiedPos,
+        scale: {
+          value: 1.0
+        },
+        u_color: this.sideColor
+      };
+      var matSides = new THREE.ShaderMaterial({
+        uniforms: sideUniforms,
+        fragmentShader: fragment_color,
+        vertexShader: vertex
+      });
+      var mats = [matSides, matSides, matSides, matSides, mat, matSides];
+      this.mesh = new THREE.Mesh(geo, mats); // this.mesh.translateX(Math.random() * (this.gui.values.errorPopUpRangeX_max-this.gui.values.errorPopUpRangeX_min)+this.gui.values.errorPopUpRangeX_min);
       // this.mesh.translateY(Math.random() * (this.gui.values.errorPopUpRangeY_max-this.gui.values.errorPopUpRangeY_min)+this.gui.values.errorPopUpRangeY_min);
       // this.mesh.translateZ(Math.random() * (this.gui.values.errorPopUpRangeZ_max-this.gui.values.errorPopUpRangeZ_min)+this.gui.values.errorPopUpRangeZ_min);
 
@@ -55530,6 +55590,8 @@ function () {
   }, {
     key: "start",
     value: function start() {
+      var _this3 = this;
+
       // this.posisition.set(
       //     Math.random() * (this.gui.values.errorPopUpRangeX_max-this.gui.values.errorPopUpRangeX_min)+this.gui.values.errorPopUpRangeX_min,
       //     Math.random() * (this.gui.values.errorPopUpRangeY_max-this.gui.values.errorPopUpRangeY_min)+this.gui.values.errorPopUpRangeY_min,
@@ -55541,36 +55603,56 @@ function () {
       //     this.posisition.y,
       //     this.posisition.z
       // );
-      var vec = new THREE.Vector3(Math.random() * 0.1 - 0.05, Math.random() * 0.1 - 0.05, 0); // vec.multiplyScalar(Math.random());
+      this.radian += Math.random() - 0.5;
+      var vec = new THREE.Vector3(Math.random() * 0.1 - 0.05, Math.random() * 0.7 + 0.3, Math.random() * 0.1 - 0.05); // vec.multiplyScalar(Math.random());
 
-      _gsap.TweenMax.to(this.posisition.value, this.gui.values.errorPopUpDuration, {
-        x: this.gui.values.diffErrorPosX * Math.sin(this.radian * Math.PI * 2),
-        y: this.gui.values.diffErrorPosY * Math.cos(this.radian * Math.PI * 2),
-        z: 0.0,
+      var delay = 0.5 * Math.random();
+
+      _gsap.TweenMax.to(this.posisition.value, this.gui.values.errorPopUpDuration + delay * 0.1, {
+        x: this.gui.values.diffErrorPosX * vec.y * Math.sin(this.radian + vec.x),
+        y: this.gui.values.diffErrorPosY * vec.y * Math.cos(this.radian + vec.z),
+        z: Math.random() * 0.1,
         // value:1.0,
-        // delay : 0.5 ,
+        delay: delay,
         // ease :Power2.easeInOut,
         onUpdate: function onUpdate() {}
       }); // console.log('threthold')
 
 
-      _gsap.TweenMax.to(this.gradThreshold, this.gui.values.gradThresholdDulation, {
-        value: 1.0 // delay : 0.5 ,
-        // ease :Power2.easeInOut,
+      _gsap.TweenMax.to(this.gradThreshold, this.gui.values.gradThresholdDulation + delay * 0.1, {
+        value: 1.0,
+        delay: delay // ease :Power2.easeInOut,
         // onUpdate:()=>{console.log(this.gradThreshold.value)}
 
       });
 
-      _gsap.TweenMax.to(this.scale, this.gui.values.errorPopUpDuration, {
-        value: 1.0 // delay : 0.5 ,
-        // ease :Power2.easeInOut
+      _gsap.TweenMax.to(this.scale, this.gui.values.errorPopUpDuration + delay * 0.1, {
+        value: 1.0,
+        delay: delay,
+        onComplete: function onComplete() {
+          if (_this3.isLoiter) {
+            _this3.start();
+          }
 
+          _this3.uniforms.isWire.value = false;
+        } // ease :Power2.easeInOut
+
+      });
+
+      this.isLoiter = this.gui.values.errorsLoiter;
+      this.gui.errorsLoiter.onChange(function (e) {
+        _this3.isLoiter = e;
       });
     }
   }, {
     key: "reset",
     value: function reset() {
-      this.scale.value = 0.0001; // this.mesh.translate(
+      if (this.gui.values.errorsLoiter != false) {
+        this.isLoiter = this.gui.values.errorsLoiter;
+      }
+
+      this.scale.value = 0.0001;
+      this.uniforms.isWire.value = true; // this.mesh.translate(
       //
       //     -1,
       //     this.posisition
@@ -55582,7 +55664,7 @@ function () {
     key: "update",
     value: function update(frame) {
       if (frame % 4 == 0) {
-        this.uniforms.modified.value.set(this.posisition.value.x, this.posisition.value.y, this.posisition.value.z);
+        this.modifiedPos.value.set(this.posisition.value.x, this.posisition.value.y, this.posisition.value.z);
         this.uniforms.scale.value = this.scale.value; //     this.posisition.normalize();
         //     this.mesh.translation.set(
         //
@@ -55646,6 +55728,12 @@ module.exports = "precision highp float;\nuniform sampler2D map;\nuniform sample
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports) {
+
+module.exports = "precision highp float;\nvarying vec3 vPosition;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nuniform bool isWire;\nuniform float width;\n\nuniform float height;\nuniform vec3 modified;\nuniform float scale;\nuniform vec3 u_color;\nvoid main() {\n\n\n//    vec3 result = texColor;\n    if(isWire)\n    {\n//        result = gradColor;\n//\n//        if(abs(vPosition.x-modified.x) < width*scale * 0.487)\n//        {\n//            if(abs(vPosition.y-modified.y) < height*scale * 0.473)\n//            {\n//\n                discard;\n//            }\n//        }\n    }\n    gl_FragColor =vec4(u_color , 1.);\n\n}"
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55668,9 +55756,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var vertex = __webpack_require__(16);
+var vertex = __webpack_require__(17);
 
-var fragment = __webpack_require__(17);
+var fragment = __webpack_require__(18);
 
 var GradationPlane =
 /*#__PURE__*/
@@ -55824,31 +55912,31 @@ function () {
 exports.default = GradationPlane;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nvarying vec3 vPosition;\n\nvoid main() {\n    vPosition = position;\n    vNormal = normal;\n    vUv = uv;\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\n}"
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\nprecision highp float;\n\n\nvec3 mod289(vec3 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 mod289(vec4 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 permute(vec4 x) {\n     return mod289(((x*34.0)+1.0)*x);\n}\n\nvec4 taylorInvSqrt(vec4 r)\n{\n  return 1.79284291400159 - 0.85373472095314 * r;\n}\n\n\nfloat snoise(vec3 v)\n  {\n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n// First corner\n  vec3 i  = floor(v + dot(v, C.yyy) );\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\n// Other corners\n  vec3 g = step(x0.yzx, x0.xyz);\n  vec3 l = 1.0 - g;\n  vec3 i1 = min( g.xyz, l.zxy );\n  vec3 i2 = max( g.xyz, l.zxy );\n\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\n  vec3 x1 = x0 - i1 + C.xxx;\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n// Permutations\n  i = mod289(i);\n  vec4 p = permute( permute( permute(\n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))\n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n  float n_ = 0.142857142857; // 1.0/7.0\n  vec3  ns = n_ * D.wyz - D.xzx;\n\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n  vec4 x_ = floor(j * ns.z);\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\n  vec4 x = x_ *ns.x + ns.yyyy;\n  vec4 y = y_ *ns.x + ns.yyyy;\n  vec4 h = 1.0 - abs(x) - abs(y);\n\n  vec4 b0 = vec4( x.xy, y.xy );\n  vec4 b1 = vec4( x.zw, y.zw );\n\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\n  vec4 s0 = floor(b0)*2.0 + 1.0;\n  vec4 s1 = floor(b1)*2.0 + 1.0;\n  vec4 sh = -step(h, vec4(0.0));\n\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\n  vec3 p0 = vec3(a0.xy,h.x);\n  vec3 p1 = vec3(a0.zw,h.y);\n  vec3 p2 = vec3(a1.xy,h.z);\n  vec3 p3 = vec3(a1.zw,h.w);\n\n//Normalise gradients\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n  p0 *= norm.x;\n  p1 *= norm.y;\n  p2 *= norm.z;\n  p3 *= norm.w;\n\n// Mix final noise value\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n  m = m * m;\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),\n                                dot(p2,x2), dot(p3,x3) ) );\n  }\n\nvec3 snoiseVec3( vec3 x ){\n\n  float s  = snoise(vec3( x ));\n  float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));\n  float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));\n  vec3 c = vec3( s , s1 , s2 );\n  return c;\n\n}\n\n\nvec3 curlNoise( vec3 p ){\n\n  const float e = .1;\n  vec3 dx = vec3( e   , 0.0 , 0.0 );\n  vec3 dy = vec3( 0.0 , e   , 0.0 );\n  vec3 dz = vec3( 0.0 , 0.0 , e   );\n\n  vec3 p_x0 = snoiseVec3( p - dx );\n  vec3 p_x1 = snoiseVec3( p + dx );\n  vec3 p_y0 = snoiseVec3( p - dy );\n  vec3 p_y1 = snoiseVec3( p + dy );\n  vec3 p_z0 = snoiseVec3( p - dz );\n  vec3 p_z1 = snoiseVec3( p + dz );\n\n  float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;\n  float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;\n  float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;\n\n  const float divisor = 1.0 / ( 2.0 * e );\n  return normalize( vec3( x , y , z ) * divisor );\n\n}\n\n\nvarying vec2 vUv;\nuniform sampler2D gradationTex;\nuniform sampler2D colorNoise;\nuniform sampler2D map;\nuniform float threshold;\nuniform float width;\nvarying vec3 vPosition;\nvoid main() {\n\n\n    vec4 grad = texture2D( gradationTex, vUv );\n \tfloat zr = 1.0-texture2D( gradationTex, vUv ).x;\n\n    // sample neighbor pixels\n\tfloat ao = 0.0;\n\tfor( int i=0; i<8; i++ )\n\t{\n        vec2 off = -1.0 + 2.0*texture2D( colorNoise, (gl_FragCoord.xy + 23.71*float(i))/vec2(256.,256.) ).xz;\n\n        float z = 1.0-texture2D( gradationTex, (gl_FragCoord.xy + floor(off*16.0))/vec2(50.,25).xy ).x;\n        ao += clamp( (zr-z)/0.1, 0.0, 1.0);\n\t}\n    // average down the occlusion\n    ao = clamp( 1.0 - ao/8.0, 0.1, 0.5 );\n\n\tvec3 col = vec3(ao);\n\n\n    vec4 noisetex = 1.0-texture2D( colorNoise, vUv*4. );\n\n\n\n    if(noisetex.x > 0.5)\n    {\n        noisetex.x = 0.2;\n    }\n\n\n    float t_noise = snoise(vec3(vUv.xy,threshold)*1.5);\n    float threshold_x = -(threshold+t_noise*0.03)*width*2. +width;\n    if(vPosition.x < threshold_x)\n    {\n        discard;\n    }\n\n    float d = distance(vPosition.xy, vec2(threshold_x,vPosition.y));\n\n    d = clamp(d,0.,3.);\n    d = d/3.;\n\n    if(d< 1.0)\n    {\n        if(snoise(vec3(vPosition.xy,d)*1.0) > 0.)\n        {\n            discard;\n        }\n    }\n\n\n    vec4 map = texture2D( map, vUv);\n    vec3 result = grad.xyz+noisetex.x*0.3;\n    result = mix(result, map.xyz,map.a);\n\n\n\n\n\n\n\n    gl_FragColor =vec4(result,d);\n\n}"
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\n//uniform mat4 modelViewMatrix;\n//uniform mat4 projectionMatrix;\n//attribute vec3 position;\nattribute vec4 offset;\n//attribute vec3 normal;\n//attribute int number;\nvarying float vNumber;\n//attribute vec2 uv;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nvoid main() {\n    vec3 vPosition = position;\n    vNormal = normal;\n    vNumber = offset.w;\n//    vec3 vcV = cross( orientation.xyz, vPosition );\n//    vPosition = vcV * ( 2.0 * orientation.w ) + ( cross( orientation.xyz, vcV ) * 2.0 + vPosition );\n    vUv = uv;\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\n}"
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\nuniform sampler2D map;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nuniform vec3 gradationColor;\nvarying float vNumber;\nuniform float scale;\nvoid main() {\n\n    float diffuse  = clamp(dot(vNormal, vec3(0.,0.,1.)), 0.1, 1.0);\n    vec3 color = vec3(1.);\n//    if(diffuse > 0.1)\n//    {\n////        color = texture2D( map, vUv ).xyz;\n//        color = vec3(0.7,1.,0.7);\n//    }\n//    {\n//        color = vec3(1.0,0.7,0.7);\n////        color = vNormal;\n//    }\n\n//gl_FragColor = texture2D( map, vUv );\n    vec3 texColor = texture2D( map, vUv ).xyz;\n//    vec3 gradationColor = vec3(142./255.,201./255.,219./255.);\n    float per = (vNumber+1.)/20.;\n    color = mix(gradationColor,texColor,per);\n    color = mix(color,texColor,scale);\n\n    gl_FragColor =vec4(color , 1.);\n\n}"
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

@@ -6,6 +6,7 @@ export default class guiValues{
         this.visibleDancingErrors = false;
         this.visibleErrors = false;
         this.visibleMail = false;
+        this.errorsLoiter = false;
 
         this.cameraAnimeation01PosX = 0.0;
         this.cameraAnimeation01PosY = 0.0;
@@ -17,6 +18,8 @@ export default class guiValues{
 
         this.errorGuiInterval = 20;
         this.errorGuiColor = [ 0, 128, 255 ];
+        this.errorGuiSide = [ 0, 128, 255 ];
+        this.errorGuiBack = [ 0, 128, 255 ];
 
 
         this.errorPopUpRangeX_min = 0.0;
