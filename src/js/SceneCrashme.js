@@ -34,6 +34,8 @@ export default class SceneCrashme{
         this.backgroundPlane;
         this.backgroundScale = {value:1.0};
 
+        this.errors = [];
+
 
 
         this.init();
@@ -110,14 +112,7 @@ export default class SceneCrashme{
             visible:this.manager.gui.values.visibleDancingErrors
         } );
 
-        var materials = [
-            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
-            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
-            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
-            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
-            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
-            new THREE.MeshLambertMaterial( { color: 0xff0000 } ),
-        ];
+
         this.errorGui = new THREE.Mesh( geometry, material );
         this.scene.add( this.errorGui );
 
@@ -140,14 +135,21 @@ export default class SceneCrashme{
         let gradTex = new THREE.TextureLoader().load('./img/gradationGreen_Purple.png');
 
 
-        let error = new ErrorGui(36,13,this.manager.gui,errorTex,gradTex);
+        let errorsize= 10;
+        for(let i = 0; i < errorsize; i++)
+        {
+            let error = new ErrorGui(36,13,this.manager.gui,errorTex,gradTex);
+            this.errors.push(error);
+            error.radian = (Math.PI*2 / errorsize) *  i;
+            this.scene.add(error.getMesh());
+        }
 
 
         this.manager.gui.visibleDancingErrors.onChange((e)=>{
             this.errorGui.material.visible = e;
         });
 
-        this.scene.add(error.getMesh());
+
 
 
 
@@ -263,10 +265,15 @@ export default class SceneCrashme{
     }
 
 
-    update()
+    update(frame)
     {
 
 
+
+        for(let e of this.errors)
+        {
+            e.update(frame);
+        }
         this.camera.lookAt(this.cameraLookAt);
 
         this.camera.updateProjectionMatrix();

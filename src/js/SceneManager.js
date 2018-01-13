@@ -145,7 +145,7 @@ export default class SceneManager{
 
 
         if(this.scenes.length != 0) {
-            this.scenes[this.sceneNum].update();
+            this.scenes[this.sceneNum].update(this.frameCount);
 
             if(this.DEBUG_MODE)
             {

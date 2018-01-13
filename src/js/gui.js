@@ -26,6 +26,8 @@ export default class GUI{
 
 
         this.visibleDancingErrors;
+        this.visibleErrors;
+        this.visibleMail;
         this.errorGuiColor;
         this.gradThreshold;
 
@@ -36,6 +38,8 @@ export default class GUI{
     {
 
         this.visibleDancingErrors = this.visibles.add(this.values,'visibleDancingErrors');
+        this.visibleErrors = this.visibles.add(this.values,'visibleErrors');
+        this.visibleMail = this.visibles.add(this.values,'visibleMail');
 
         this.cameraAnimation.add(this.values,'cameraAnimeation01PosX',-150,150);
         this.cameraAnimation.add(this.values,'cameraAnimeation01PosY',-150,150);
@@ -53,6 +57,18 @@ export default class GUI{
 
         this.errorGui.add(this.values,'errorGuiInterval',0.80);
         this.errorGuiColor = this.errorGui.addColor(this.values,'errorGuiColor');
+
+        this.errorGui.add(this.values,'errorPopUpRangeX_min',-300,300);
+        this.errorGui.add(this.values,'errorPopUpRangeX_max',-300,
+            300);
+        this.errorGui.add(this.values,'errorPopUpRangeY_min',-100,100);
+        this.errorGui.add(this.values,'errorPopUpRangeY_max',-100,100);
+        this.errorGui.add(this.values,'errorPopUpRangeZ_min',-100,100);
+        this.errorGui.add(this.values,'errorPopUpRangeZ_max',-100,100);
+        this.errorGui.add(this.values,'diffErrorPosX',0,150);
+        this.errorGui.add(this.values,'diffErrorPosY',0,150);
+        this.errorGui.add(this.values,'diffErrorPosZ',0,150);
+        this.errorGui.add(this.values,'errorPopUpDuration', 0.0, 2.0);
 
 
 

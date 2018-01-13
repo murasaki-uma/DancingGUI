@@ -42,6 +42,7 @@ export default class GradationPlane
             fragmentShader:fragment,
             vertexShader:vertex,
             transparent:true,
+            visible:this.gui.values.visibleMail
 
         });
 
