@@ -5,6 +5,32 @@ const fragment = require('./GLSL/errorAnimationFragment.glsl');
 const fragment_color = require('./GLSL/errorAnimationColorFragment.glsl');
 import {TweenMax,Power2,Power4, TimelineLite} from "gsap";
 
+
+class ErrorGuiAnimationSettings {
+    constructor()
+    {
+        this.map = new Map();
+        this.init();
+    }
+
+    init()
+    {
+        this.map.set('Loiter',true);
+        this.map.set('ScaleDown',false);
+
+    }
+
+    set(name,value)
+    {
+        this.map.set(name,value);
+    }
+
+    get(name)
+    {
+        return this.map.get(name);
+    }
+
+}
 export default class ErrorGui
 {
     constructor(width,height, gui, texture,grad)
@@ -28,14 +54,19 @@ export default class ErrorGui
         this.isWire = {value:true};
         this.posisition = {value:new THREE.Vector3()};
         this.scale = {value:0};
+        this.animationSettings = new ErrorGuiAnimationSettings();
         this.isLoiter = false;
         this.modifiedPos = {value:new THREE.Vector3()};
         this.sideColor = {value:new THREE.Color()};
+
+
         this.init()
     }
 
     init()
     {
+
+
 
 
         window.addEventListener('keydown', this.onKeyDown);
@@ -59,9 +90,7 @@ export default class ErrorGui
             visible:this.gui.values.visibleErrors,
 
         });
-        this.gui.visibleErrors.onChange((e)=>{
-           mat.visible = e;
-        });
+
 
         this.sideColor.value.setRGB(
             this.gui.values.errorGuiSide[0]/255,
@@ -99,16 +128,14 @@ export default class ErrorGui
 
         this.mesh = new THREE.Mesh(geo,mats);
 
-        // this.mesh.translateX(Math.random() * (this.gui.values.errorPopUpRangeX_max-this.gui.values.errorPopUpRangeX_min)+this.gui.values.errorPopUpRangeX_min);
-        // this.mesh.translateY(Math.random() * (this.gui.values.errorPopUpRangeY_max-this.gui.values.errorPopUpRangeY_min)+this.gui.values.errorPopUpRangeY_min);
-        // this.mesh.translateZ(Math.random() * (this.gui.values.errorPopUpRangeZ_max-this.gui.values.errorPopUpRangeZ_min)+this.gui.values.errorPopUpRangeZ_min);
-
 
         this.gui.gradThreshold.onChange((e)=>{
             this.gradThreshold.value = e;
         });
 
 
+
+        console.log(this.mesh);
 
         this.reset();
 
@@ -170,7 +197,7 @@ export default class ErrorGui
             value:1.0,
             delay : delay,
             onComplete:()=>{
-                if(this.isLoiter)
+                if(this.animationSettings.get("Loiter"))
                 {
 
                     this.start();
@@ -181,9 +208,9 @@ export default class ErrorGui
             // ease :Power2.easeInOut
         });
 
-        this.isLoiter = this.gui.values.errorsLoiter;
+        this.animationSettings.set("Loiter",this.gui.values.errorsLoiter);
         this.gui.errorsLoiter.onChange((e)=>{
-            this.isLoiter = e;
+            this.animationSettings.set("Loiter",e);
         });
 
 

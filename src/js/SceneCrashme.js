@@ -158,6 +158,19 @@ export default class SceneCrashme{
         });
 
 
+        this.manager.gui.visibleErrors.onChange((e)=>{
+            for(let error of this.errors)
+            {
+                for(let m of error.mesh.material)
+                {
+                    m.visible = e;
+                }
+
+            }
+
+        });
+
+
         this.manager.gui.visibleDancingErrors.onChange((e)=>{
             this.errorGui.material.visible = e;
         });
