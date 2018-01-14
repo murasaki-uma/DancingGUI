@@ -15,8 +15,9 @@ class ErrorGuiAnimationSettings {
 
     init()
     {
-        this.map.set('Loiter',true);
-        this.map.set('ScaleDown',false);
+        this.map.set('Loiter',false);
+        // this.map.set('Restart',true);
+        this.map.set('ScaleDown',true);
 
     }
 
@@ -182,6 +183,9 @@ export default class ErrorGui
             // ease :Power2.easeInOut,
             onUpdate:()=>{
 
+            },
+            onStart:()=>{
+                this.uniforms.isWire.value = true;
             }
         });
 
@@ -197,12 +201,25 @@ export default class ErrorGui
             value:1.0,
             delay : delay,
             onComplete:()=>{
+                this.uniforms.isWire.value = false;
                 if(this.animationSettings.get("Loiter"))
                 {
 
                     this.start();
+
                 }
-                this.uniforms.isWire.value = false;
+
+                if(this.animationSettings.get("ScaleDown"))
+                {
+                    setTimeout(()=>{
+
+                        this.reset();
+                        this.start();
+                    }, 1000*Math.random());
+
+                    // this.uniforms.isWire.value = true;
+                }
+
 
             }
             // ease :Power2.easeInOut
@@ -216,9 +233,15 @@ export default class ErrorGui
 
     }
 
+    scaleDown()
+    {
+
+    }
+
     reset()
     {
 
+        // this.uniforms.isWire.value = false;
         if(this.gui.values.errorsLoiter != false)
         {
             this.isLoiter = this.gui.values.errorsLoiter;
@@ -226,7 +249,7 @@ export default class ErrorGui
 
 
         this.scale.value = 0.0001;
-        this.uniforms.isWire.value = true;
+
 
         // this.mesh.translate(
         //
