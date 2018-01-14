@@ -7,6 +7,7 @@ export default class guiValues{
         this.visibleErrors = false;
         this.visibleMail = false;
         this.errorsLoiter = false;
+        this.visibleBackground = false;
 
         this.cameraAnimeation01PosX = 0.0;
         this.cameraAnimeation01PosY = 0.0;

@@ -8,7 +8,7 @@ import ErrorGui from './ErrorGui';
 const errorVertex = require('./GLSL/errorVertex.glsl');
 const errorFragment = require('./GLSL/errorFragment.glsl');
 // const
-import GradationPlane from './GradationPlane';
+import MailGui from './MailGui';
 
 import {TweenMax,Power2,Power4, TimelineLite} from "gsap";
 export default class SceneCrashme{
@@ -23,7 +23,7 @@ export default class SceneCrashme{
         this.errorOffsetAttribute;
 
         this.curlNoise = new CurlNoise();
-
+        this.mails = [];
         this.errorGuiPos = new THREE.Vector3(0,0,0);
         this.arrayErrorGuiPos = [];
         this.instanceCount = 20;
@@ -59,6 +59,11 @@ export default class SceneCrashme{
 
         this.backgroundPlane.position.set(0,0,-5);
         this.scene.add(this.backgroundPlane);
+
+
+        this.manager.gui.visibleBackground.onChange((e)=>{
+            this.backgroundPlane.material.visible = e;
+        })
 
 
 
@@ -126,8 +131,17 @@ export default class SceneCrashme{
 
 
 
-        let gp = new GradationPlane(47.3,22.8,this.manager.gui);
+        let gp = new MailGui(47.3,22.8,this.manager.gui);
+        this.mails.push(gp);
+
         this.scene.add(gp.getMesh());
+
+        this.manager.gui.visibleMail.onChange((e)=>{
+            for(let m of this.mails)
+            {
+                m.getMesh().material.visible = e;
+            }
+        });
 
 
         let errorTex = new THREE.TextureLoader().load('./img/errorgui.png');

@@ -191,12 +191,12 @@ export default class ErrorGui
 
         // console.log('threthold')
 
-        TweenMax.to(this.gradThreshold , this.gui.values.gradThresholdDulation+delay*0.1 , {
-            value:1.0,
-            delay : delay,
-            // ease :Power2.easeInOut,
-            // onUpdate:()=>{console.log(this.gradThreshold.value)}
-        });
+        // TweenMax.to(this.gradThreshold , this.gui.values.gradThresholdDulation+delay*0.1 , {
+        //     value:1.0,
+        //     delay : delay,
+        //     // ease :Power2.easeInOut,
+        //     // onUpdate:()=>{console.log(this.gradThreshold.value)}
+        // });
         TweenMax.to(this.scale , this.gui.values.errorPopUpDuration+delay*0.1 , {
             value:1.0,
             delay : delay,
@@ -213,8 +213,9 @@ export default class ErrorGui
                 {
                     setTimeout(()=>{
 
-                        this.reset();
-                        this.start();
+                        // this.reset();
+                        // this.start();
+                        this.scaleDown();
                     }, 1000*Math.random());
 
                     // this.uniforms.isWire.value = true;
@@ -235,20 +236,41 @@ export default class ErrorGui
 
     scaleDown()
     {
+        TweenMax.to(this.posisition.value , 1.0 , {
+            z:-Math.random() * 10 - 50,
+            // value:1.0,
+            delay : 0,
+            // ease :Power2.easeInOut,
+            onUpdate:()=>{
 
+            },
+            onStart:()=>{
+                // this.uniforms.isWire.value = true;
+            }
+        });
+
+        TweenMax.to(this.scale , 2.0 + Math.random() , {
+            value : 0.001,
+            // delay : 0.5,
+            onComplete:()=>{
+                this.reset();
+                this.start();
+            }
+
+        });
     }
 
     reset()
     {
 
         // this.uniforms.isWire.value = false;
-        if(this.gui.values.errorsLoiter != false)
-        {
-            this.isLoiter = this.gui.values.errorsLoiter;
-        }
-
-
-        this.scale.value = 0.0001;
+        // if(this.gui.values.errorsLoiter != false)
+        // {
+        //     this.isLoiter = this.gui.values.errorsLoiter;
+        // }
+        //
+        //
+        // this.scale.value = 0.0001;
 
 
         // this.mesh.translate(
@@ -285,25 +307,26 @@ export default class ErrorGui
 
         if(e.key == 'a')
         {
-            TweenMax.to(this.mesh.position , 2.5, {
-                z : 0,
-                // delay : 0.5,
-                ease :Power2.easeInOut
-            });
-
-
-            TweenMax.to(this.scale , 4.0, {
-                value : 0.001,
-                // delay : 0.5,
-                ease :Power2.easeInOut,
-                onUpdate:()=>{
-                    this.mesh.scale.set(
-                        this.scale.value,
-                        this.scale.value,
-                        this.scale.value
-                    );
-                }
-            });
+            // TweenMax.to(this.mesh.position , 2.5, {
+            //     z : 0,
+            //     // delay : 0.5,
+            //     ease :Power2.easeInOut
+            // });
+            //
+            //
+            // TweenMax.to(this.scale , 3.0, {
+            //     value : 0.001,
+            //     // delay : 0.5,
+            //     ease :Power2.easeInOut,
+            //     onUpdate:()=>{
+            //         this.mesh.scale.set(
+            //             this.scale.value,
+            //             this.scale.value,
+            //             this.scale.value
+            //         );
+            //     },
+            //
+            // });
         }
 
         if(e.key == 'r')
@@ -326,7 +349,12 @@ export default class ErrorGui
                 this.posisition.value.z,
 
             );
-            this.uniforms.scale.value = this.scale.value;
+
+            for(let m of this.mesh.material)
+            {
+                m.uniforms.scale.value = this.scale.value;
+            }
+
         //     this.posisition.normalize();
         //     this.mesh.translation.set(
         //

@@ -12,19 +12,10 @@ uniform vec3 u_color;
 void main() {
 
 
-//    vec3 result = texColor;
     if(isWire)
     {
-//        result = gradColor;
-//
-//        if(abs(vPosition.x-modified.x) < width*scale * 0.487)
-//        {
-//            if(abs(vPosition.y-modified.y) < height*scale * 0.473)
-//            {
-//
-                discard;
-//            }
-//        }
+        discard;
+
     }
     gl_FragColor =vec4(u_color , 1.);
 

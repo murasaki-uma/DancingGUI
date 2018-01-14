@@ -28,6 +28,7 @@ export default class GUI{
 
         this.visibleDancingErrors;
         this.visibleErrors;
+        this.visibleBackground;
         this.visibleMail;
         this.errorGuiColor;
         this.errorGuiSide;
@@ -41,6 +42,7 @@ export default class GUI{
     init()
     {
 
+        this.visibleBackground = this.visibles.add(this.values,'visibleBackground');
         this.visibleDancingErrors = this.visibles.add(this.values,'visibleDancingErrors');
         this.visibleErrors = this.visibles.add(this.values,'visibleErrors');
         this.visibleMail = this.visibles.add(this.values,'visibleMail');

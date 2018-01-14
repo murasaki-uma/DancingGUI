@@ -3,7 +3,7 @@ import * as THREE from 'three'
 const vertex = require('./GLSL/gradationPlaneVertex.glsl');
 const fragment = require('./GLSL/gradationPlaneFrag.glsl');
 import {TweenMax,Power2,Power4, TimelineLite} from "gsap";
-export default class GradationPlane
+export default class MailGui
 {
     constructor(width,height, gui)
     {

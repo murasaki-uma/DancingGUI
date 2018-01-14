@@ -1,0 +1,79 @@
+{
+  "preset": "Default",
+  "remembered": {
+    "Default": {
+      "0": {
+        "visibleBackground": true,
+        "visibleDancingErrors": true,
+        "visibleErrors": true,
+        "visibleMail": false,
+        "errorsLoiter": false,
+        "cameraAnimeation01PosX": -62.35286542176432,
+        "cameraAnimeation01PosY": 0,
+        "cameraAnimeation01PosZ": 143.37025112685126,
+        "cameraAnimeation01LookX": 24.68383773341921,
+        "cameraAnimeation01LookY": 0,
+        "cameraAnimeation01LookZ": 0,
+        "backgroundAnimationX": 0,
+        "backgroundAnimationY": 0,
+        "backgroundAnimationZ": -50,
+        "errorGuiInterval": 20,
+        "errorGuiColor": [
+          0,
+          255,
+          223.06396016851787
+        ],
+        "errorGuiSide": [
+          33.9241382355327,
+          129.64860206817312,
+          123.2254208872162
+        ],
+        "errorGuiBack": [
+          0,
+          128,
+          255
+        ],
+        "errorPopUpRangeX_min": -70.30779137153897,
+        "errorPopUpRangeX_max": -10.964584674822902,
+        "errorPopUpRangeY_min": -41.568576947842885,
+        "errorPopUpRangeY_max": -34.70186735350933,
+        "errorPopUpRangeZ_min": 0,
+        "errorPopUpRangeZ_max": 0,
+        "diffErrorPosX": 78.44043786220219,
+        "diffErrorPosY": 46.79072762395364,
+        "diffErrorPosZ": 0,
+        "errorPopUpDuration": 0.5,
+        "gradThreshold": 0,
+        "gradThresholdDulation": 2
+      }
+    }
+  },
+  "closed": false,
+  "folders": {
+    "visibles": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "animation settings": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    },
+    "camera animation": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "error gui": {
+      "preset": "Default",
+      "closed": false,
+      "folders": {}
+    },
+    "background": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    }
+  }
+}
