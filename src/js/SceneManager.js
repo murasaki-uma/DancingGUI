@@ -37,8 +37,7 @@ export default class SceneManager{
     init()
     {
 
-        this.stats = new Stats();
-        document.getElementById('mainrender').appendChild(this.stats.domElement);
+
 
         this.debugCamera.position.set(0,0,10);
         // this.renderer.setPixelRatio(1);
@@ -61,6 +60,9 @@ export default class SceneManager{
 
         this.onWindowResize();
         this.cameraChange();
+
+        this.stats = new Stats();
+        document.body.appendChild(this.stats.domElement);
         // this.update();
     }
 
