@@ -5,6 +5,7 @@
 import * as THREE from 'three'
 import CurlNoise from './curlNoise';
 import ErrorGui from './ErrorGui';
+import OuterWall from './OuterWall';
 const errorVertex = require('./GLSL/errorVertex.glsl');
 const errorFragment = require('./GLSL/errorFragment.glsl');
 // const
@@ -35,6 +36,7 @@ export default class SceneCrashme{
         this.backgroundScale = {value:1.0};
 
         this.errors = [];
+        this.outerWalls = [];
 
 
 
@@ -188,6 +190,15 @@ export default class SceneCrashme{
         this.manager.gui.visibleDancingErrors.onChange((e)=>{
             this.errorGui.material.visible = e;
         });
+
+
+        for(let i = 0; i < 1; i++)
+        {
+            let o = new OuterWall(this.manager.gui);
+            this.outerWalls.push(o);
+            this.scene.add(o.getMesh());
+
+        }
 
 
 
