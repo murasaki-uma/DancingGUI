@@ -29,17 +29,17 @@ export default class OuterWall{
         geometry.attributes.uv = bufferGeometry.attributes.uv;
         // per instance data
         var offsets = [];
-        var orientations = [];
-        var vector = new THREE.Vector4();
-        var x, y, z, w;
+        // var orientations = [];
+        // var vector = new THREE.Vector4();
+        // var x, y, z, w;
         for ( var x = 0; x < xSize; x ++ ) {
             for (var y = 0; y < ySize; y++) {
                 // offsets
-                x = -xSize/2 + (x);
-                y = -ySize/2 + (y);
-                z = 0;
+                let _x = -xSize/2 + (x);
+                let _y = -ySize/2 + (y);
+                let _z = 0;
 
-                offsets.push(x, y,z);
+                offsets.push(_x, _y, _z);
 
             }
         }

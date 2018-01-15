@@ -147,7 +147,7 @@ export default class SceneManager{
 
         requestAnimationFrame(this.update);
         this.frameCount++;
-        if(this.frameCount % 2 == 0) { return; }
+        // if(this.frameCount % 2 == 0) { return; }
 
         this.stats.update();
 
