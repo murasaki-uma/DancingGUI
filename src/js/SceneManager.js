@@ -2,6 +2,7 @@
 import * as THREE from 'three'
 import 'imports-loader?THREE=three!../../node_modules/three/examples/js/controls/OrbitControls';
 import Gui from "./gui";
+import Stats from '../../node_modules/stats-js';
 export default class SceneManager{
     constructor()
     {
@@ -19,6 +20,7 @@ export default class SceneManager{
         this.activeCamera = null;
         this.frameCount = 0;
 
+        this.stats;
 
 
 
@@ -35,6 +37,8 @@ export default class SceneManager{
     init()
     {
 
+        this.stats = new Stats();
+        document.getElementById('mainrender').appendChild(this.stats.domElement);
 
         this.debugCamera.position.set(0,0,10);
         // this.renderer.setPixelRatio(1);
@@ -52,6 +56,9 @@ export default class SceneManager{
 
         let controls = new THREE.OrbitControls( this.debugCamera );
         controls.enableKeys = false;
+
+
+
         this.onWindowResize();
         this.cameraChange();
         // this.update();
@@ -140,6 +147,11 @@ export default class SceneManager{
 
         requestAnimationFrame(this.update);
         this.frameCount++;
+        if(this.frameCount % 2 == 0) { return; }
+
+        this.stats.update();
+
+
         // this.frameCount = this.frameCount % 60;
 
 
