@@ -53197,7 +53197,7 @@ function () {
   _createClass(SceneManager, [{
     key: "init",
     value: function init() {
-      this.debugCamera.position.set(0, 0, 10); // this.renderer.setPixelRatio(1);
+      this.debugCamera.position.set(0, 0, 500); // this.renderer.setPixelRatio(1);
 
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(this.width, this.height);
@@ -54465,6 +54465,7 @@ function () {
     this.cameraAnimation = this.gui.addFolder('camera animation');
     this.errorGui = this.gui.addFolder('error gui');
     this.background = this.gui.addFolder('background');
+    this.visibleOuterWalls;
     this.visibleDancingErrors;
     this.visibleErrors;
     this.visibleBackground;
@@ -54480,6 +54481,7 @@ function () {
   _createClass(GUI, [{
     key: "init",
     value: function init() {
+      this.visibleOuterWalls = this.visibles.add(this.values, 'visibleOuterWalls');
       this.visibleBackground = this.visibles.add(this.values, 'visibleBackground');
       this.visibleDancingErrors = this.visibles.add(this.values, 'visibleDancingErrors');
       this.visibleErrors = this.visibles.add(this.values, 'visibleErrors');
@@ -54547,6 +54549,7 @@ var guiValues = function guiValues() {
   this.visibleMail = false;
   this.errorsLoiter = false;
   this.visibleBackground = false;
+  this.visibleOuterWalls = false;
   this.cameraAnimeation01PosX = 0.0;
   this.cameraAnimeation01PosY = 0.0;
   this.cameraAnimeation01PosZ = 0.0;
@@ -54847,10 +54850,17 @@ function () {
       });
 
       for (var _i2 = 0; _i2 < 1; _i2++) {
-        var o = new _OuterWall.default(this.manager.gui);
+        var o = new _OuterWall.default(this.manager.gui, 400, 100, 60, 30);
         this.outerWalls.push(o);
+        o.getMesh().material.visible = this.manager.gui.values.visibleOuterWalls;
         this.scene.add(o.getMesh());
       }
+
+      this.manager.gui.visibleOuterWalls.onChange(function (e) {
+        for (var _i3 = 0; _i3 < _this.outerWalls.length; _i3++) {
+          _this.outerWalls[_i3].getMesh().material.visible = e;
+        }
+      });
     }
   }, {
     key: "resetAnimation",
@@ -55920,19 +55930,19 @@ module.exports = g;
 /* 14 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nvarying vec3 vPosition;\nuniform vec3 modified;\nuniform float scale;\nvoid main() {\n    vPosition = position;\n    vPosition *= scale;\n    vPosition += modified;\n    vNormal = normal;\n    vUv = uv;\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\n}"
+module.exports = "precision highp float;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vPosition;\r\nuniform vec3 modified;\r\nuniform float scale;\r\nvoid main() {\r\n    vPosition = position;\r\n    vPosition *= scale;\r\n    vPosition += modified;\r\n    vNormal = normal;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\r\n}"
 
 /***/ }),
 /* 15 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\nuniform sampler2D map;\nuniform sampler2D gradMap;\nvarying vec3 vPosition;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nuniform bool isWire;\nuniform float width;\n\nuniform float height;\nuniform vec3 modified;\nuniform float scale;\nvoid main() {\n\n    vec3 texColor = texture2D( map, vUv ).xyz;\n    vec3 gradColor = texture2D( gradMap, vUv ).xyz;\n\n    vec3 result = texColor;\n    if(isWire)\n    {\n        result = gradColor;\n\n        if(abs(vPosition.x-modified.x) < width*scale * 0.487)\n        {\n            if(abs(vPosition.y-modified.y) < height*scale * 0.473)\n            {\n\n                discard;\n            }\n        }\n    }\n    gl_FragColor =vec4(result , 1.);\n\n}"
+module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nuniform sampler2D gradMap;\r\nvarying vec3 vPosition;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform bool isWire;\r\nuniform float width;\r\n\r\nuniform float height;\r\nuniform vec3 modified;\r\nuniform float scale;\r\nvoid main() {\r\n\r\n    vec3 texColor = texture2D( map, vUv ).xyz;\r\n    vec3 gradColor = texture2D( gradMap, vUv ).xyz;\r\n\r\n    vec3 result = texColor;\r\n    if(isWire)\r\n    {\r\n        result = gradColor;\r\n\r\n        if(abs(vPosition.x-modified.x) < width*scale * 0.487)\r\n        {\r\n            if(abs(vPosition.y-modified.y) < height*scale * 0.473)\r\n            {\r\n\r\n                discard;\r\n            }\r\n        }\r\n    }\r\n    gl_FragColor =vec4(result , 1.);\r\n\r\n}"
 
 /***/ }),
 /* 16 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\nvarying vec3 vPosition;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nuniform bool isWire;\nuniform float width;\n\nuniform float height;\nuniform vec3 modified;\nuniform float scale;\nuniform vec3 u_color;\nvoid main() {\n\n\n    if(isWire)\n    {\n        discard;\n\n    }\n    gl_FragColor =vec4(u_color , 1.);\n\n}"
+module.exports = "precision highp float;\r\nvarying vec3 vPosition;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform bool isWire;\r\nuniform float width;\r\n\r\nuniform float height;\r\nuniform vec3 modified;\r\nuniform float scale;\r\nuniform vec3 u_color;\r\nvoid main() {\r\n\r\n\r\n    if(isWire)\r\n    {\r\n        discard;\r\n\r\n    }\r\n    gl_FragColor =vec4(u_color , 1.);\r\n\r\n}"
 
 /***/ }),
 /* 17 */
@@ -55947,6 +55957,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var THREE = _interopRequireWildcard(__webpack_require__(0));
+
+var _gsap = __webpack_require__(1);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -55963,22 +55975,50 @@ var fragment = __webpack_require__(19);
 var OuterWall =
 /*#__PURE__*/
 function () {
-  function OuterWall(gui) {
+  function OuterWall(gui, width, height, xSize, ySize) {
+    var _this = this;
+
     _classCallCheck(this, OuterWall);
+
+    this.onKeyDown = function (e) {
+      if (e.key == 't') {
+        _gsap.TweenMax.to(_this.threshold, 2.0, {
+          value: 1.0,
+          // delay : 2.0 ,
+          ease: _gsap.Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            console.log(_this.threshold);
+          }
+        });
+      }
+
+      if (e.key == 'r') {
+        _gsap.TweenMax.to(_this.threshold, 2.0, {
+          value: 0.0,
+          // delay : 2.0 ,
+          ease: _gsap.Power2.easeInOut
+        });
+      }
+    };
 
     this.gui = gui;
     this.mesh;
     this.uniforms = {};
     this.offsetAttribute;
+    this.xSize = xSize;
+    this.ySize = ySize;
+    this.width = width;
+    this.height = height;
+    this.threshold = {
+      value: 0.0
+    };
     this.init();
   }
 
   _createClass(OuterWall, [{
     key: "init",
     value: function init() {
-      var xSize = 20;
-      var ySize = 20;
-      var instances = xSize * ySize;
+      window.addEventListener('keydown', this.onKeyDown);
       var bufferGeometry = new THREE.PlaneBufferGeometry(1, 1); // copying data from a simple box geometry, but you can specify a custom geometry if you want
 
       var geometry = new THREE.InstancedBufferGeometry();
@@ -55986,27 +56026,57 @@ function () {
       geometry.attributes.position = bufferGeometry.attributes.position;
       geometry.attributes.uv = bufferGeometry.attributes.uv; // per instance data
 
-      var offsets = []; // var orientations = [];
+      var offsets = [];
+      var colors = [];
+      var scales = []; // var orientations = [];
       // var vector = new THREE.Vector4();
       // var x, y, z, w;
 
-      for (var x = 0; x < xSize; x++) {
-        for (var y = 0; y < ySize; y++) {
-          // offsets
-          var _x = -xSize / 2 + x;
+      var yStep = this.height / this.ySize;
+      var xStep = this.width / 12 / 5; // let maxWidth = 60;
 
-          var _y = -ySize / 2 + y;
+      for (var y = 0; y < this.ySize; y++) {
+        var widthCount = 0;
+
+        while (widthCount < this.width) {
+          var pre = widthCount;
+          var width = Math.floor(Math.random() * xStep * 3) + Math.floor(xStep * 2);
+          console.log(width);
+          colors.push(Math.random(), Math.random(), Math.random());
+
+          if (widthCount + width > this.width) {
+            width -= widthCount + width - this.width;
+          }
+
+          if (this.width - (widthCount + width) < Math.floor(xStep * 2)) {
+            width += this.width - (widthCount + width);
+          }
+
+          widthCount += width;
+
+          var _x = pre + width / 2 - this.width / 2;
+
+          var _y = y * yStep - this.height / 2;
 
           var _z = 0;
           offsets.push(_x, _y, _z);
+          scales.push(width, yStep);
         }
-      }
+      } // console.log(scaleXs);
+
 
       this.offsetAttribute = new THREE.InstancedBufferAttribute(new Float32Array(offsets), 3);
-      geometry.addAttribute('offset', this.offsetAttribute); // material
+      geometry.addAttribute('offset', this.offsetAttribute);
+      geometry.addAttribute('color', new THREE.InstancedBufferAttribute(new Float32Array(colors), 3));
+      geometry.addAttribute('scales', new THREE.InstancedBufferAttribute(new Float32Array(scales), 2)); // material
 
       var material = new THREE.ShaderMaterial({
-        uniforms: {// map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
+        uniforms: {
+          width: {
+            value: this.width
+          },
+          threshold: this.threshold // map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
+
         },
         vertexShader: vertex,
         fragmentShader: fragment
@@ -56032,13 +56102,13 @@ exports.default = OuterWall;
 /* 18 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\n\nattribute vec4 offset;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nvoid main() {\n    vec3 vPosition = position;\n    vNormal = normal;\n//    vNumber = offset.w;\n    vUv = uv;\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\n}"
+module.exports = "precision highp float;\r\n\r\nattribute vec3 offset;\r\nattribute vec3 color;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vColor;\r\nattribute vec2 scales;\r\nvarying vec3 vOffset;\r\n\r\n\r\nvoid main() {\r\n    vec3 vPosition = position;\r\n    vPosition.x *= scales.x;\r\n    vPosition.y *= scales.y;\r\n    vNormal = normal;\r\n    vOffset = offset;\r\n//    vNumber = offset.w;\r\n    vColor = color;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
 
 /***/ }),
 /* 19 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\nuniform sampler2D map;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nuniform vec3 gradationColor;\nvarying float vNumber;\nuniform float scale;\nvoid main() {\n\n    vec3 color = vec3(1.);\n\n    gl_FragColor =vec4(color , 1.);\n\n}"
+module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vOffset;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float width;\r\nuniform float threshold;\r\n//uniform float scale;\r\nvarying vec3 vColor;\r\n\r\nconst vec3 green = vec3(27./255.,225./255.,173./255.);\r\nconst vec3 purple = vec3(125./255.,31./255.,164./255.);\r\nvoid main() {\r\n\r\n    vec3 color = vec3(1.);\r\n\r\n    float d = vOffset.x / (threshold*width)+0.5;\r\n    color = mix(green,purple,d);\r\n    if(vOffset.x > threshold*width - width/2.)\r\n    {\r\n        discard;\r\n    }\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
 
 /***/ }),
 /* 20 */
@@ -56223,25 +56293,25 @@ exports.default = MailGui;
 /* 21 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nvarying vec3 vPosition;\n\nvoid main() {\n    vPosition = position;\n    vNormal = normal;\n    vUv = uv;\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\n}"
+module.exports = "precision highp float;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vPosition;\r\n\r\nvoid main() {\r\n    vPosition = position;\r\n    vNormal = normal;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\r\n}"
 
 /***/ }),
 /* 22 */
 /***/ (function(module, exports) {
 
-module.exports = "\n\nprecision highp float;\n\n\nvec3 mod289(vec3 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 mod289(vec4 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 permute(vec4 x) {\n     return mod289(((x*34.0)+1.0)*x);\n}\n\nvec4 taylorInvSqrt(vec4 r)\n{\n  return 1.79284291400159 - 0.85373472095314 * r;\n}\n\n\nfloat snoise(vec3 v)\n  {\n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n// First corner\n  vec3 i  = floor(v + dot(v, C.yyy) );\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\n// Other corners\n  vec3 g = step(x0.yzx, x0.xyz);\n  vec3 l = 1.0 - g;\n  vec3 i1 = min( g.xyz, l.zxy );\n  vec3 i2 = max( g.xyz, l.zxy );\n\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\n  vec3 x1 = x0 - i1 + C.xxx;\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n// Permutations\n  i = mod289(i);\n  vec4 p = permute( permute( permute(\n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))\n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n  float n_ = 0.142857142857; // 1.0/7.0\n  vec3  ns = n_ * D.wyz - D.xzx;\n\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n  vec4 x_ = floor(j * ns.z);\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\n  vec4 x = x_ *ns.x + ns.yyyy;\n  vec4 y = y_ *ns.x + ns.yyyy;\n  vec4 h = 1.0 - abs(x) - abs(y);\n\n  vec4 b0 = vec4( x.xy, y.xy );\n  vec4 b1 = vec4( x.zw, y.zw );\n\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\n  vec4 s0 = floor(b0)*2.0 + 1.0;\n  vec4 s1 = floor(b1)*2.0 + 1.0;\n  vec4 sh = -step(h, vec4(0.0));\n\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\n  vec3 p0 = vec3(a0.xy,h.x);\n  vec3 p1 = vec3(a0.zw,h.y);\n  vec3 p2 = vec3(a1.xy,h.z);\n  vec3 p3 = vec3(a1.zw,h.w);\n\n//Normalise gradients\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n  p0 *= norm.x;\n  p1 *= norm.y;\n  p2 *= norm.z;\n  p3 *= norm.w;\n\n// Mix final noise value\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n  m = m * m;\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),\n                                dot(p2,x2), dot(p3,x3) ) );\n  }\n\nvec3 snoiseVec3( vec3 x ){\n\n  float s  = snoise(vec3( x ));\n  float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));\n  float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));\n  vec3 c = vec3( s , s1 , s2 );\n  return c;\n\n}\n\n\nvec3 curlNoise( vec3 p ){\n\n  const float e = .1;\n  vec3 dx = vec3( e   , 0.0 , 0.0 );\n  vec3 dy = vec3( 0.0 , e   , 0.0 );\n  vec3 dz = vec3( 0.0 , 0.0 , e   );\n\n  vec3 p_x0 = snoiseVec3( p - dx );\n  vec3 p_x1 = snoiseVec3( p + dx );\n  vec3 p_y0 = snoiseVec3( p - dy );\n  vec3 p_y1 = snoiseVec3( p + dy );\n  vec3 p_z0 = snoiseVec3( p - dz );\n  vec3 p_z1 = snoiseVec3( p + dz );\n\n  float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;\n  float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;\n  float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;\n\n  const float divisor = 1.0 / ( 2.0 * e );\n  return normalize( vec3( x , y , z ) * divisor );\n\n}\n\n\nvarying vec2 vUv;\nuniform sampler2D gradationTex;\nuniform sampler2D colorNoise;\nuniform sampler2D map;\nuniform float threshold;\nuniform float width;\nvarying vec3 vPosition;\nvoid main() {\n\n\n    vec4 grad = texture2D( gradationTex, vUv );\n \tfloat zr = 1.0-texture2D( gradationTex, vUv ).x;\n\n    // sample neighbor pixels\n\tfloat ao = 0.0;\n\tfor( int i=0; i<8; i++ )\n\t{\n        vec2 off = -1.0 + 2.0*texture2D( colorNoise, (gl_FragCoord.xy + 23.71*float(i))/vec2(256.,256.) ).xz;\n\n        float z = 1.0-texture2D( gradationTex, (gl_FragCoord.xy + floor(off*16.0))/vec2(50.,25).xy ).x;\n        ao += clamp( (zr-z)/0.1, 0.0, 1.0);\n\t}\n    // average down the occlusion\n    ao = clamp( 1.0 - ao/8.0, 0.1, 0.5 );\n\n\tvec3 col = vec3(ao);\n\n\n    vec4 noisetex = 1.0-texture2D( colorNoise, vUv*4. );\n\n\n\n    if(noisetex.x > 0.5)\n    {\n        noisetex.x = 0.2;\n    }\n\n\n    float t_noise = snoise(vec3(vUv.xy,threshold)*1.5);\n    float threshold_x = -(threshold+t_noise*0.03)*width*2. +width;\n    if(vPosition.x < threshold_x)\n    {\n        discard;\n    }\n\n    float d = distance(vPosition.xy, vec2(threshold_x,vPosition.y));\n\n    d = clamp(d,0.,3.);\n    d = d/3.;\n\n    if(d< 1.0)\n    {\n        if(snoise(vec3(vPosition.xy,d)*1.0) > 0.)\n        {\n            discard;\n        }\n    }\n\n\n    vec4 map = texture2D( map, vUv);\n    vec3 result = grad.xyz+noisetex.x*0.3;\n    result = mix(result, map.xyz,map.a);\n\n\n\n\n\n\n\n    gl_FragColor =vec4(result,d);\n\n}"
+module.exports = "\r\n\r\nprecision highp float;\r\n\r\n\r\nvec3 mod289(vec3 x) {\r\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\r\n}\r\n\r\nvec4 mod289(vec4 x) {\r\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\r\n}\r\n\r\nvec4 permute(vec4 x) {\r\n     return mod289(((x*34.0)+1.0)*x);\r\n}\r\n\r\nvec4 taylorInvSqrt(vec4 r)\r\n{\r\n  return 1.79284291400159 - 0.85373472095314 * r;\r\n}\r\n\r\n\r\nfloat snoise(vec3 v)\r\n  {\r\n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\r\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\r\n\r\n// First corner\r\n  vec3 i  = floor(v + dot(v, C.yyy) );\r\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\r\n\r\n// Other corners\r\n  vec3 g = step(x0.yzx, x0.xyz);\r\n  vec3 l = 1.0 - g;\r\n  vec3 i1 = min( g.xyz, l.zxy );\r\n  vec3 i2 = max( g.xyz, l.zxy );\r\n\r\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\r\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\r\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\r\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\r\n  vec3 x1 = x0 - i1 + C.xxx;\r\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\r\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\r\n\r\n// Permutations\r\n  i = mod289(i);\r\n  vec4 p = permute( permute( permute(\r\n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\r\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))\r\n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\r\n\r\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\r\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\r\n  float n_ = 0.142857142857; // 1.0/7.0\r\n  vec3  ns = n_ * D.wyz - D.xzx;\r\n\r\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\r\n\r\n  vec4 x_ = floor(j * ns.z);\r\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\r\n\r\n  vec4 x = x_ *ns.x + ns.yyyy;\r\n  vec4 y = y_ *ns.x + ns.yyyy;\r\n  vec4 h = 1.0 - abs(x) - abs(y);\r\n\r\n  vec4 b0 = vec4( x.xy, y.xy );\r\n  vec4 b1 = vec4( x.zw, y.zw );\r\n\r\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\r\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\r\n  vec4 s0 = floor(b0)*2.0 + 1.0;\r\n  vec4 s1 = floor(b1)*2.0 + 1.0;\r\n  vec4 sh = -step(h, vec4(0.0));\r\n\r\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\r\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\r\n\r\n  vec3 p0 = vec3(a0.xy,h.x);\r\n  vec3 p1 = vec3(a0.zw,h.y);\r\n  vec3 p2 = vec3(a1.xy,h.z);\r\n  vec3 p3 = vec3(a1.zw,h.w);\r\n\r\n//Normalise gradients\r\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\r\n  p0 *= norm.x;\r\n  p1 *= norm.y;\r\n  p2 *= norm.z;\r\n  p3 *= norm.w;\r\n\r\n// Mix final noise value\r\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\r\n  m = m * m;\r\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),\r\n                                dot(p2,x2), dot(p3,x3) ) );\r\n  }\r\n\r\nvec3 snoiseVec3( vec3 x ){\r\n\r\n  float s  = snoise(vec3( x ));\r\n  float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));\r\n  float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));\r\n  vec3 c = vec3( s , s1 , s2 );\r\n  return c;\r\n\r\n}\r\n\r\n\r\nvec3 curlNoise( vec3 p ){\r\n\r\n  const float e = .1;\r\n  vec3 dx = vec3( e   , 0.0 , 0.0 );\r\n  vec3 dy = vec3( 0.0 , e   , 0.0 );\r\n  vec3 dz = vec3( 0.0 , 0.0 , e   );\r\n\r\n  vec3 p_x0 = snoiseVec3( p - dx );\r\n  vec3 p_x1 = snoiseVec3( p + dx );\r\n  vec3 p_y0 = snoiseVec3( p - dy );\r\n  vec3 p_y1 = snoiseVec3( p + dy );\r\n  vec3 p_z0 = snoiseVec3( p - dz );\r\n  vec3 p_z1 = snoiseVec3( p + dz );\r\n\r\n  float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;\r\n  float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;\r\n  float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;\r\n\r\n  const float divisor = 1.0 / ( 2.0 * e );\r\n  return normalize( vec3( x , y , z ) * divisor );\r\n\r\n}\r\n\r\n\r\nvarying vec2 vUv;\r\nuniform sampler2D gradationTex;\r\nuniform sampler2D colorNoise;\r\nuniform sampler2D map;\r\nuniform float threshold;\r\nuniform float width;\r\nvarying vec3 vPosition;\r\nvoid main() {\r\n\r\n\r\n    vec4 grad = texture2D( gradationTex, vUv );\r\n \tfloat zr = 1.0-texture2D( gradationTex, vUv ).x;\r\n\r\n    // sample neighbor pixels\r\n\tfloat ao = 0.0;\r\n\tfor( int i=0; i<8; i++ )\r\n\t{\r\n        vec2 off = -1.0 + 2.0*texture2D( colorNoise, (gl_FragCoord.xy + 23.71*float(i))/vec2(256.,256.) ).xz;\r\n\r\n        float z = 1.0-texture2D( gradationTex, (gl_FragCoord.xy + floor(off*16.0))/vec2(50.,25).xy ).x;\r\n        ao += clamp( (zr-z)/0.1, 0.0, 1.0);\r\n\t}\r\n    // average down the occlusion\r\n    ao = clamp( 1.0 - ao/8.0, 0.1, 0.5 );\r\n\r\n\tvec3 col = vec3(ao);\r\n\r\n\r\n    vec4 noisetex = 1.0-texture2D( colorNoise, vUv*4. );\r\n\r\n\r\n\r\n    if(noisetex.x > 0.5)\r\n    {\r\n        noisetex.x = 0.2;\r\n    }\r\n\r\n\r\n    float t_noise = snoise(vec3(vUv.xy,threshold)*1.5);\r\n    float threshold_x = -(threshold+t_noise*0.03)*width*2. +width;\r\n    if(vPosition.x < threshold_x)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    float d = distance(vPosition.xy, vec2(threshold_x,vPosition.y));\r\n\r\n    d = clamp(d,0.,3.);\r\n    d = d/3.;\r\n\r\n    if(d< 1.0)\r\n    {\r\n        if(snoise(vec3(vPosition.xy,d)*1.0) > 0.)\r\n        {\r\n            discard;\r\n        }\r\n    }\r\n\r\n\r\n    vec4 map = texture2D( map, vUv);\r\n    vec3 result = grad.xyz+noisetex.x*0.3;\r\n    result = mix(result, map.xyz,map.a);\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n    gl_FragColor =vec4(result,d);\r\n\r\n}"
 
 /***/ }),
 /* 23 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\n//uniform mat4 modelViewMatrix;\n//uniform mat4 projectionMatrix;\n//attribute vec3 position;\nattribute vec4 offset;\n//attribute vec3 normal;\n//attribute int number;\nvarying float vNumber;\n//attribute vec2 uv;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nvoid main() {\n    vec3 vPosition = position;\n    vNormal = normal;\n    vNumber = offset.w;\n//    vec3 vcV = cross( orientation.xyz, vPosition );\n//    vPosition = vcV * ( 2.0 * orientation.w ) + ( cross( orientation.xyz, vcV ) * 2.0 + vPosition );\n    vUv = uv;\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\n}"
+module.exports = "precision highp float;\r\n//uniform mat4 modelViewMatrix;\r\n//uniform mat4 projectionMatrix;\r\n//attribute vec3 position;\r\nattribute vec4 offset;\r\n//attribute vec3 normal;\r\n//attribute int number;\r\nvarying float vNumber;\r\n//attribute vec2 uv;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvoid main() {\r\n    vec3 vPosition = position;\r\n    vNormal = normal;\r\n    vNumber = offset.w;\r\n//    vec3 vcV = cross( orientation.xyz, vPosition );\r\n//    vPosition = vcV * ( 2.0 * orientation.w ) + ( cross( orientation.xyz, vcV ) * 2.0 + vPosition );\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
 
 /***/ }),
 /* 24 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\nuniform sampler2D map;\nvarying vec2 vUv;\nvarying vec3 vNormal;\nuniform vec3 gradationColor;\nvarying float vNumber;\nuniform float scale;\nvoid main() {\n\n    float diffuse  = clamp(dot(vNormal, vec3(0.,0.,1.)), 0.1, 1.0);\n    vec3 color = vec3(1.);\n//    if(diffuse > 0.1)\n//    {\n////        color = texture2D( map, vUv ).xyz;\n//        color = vec3(0.7,1.,0.7);\n//    }\n//    {\n//        color = vec3(1.0,0.7,0.7);\n////        color = vNormal;\n//    }\n\n//gl_FragColor = texture2D( map, vUv );\n    vec3 texColor = texture2D( map, vUv ).xyz;\n//    vec3 gradationColor = vec3(142./255.,201./255.,219./255.);\n    float per = (vNumber+1.)/20.;\n    color = mix(gradationColor,texColor,per);\n    color = mix(color,texColor,scale);\n\n    gl_FragColor =vec4(color , 1.);\n\n}"
+module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float scale;\r\nvoid main() {\r\n\r\n    float diffuse  = clamp(dot(vNormal, vec3(0.,0.,1.)), 0.1, 1.0);\r\n    vec3 color = vec3(1.);\r\n//    if(diffuse > 0.1)\r\n//    {\r\n////        color = texture2D( map, vUv ).xyz;\r\n//        color = vec3(0.7,1.,0.7);\r\n//    }\r\n//    {\r\n//        color = vec3(1.0,0.7,0.7);\r\n////        color = vNormal;\r\n//    }\r\n\r\n//gl_FragColor = texture2D( map, vUv );\r\n    vec3 texColor = texture2D( map, vUv ).xyz;\r\n//    vec3 gradationColor = vec3(142./255.,201./255.,219./255.);\r\n    float per = (vNumber+1.)/20.;\r\n    color = mix(gradationColor,texColor,per);\r\n    color = mix(color,texColor,scale);\r\n\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
 
 /***/ }),
 /* 25 */

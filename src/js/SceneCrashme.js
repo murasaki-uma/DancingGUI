@@ -194,11 +194,20 @@ export default class SceneCrashme{
 
         for(let i = 0; i < 1; i++)
         {
-            let o = new OuterWall(this.manager.gui);
+            let o = new OuterWall(this.manager.gui,400,100,60,30);
             this.outerWalls.push(o);
+            o.getMesh().material.visible = this.manager.gui.values.visibleOuterWalls;
             this.scene.add(o.getMesh());
 
         }
+
+        this.manager.gui.visibleOuterWalls.onChange((e)=>{
+            for(let i = 0; i < this.outerWalls.length; i++)
+            {
+                this.outerWalls[i].getMesh().material.visible = e;
+            }
+
+        });
 
 
 

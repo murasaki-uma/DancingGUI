@@ -39,7 +39,7 @@ export default class SceneManager{
 
 
 
-        this.debugCamera.position.set(0,0,10);
+        this.debugCamera.position.set(0,0,500);
         // this.renderer.setPixelRatio(1);
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize(this.width,this.height);

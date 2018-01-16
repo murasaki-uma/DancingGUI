@@ -1,10 +1,11 @@
 'use strict'
 import * as THREE from 'three'
+import {Power2, TweenMax} from "gsap";
 
 const vertex = require('./GLSL/outerWallVertex.glsl');
 const fragment = require('./GLSL/outerWallFragment.glsl');
 export default class OuterWall{
-    constructor(gui)
+    constructor(gui,width,height,xSize,ySize)
     {
 
         this.gui = gui;
@@ -12,15 +13,21 @@ export default class OuterWall{
         this.uniforms = {};
         this.offsetAttribute;
 
+        this.xSize = xSize;
+        this.ySize = ySize;
+        this.width = width;
+        this.height = height;
+
+        this.threshold = {value:0.0};
+
+
         this.init();
     }
     init()
     {
 
 
-        let xSize = 20;
-        let ySize = 20;
-        let instances = xSize*ySize;
+        window.addEventListener('keydown', this.onKeyDown);
         let bufferGeometry = new THREE.PlaneBufferGeometry( 1, 1 );
         // copying data from a simple box geometry, but you can specify a custom geometry if you want
         let geometry = new THREE.InstancedBufferGeometry();
@@ -29,26 +36,59 @@ export default class OuterWall{
         geometry.attributes.uv = bufferGeometry.attributes.uv;
         // per instance data
         var offsets = [];
+        var colors = [];
+        var scales = [];
         // var orientations = [];
         // var vector = new THREE.Vector4();
         // var x, y, z, w;
-        for ( var x = 0; x < xSize; x ++ ) {
-            for (var y = 0; y < ySize; y++) {
-                // offsets
-                let _x = -xSize/2 + (x);
-                let _y = -ySize/2 + (y);
-                let _z = 0;
 
-                offsets.push(_x, _y, _z);
+        let yStep = this.height/this.ySize;
 
+        let xStep = this.width/12/5;
+
+        // let maxWidth = 60;
+        for ( let y = 0; y < this.ySize; y ++ ) {
+            let widthCount = 0;
+           while (widthCount < this.width){
+               let pre = widthCount;
+               let width = Math.floor(Math.random()*xStep*3)+Math.floor(xStep*2);
+               console.log(width);
+               colors.push(Math.random(),Math.random(),Math.random());
+
+
+
+               if(widthCount + width > this.width)
+               {
+
+                   width -= ((widthCount + width)-this.width);
+               }
+
+               if((this.width - (widthCount + width)) < Math.floor(xStep*2) )
+               {
+
+                   width += (this.width - (widthCount + width));
+               }
+
+               widthCount += width;
+
+               let _x = pre + width/2 - this.width/2;
+               let _y = y*yStep - this.height/2;
+               let _z = 0;
+               offsets.push(_x, _y, _z);
+               scales.push(width,yStep);
             }
         }
+        // console.log(scaleXs);
         this.offsetAttribute = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 3 );
 
         geometry.addAttribute( 'offset', this.offsetAttribute );
+        geometry.addAttribute( 'color', new THREE.InstancedBufferAttribute( new Float32Array( colors ), 3 ));
+        geometry.addAttribute( 'scales', new THREE.InstancedBufferAttribute( new Float32Array( scales ), 2 ));
         // material
         var material = new THREE.ShaderMaterial( {
             uniforms: {
+                width:{value:this.width},
+                threshold:this.threshold
                 // map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
             },
             vertexShader: vertex,
@@ -56,6 +96,31 @@ export default class OuterWall{
         } );
         this.mesh = new THREE.Mesh( geometry, material );
 
+    }
+
+    onKeyDown =(e)=>
+    {
+        if(e.key == 't')
+        {
+            TweenMax.to(this.threshold , 2.0 , {
+                value:1.0,
+                // delay : 2.0 ,
+                ease :Power2.easeInOut,
+                onUpdate:()=>{
+                    console.log(this.threshold)
+                }
+            });
+        }
+
+
+        if(e.key == 'r')
+        {
+            TweenMax.to(this.threshold , 2.0 , {
+                value:0.0,
+                // delay : 2.0 ,
+                ease :Power2.easeInOut
+            });
+        }
     }
 
     getMesh()
