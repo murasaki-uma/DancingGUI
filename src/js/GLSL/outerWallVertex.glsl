@@ -8,9 +8,9 @@ varying vec3 vColor;
 attribute vec2 scales;
 varying vec3 vOffset;
 
-
+varying vec3 vPosition;
 void main() {
-    vec3 vPosition = position;
+    vPosition = position;
     vPosition.x *= scales.x;
     vPosition.y *= scales.y;
     vNormal = normal;

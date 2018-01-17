@@ -5,9 +5,11 @@ import {Power2, TweenMax} from "gsap";
 const vertex = require('./GLSL/outerWallVertex.glsl');
 const fragment = require('./GLSL/outerWallFragment.glsl');
 export default class OuterWall{
-    constructor(gui,width,height,xSize,ySize)
+    constructor(gui,width,height,xSize,ySize, curlNoise)
     {
 
+        this.curlNoise = curlNoise;
+        console.log(this.curlNoise);
         this.gui = gui;
         this.mesh;
         this.uniforms = {};
@@ -47,11 +49,25 @@ export default class OuterWall{
         let xStep = this.width/12/5;
 
         // let maxWidth = 60;
+        let counter = 0;
+        let time = new Date().getMilliseconds();
         for ( let y = 0; y < this.ySize; y ++ ) {
             let widthCount = 0;
+            let seedStep = Math.random()*0.001;
            while (widthCount < this.width){
+
+               counter += 0.002+seedStep;
+               let _y = y*yStep - this.height/2;
+
+
                let pre = widthCount;
-               let width = Math.floor(Math.random()*xStep*3)+Math.floor(xStep*2);
+               let noise = this.curlNoise.getCurlNoise(new THREE.Vector3(time,_y*0.002,counter));
+               // console.log(noise);
+               noise.x = Math.abs(noise.x*0.5);
+               // noise.y = Math.abs(noise.y);
+               // noise.z = Math.abs(noise.z);
+               // noise = Math.min(noise,)
+               let width = Math.floor(noise.x*xStep*3);
                console.log(width);
                colors.push(Math.random(),Math.random(),Math.random());
 
@@ -72,7 +88,6 @@ export default class OuterWall{
                widthCount += width;
 
                let _x = pre + width/2 - this.width/2;
-               let _y = y*yStep - this.height/2;
                let _z = 0;
                offsets.push(_x, _y, _z);
                scales.push(width,yStep);
