@@ -51,7 +51,7 @@ export default class OuterWall{
         // let maxWidth = 60;
         let counter = 0;
         let time = new Date().getMilliseconds();
-        for ( let y = 0; y < this.ySize; y ++ ) {
+        for ( let y = 1; y <= this.ySize; y ++ ) {
             let widthCount = 0;
             let seedStep = Math.random()*0.001;
             let preX = 0;
@@ -111,7 +111,8 @@ export default class OuterWall{
                 // map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
             },
             vertexShader: vertex,
-            fragmentShader: fragment
+            fragmentShader: fragment,
+            side:THREE.DoubleSide
         } );
         this.mesh = new THREE.Mesh( geometry, material );
 

@@ -4,18 +4,19 @@
 import dat from '../../node_modules/dat.gui/build/dat.gui.min'
 
 import guiValues from './guiValues'
-
+const setting = require('./json/gui.json');
 export default class GUI{
     constructor()
     {
         this.values = new guiValues();
-        this.gui = new dat.GUI();
-
+        // this.gui = new dat.GUI();
+        this.gui = new dat.GUI({load:setting});
         this.gui.width = 400;
 
 
 
         this.gui.remember(this.values);
+
 
         this.visibles = this.gui.addFolder('visibles');
 

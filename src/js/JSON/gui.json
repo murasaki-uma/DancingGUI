@@ -3,9 +3,10 @@
   "remembered": {
     "Default": {
       "0": {
+        "visibleOuterWalls": true,
         "visibleBackground": true,
-        "visibleDancingErrors": true,
-        "visibleErrors": true,
+        "visibleDancingErrors": false,
+        "visibleErrors": false,
         "visibleMail": false,
         "errorsLoiter": false,
         "cameraAnimeation01PosX": -62.35286542176432,

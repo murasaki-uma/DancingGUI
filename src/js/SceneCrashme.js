@@ -114,10 +114,12 @@ export default class SceneCrashme{
                 )},
                 scale:this.backgroundScale
             },
+            // side:THREE.DoubleSide,
             vertexShader: errorVertex,
             fragmentShader: errorFragment,
             visible:this.manager.gui.values.visibleDancingErrors
         } );
+
 
 
         this.errorGui = new THREE.Mesh( geometry, material );
@@ -192,11 +194,24 @@ export default class SceneCrashme{
         });
 
 
-        for(let i = 0; i < 1; i++)
+
+        let rad = Math.PI*2/4;
+        let radius = 50;
+        for(let i = 0; i < 4; i++)
         {
+
+            let r = rad * i;
+            let y = Math.cos(r) * radius;
+            let z = Math.sin(r) * radius;
+            let x = 0;
+
+
             let o = new OuterWall(this.manager.gui,200,100,60,30,this.curlNoise);
             this.outerWalls.push(o);
             o.getMesh().material.visible = this.manager.gui.values.visibleOuterWalls;
+            o.getMesh().position.set(x,y,z);
+            o.getMesh().rotateX(r+Math.PI/2);
+
             this.scene.add(o.getMesh());
 
         }
