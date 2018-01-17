@@ -54,6 +54,8 @@ export default class OuterWall{
         for ( let y = 0; y < this.ySize; y ++ ) {
             let widthCount = 0;
             let seedStep = Math.random()*0.001;
+            let preX = 0;
+            let preY = 0;
            while (widthCount < this.width){
 
                counter += 0.002+seedStep;
@@ -61,14 +63,14 @@ export default class OuterWall{
 
 
                let pre = widthCount;
-               let noise = this.curlNoise.getCurlNoise(new THREE.Vector3(time,_y*0.002,counter));
+               let noise = this.curlNoise.getCurlNoise(new THREE.Vector3(preX*0.01,preY*0.01,counter));
                // console.log(noise);
                noise.x = Math.abs(noise.x*0.5);
                // noise.y = Math.abs(noise.y);
                // noise.z = Math.abs(noise.z);
                // noise = Math.min(noise,)
                let width = Math.floor(noise.x*xStep*3);
-               console.log(width);
+               // console.log(width);
                colors.push(Math.random(),Math.random(),Math.random());
 
 
@@ -79,7 +81,7 @@ export default class OuterWall{
                    width -= ((widthCount + width)-this.width);
                }
 
-               if((this.width - (widthCount + width)) < Math.floor(xStep*2) )
+               if((this.width - (widthCount + width)) < Math.floor(xStep*1) )
                {
 
                    width += (this.width - (widthCount + width));
@@ -91,6 +93,8 @@ export default class OuterWall{
                let _z = 0;
                offsets.push(_x, _y, _z);
                scales.push(width,yStep);
+               preX = _x;
+               preY = _y;
             }
         }
         // console.log(scaleXs);
