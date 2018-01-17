@@ -212,12 +212,12 @@ export default class ErrorGui
 
                 if(this.animationSettings.get("ScaleDown"))
                 {
-                    setTimeout(()=>{
+                    // setTimeout(()=>{
 
                         // this.reset();
                         // this.start();
                         this.scaleDown();
-                    }, 1000*Math.random());
+                    // }, 1000*Math.random());
 
                     // this.uniforms.isWire.value = true;
                 }

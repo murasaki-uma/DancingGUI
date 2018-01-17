@@ -3,9 +3,9 @@
   "remembered": {
     "Default": {
       "0": {
-        "visibleOuterWalls": true,
+        "visibleOuterWalls": false,
         "visibleBackground": true,
-        "visibleDancingErrors": false,
+        "visibleDancingErrors": true,
         "visibleErrors": false,
         "visibleMail": false,
         "errorsLoiter": false,

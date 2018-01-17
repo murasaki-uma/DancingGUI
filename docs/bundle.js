@@ -53092,7 +53092,7 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 		_tickerActive = false; //ensures that the first official animation forces a ticker.tick() to update the time when it is instantiated
 
 })((typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window, "TweenMax");
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
 /* 2 */
@@ -53103,11 +53103,11 @@ if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); } //necessary in case Tween
 
 var _SceneManager = _interopRequireDefault(__webpack_require__(3));
 
-var _SceneCrashme = _interopRequireDefault(__webpack_require__(9));
+var _SceneCrashme = _interopRequireDefault(__webpack_require__(10));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var css = __webpack_require__(25);
+var css = __webpack_require__(26);
 
 window.addEventListener('DOMContentLoaded', function () {
   console.log('awake');
@@ -53135,7 +53135,7 @@ __webpack_require__(4);
 
 var _gui = _interopRequireDefault(__webpack_require__(5));
 
-var _statsJs = _interopRequireDefault(__webpack_require__(8));
+var _statsJs = _interopRequireDefault(__webpack_require__(9));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -54450,14 +54450,19 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+var setting = __webpack_require__(8);
+
 var GUI =
 /*#__PURE__*/
 function () {
   function GUI() {
     _classCallCheck(this, GUI);
 
-    this.values = new _guiValues.default();
-    this.gui = new _datGui.default.GUI();
+    this.values = new _guiValues.default(); // this.gui = new dat.GUI();
+
+    this.gui = new _datGui.default.GUI({
+      load: setting
+    });
     this.gui.width = 400;
     this.gui.remember(this.values);
     this.visibles = this.gui.addFolder('visibles');
@@ -54583,6 +54588,12 @@ exports.default = guiValues;
 /* 8 */
 /***/ (function(module, exports) {
 
+module.exports = {"preset":"Default","remembered":{"Default":{"0":{"visibleOuterWalls":true,"visibleBackground":true,"visibleDancingErrors":false,"visibleErrors":false,"visibleMail":false,"errorsLoiter":false,"cameraAnimeation01PosX":-62.35286542176432,"cameraAnimeation01PosY":0,"cameraAnimeation01PosZ":143.37025112685126,"cameraAnimeation01LookX":24.68383773341921,"cameraAnimeation01LookY":0,"cameraAnimeation01LookZ":0,"backgroundAnimationX":0,"backgroundAnimationY":0,"backgroundAnimationZ":-50,"errorGuiInterval":20,"errorGuiColor":[0,255,223.06396016851787],"errorGuiSide":[33.9241382355327,129.64860206817312,123.2254208872162],"errorGuiBack":[0,128,255],"errorPopUpRangeX_min":-70.30779137153897,"errorPopUpRangeX_max":-10.964584674822902,"errorPopUpRangeY_min":-41.568576947842885,"errorPopUpRangeY_max":-34.70186735350933,"errorPopUpRangeZ_min":0,"errorPopUpRangeZ_max":0,"diffErrorPosX":78.44043786220219,"diffErrorPosY":46.79072762395364,"diffErrorPosZ":0,"errorPopUpDuration":0.5,"gradThreshold":0,"gradThresholdDulation":2}}},"closed":false,"folders":{"visibles":{"preset":"Default","closed":false,"folders":{}},"animation settings":{"preset":"Default","closed":true,"folders":{}},"camera animation":{"preset":"Default","closed":false,"folders":{}},"error gui":{"preset":"Default","closed":false,"folders":{}},"background":{"preset":"Default","closed":true,"folders":{}}}}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
 // stats.js - http://github.com/mrdoob/stats.js
 var Stats=function(){var l=Date.now(),m=l,g=0,n=Infinity,o=0,h=0,p=Infinity,q=0,r=0,s=0,f=document.createElement("div");f.id="stats";f.addEventListener("mousedown",function(b){b.preventDefault();t(++s%2)},!1);f.style.cssText="width:80px;opacity:0.9;cursor:pointer";var a=document.createElement("div");a.id="fps";a.style.cssText="padding:0 0 3px 3px;text-align:left;background-color:#002";f.appendChild(a);var i=document.createElement("div");i.id="fpsText";i.style.cssText="color:#0ff;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px";
 i.innerHTML="FPS";a.appendChild(i);var c=document.createElement("div");c.id="fpsGraph";c.style.cssText="position:relative;width:74px;height:30px;background-color:#0ff";for(a.appendChild(c);74>c.children.length;){var j=document.createElement("span");j.style.cssText="width:1px;height:30px;float:left;background-color:#113";c.appendChild(j)}var d=document.createElement("div");d.id="ms";d.style.cssText="padding:0 0 3px 3px;text-align:left;background-color:#020;display:none";f.appendChild(d);var k=document.createElement("div");
@@ -54592,7 +54603,7 @@ a+"px",m=b,r=0);return b},update:function(){l=this.end()}}};"object"===typeof mo
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54608,13 +54619,13 @@ exports.default = void 0;
 
 var THREE = _interopRequireWildcard(__webpack_require__(0));
 
-var _curlNoise = _interopRequireDefault(__webpack_require__(10));
+var _curlNoise = _interopRequireDefault(__webpack_require__(11));
 
-var _ErrorGui = _interopRequireDefault(__webpack_require__(12));
+var _ErrorGui = _interopRequireDefault(__webpack_require__(13));
 
-var _OuterWall = _interopRequireDefault(__webpack_require__(17));
+var _OuterWall = _interopRequireDefault(__webpack_require__(18));
 
-var _MailGui = _interopRequireDefault(__webpack_require__(20));
+var _MailGui = _interopRequireDefault(__webpack_require__(21));
 
 var _gsap = __webpack_require__(1);
 
@@ -54628,9 +54639,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var errorVertex = __webpack_require__(23);
+var errorVertex = __webpack_require__(24);
 
-var errorFragment = __webpack_require__(24); // const
+var errorFragment = __webpack_require__(25); // const
 
 
 var SceneCrashme =
@@ -54722,6 +54733,7 @@ function () {
           },
           scale: this.backgroundScale
         },
+        // side:THREE.DoubleSide,
         vertexShader: errorVertex,
         fragmentShader: errorFragment,
         visible: this.manager.gui.values.visibleDancingErrors
@@ -54848,12 +54860,28 @@ function () {
       this.manager.gui.visibleDancingErrors.onChange(function (e) {
         _this.errorGui.material.visible = e;
       });
+      var rad = Math.PI * 2 / 4;
+      var radius = 100;
 
-      for (var _i2 = 0; _i2 < 1; _i2++) {
-        var o = new _OuterWall.default(this.manager.gui, 400, 100, 60, 30);
+      for (var _i2 = 0; _i2 < 4; _i2++) {
+        var r = rad * _i2;
+
+        var _y = Math.cos(r) * radius;
+
+        var _z = Math.sin(r) * radius;
+
+        var _x = 0;
+        var o = new _OuterWall.default(this.manager.gui, radius, radius * 2, 60, 30, this.curlNoise);
         this.outerWalls.push(o);
         o.getMesh().material.visible = this.manager.gui.values.visibleOuterWalls;
-        this.scene.add(o.getMesh());
+        o.getMesh().position.set(_x, _y, _z);
+        o.getMesh().rotateX(r + Math.PI / 2);
+        this.scene.add(o.getMesh()); // let g = new THREE.PlaneGeometry(200,100);
+        // let m = new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true});
+        // let me = new THREE.Mesh(g,m);
+        // me.position.set(x,y,z);
+        // me.rotateX(r+Math.PI/2);
+        // this.scene.add(me);
       }
 
       this.manager.gui.visibleOuterWalls.onChange(function (e) {
@@ -55018,7 +55046,7 @@ function () {
 exports.default = SceneCrashme;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55039,7 +55067,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var SimplexNoise = __webpack_require__(11); // console.log(SimplexNoise);
+var SimplexNoise = __webpack_require__(12); // console.log(SimplexNoise);
 
 
 var Curlnoise =
@@ -55098,7 +55126,7 @@ function () {
 exports.default = Curlnoise;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -55521,7 +55549,7 @@ if (true) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55544,11 +55572,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var vertex = __webpack_require__(14);
+var vertex = __webpack_require__(15);
 
-var fragment = __webpack_require__(15);
+var fragment = __webpack_require__(16);
 
-var fragment_color = __webpack_require__(16);
+var fragment_color = __webpack_require__(17);
 
 var ErrorGuiAnimationSettings =
 /*#__PURE__*/
@@ -55724,7 +55752,8 @@ function () {
       var matSides = new THREE.ShaderMaterial({
         uniforms: sideUniforms,
         fragmentShader: fragment_color,
-        vertexShader: vertex
+        vertexShader: vertex,
+        visible: this.gui.values.visibleErrors
       });
       var mats = [matSides, matSides, matSides, matSides, mat, matSides];
       this.mesh = new THREE.Mesh(geo, mats);
@@ -55900,7 +55929,7 @@ function () {
 exports.default = ErrorGui;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 var g;
@@ -55927,25 +55956,25 @@ module.exports = g;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vPosition;\r\nuniform vec3 modified;\r\nuniform float scale;\r\nvoid main() {\r\n    vPosition = position;\r\n    vPosition *= scale;\r\n    vPosition += modified;\r\n    vNormal = normal;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\r\n}"
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nuniform sampler2D gradMap;\r\nvarying vec3 vPosition;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform bool isWire;\r\nuniform float width;\r\n\r\nuniform float height;\r\nuniform vec3 modified;\r\nuniform float scale;\r\nvoid main() {\r\n\r\n    vec3 texColor = texture2D( map, vUv ).xyz;\r\n    vec3 gradColor = texture2D( gradMap, vUv ).xyz;\r\n\r\n    vec3 result = texColor;\r\n    if(isWire)\r\n    {\r\n        result = gradColor;\r\n\r\n        if(abs(vPosition.x-modified.x) < width*scale * 0.487)\r\n        {\r\n            if(abs(vPosition.y-modified.y) < height*scale * 0.473)\r\n            {\r\n\r\n                discard;\r\n            }\r\n        }\r\n    }\r\n    gl_FragColor =vec4(result , 1.);\r\n\r\n}"
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\r\nvarying vec3 vPosition;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform bool isWire;\r\nuniform float width;\r\n\r\nuniform float height;\r\nuniform vec3 modified;\r\nuniform float scale;\r\nuniform vec3 u_color;\r\nvoid main() {\r\n\r\n\r\n    if(isWire)\r\n    {\r\n        discard;\r\n\r\n    }\r\n    gl_FragColor =vec4(u_color , 1.);\r\n\r\n}"
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55968,14 +55997,14 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var vertex = __webpack_require__(18);
+var vertex = __webpack_require__(19);
 
-var fragment = __webpack_require__(19);
+var fragment = __webpack_require__(20);
 
 var OuterWall =
 /*#__PURE__*/
 function () {
-  function OuterWall(gui, width, height, xSize, ySize) {
+  function OuterWall(gui, width, height, xSize, ySize, curlNoise) {
     var _this = this;
 
     _classCallCheck(this, OuterWall);
@@ -56001,6 +56030,8 @@ function () {
       }
     };
 
+    this.curlNoise = curlNoise;
+    console.log(this.curlNoise);
     this.gui = gui;
     this.mesh;
     this.uniforms = {};
@@ -56035,20 +56066,36 @@ function () {
       var yStep = this.height / this.ySize;
       var xStep = this.width / 12 / 5; // let maxWidth = 60;
 
+      var counter = 0;
+      var time = new Date().getMilliseconds();
+
       for (var y = 0; y < this.ySize; y++) {
         var widthCount = 0;
+        var seedStep = Math.random() * 0.001;
+        var preX = 0;
+        var preY = 0;
 
         while (widthCount < this.width) {
+          counter += 0.002 + seedStep;
+
+          var _y = y * yStep - this.height / 2 + yStep / 2;
+
           var pre = widthCount;
-          var width = Math.floor(Math.random() * xStep * 3) + Math.floor(xStep * 2);
-          console.log(width);
+          var noise = this.curlNoise.getCurlNoise(new THREE.Vector3(preX * 0.01, preY * 0.01, counter)); // console.log(noise);
+
+          noise.x = Math.abs(noise.x * 0.5); // noise.y = Math.abs(noise.y);
+          // noise.z = Math.abs(noise.z);
+          // noise = Math.min(noise,)
+
+          var width = Math.floor(noise.x * xStep * 3); // console.log(width);
+
           colors.push(Math.random(), Math.random(), Math.random());
 
           if (widthCount + width > this.width) {
             width -= widthCount + width - this.width;
           }
 
-          if (this.width - (widthCount + width) < Math.floor(xStep * 2)) {
+          if (this.width - (widthCount + width) < Math.floor(xStep * 1)) {
             width += this.width - (widthCount + width);
           }
 
@@ -56056,11 +56103,11 @@ function () {
 
           var _x = pre + width / 2 - this.width / 2;
 
-          var _y = y * yStep - this.height / 2;
-
           var _z = 0;
           offsets.push(_x, _y, _z);
           scales.push(width, yStep);
+          preX = _x;
+          preY = _y;
         }
       } // console.log(scaleXs);
 
@@ -56079,7 +56126,8 @@ function () {
 
         },
         vertexShader: vertex,
-        fragmentShader: fragment
+        fragmentShader: fragment,
+        side: THREE.DoubleSide
       });
       this.mesh = new THREE.Mesh(geometry, material);
     }
@@ -56099,19 +56147,19 @@ function () {
 exports.default = OuterWall;
 
 /***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-module.exports = "precision highp float;\r\n\r\nattribute vec3 offset;\r\nattribute vec3 color;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vColor;\r\nattribute vec2 scales;\r\nvarying vec3 vOffset;\r\n\r\n\r\nvoid main() {\r\n    vec3 vPosition = position;\r\n    vPosition.x *= scales.x;\r\n    vPosition.y *= scales.y;\r\n    vNormal = normal;\r\n    vOffset = offset;\r\n//    vNumber = offset.w;\r\n    vColor = color;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
-
-/***/ }),
 /* 19 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vOffset;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float width;\r\nuniform float threshold;\r\n//uniform float scale;\r\nvarying vec3 vColor;\r\n\r\nconst vec3 green = vec3(27./255.,225./255.,173./255.);\r\nconst vec3 purple = vec3(125./255.,31./255.,164./255.);\r\nvoid main() {\r\n\r\n    vec3 color = vec3(1.);\r\n\r\n    float d = vOffset.x / (threshold*width)+0.5;\r\n    color = mix(green,purple,d);\r\n    if(vOffset.x > threshold*width - width/2.)\r\n    {\r\n        discard;\r\n    }\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
+module.exports = "precision highp float;\r\n\r\nattribute vec3 offset;\r\nattribute vec3 color;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vColor;\r\nattribute vec2 scales;\r\nvarying vec3 vOffset;\r\n\r\nvarying vec3 vPosition;\r\nvoid main() {\r\n    vPosition = position;\r\n    vPosition.x *= scales.x;\r\n    vPosition.y *= scales.y;\r\n    vNormal = normal;\r\n    vOffset = offset;\r\n//    vNumber = offset.w;\r\n    vColor = color;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
 
 /***/ }),
 /* 20 */
+/***/ (function(module, exports) {
+
+module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vOffset;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float width;\r\nuniform float threshold;\r\n//uniform float scale;\r\nvarying vec3 vColor;\r\nvarying vec3 vPosition;\r\nconst vec3 green = vec3(27./255.,225./255.,173./255.);\r\nconst vec3 purple = vec3(125./255.,31./255.,164./255.);\r\nvoid main() {\r\n\r\n    vec3 color = vec3(1.);\r\n\r\n    float d = vOffset.x / (threshold*width)+0.5;\r\n    color = mix(green,purple,d);\r\n    if(vOffset.x > threshold*width - width/2.)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    if(vPosition.x > 0.)\r\n    {\r\n        color *= 0.8;\r\n    }\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56134,9 +56182,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var vertex = __webpack_require__(21);
+var vertex = __webpack_require__(22);
 
-var fragment = __webpack_require__(22);
+var fragment = __webpack_require__(23);
 
 var MailGui =
 /*#__PURE__*/
@@ -56290,31 +56338,31 @@ function () {
 exports.default = MailGui;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vPosition;\r\n\r\nvoid main() {\r\n    vPosition = position;\r\n    vNormal = normal;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\r\n}"
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = "\r\n\r\nprecision highp float;\r\n\r\n\r\nvec3 mod289(vec3 x) {\r\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\r\n}\r\n\r\nvec4 mod289(vec4 x) {\r\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\r\n}\r\n\r\nvec4 permute(vec4 x) {\r\n     return mod289(((x*34.0)+1.0)*x);\r\n}\r\n\r\nvec4 taylorInvSqrt(vec4 r)\r\n{\r\n  return 1.79284291400159 - 0.85373472095314 * r;\r\n}\r\n\r\n\r\nfloat snoise(vec3 v)\r\n  {\r\n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\r\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\r\n\r\n// First corner\r\n  vec3 i  = floor(v + dot(v, C.yyy) );\r\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\r\n\r\n// Other corners\r\n  vec3 g = step(x0.yzx, x0.xyz);\r\n  vec3 l = 1.0 - g;\r\n  vec3 i1 = min( g.xyz, l.zxy );\r\n  vec3 i2 = max( g.xyz, l.zxy );\r\n\r\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\r\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\r\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\r\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\r\n  vec3 x1 = x0 - i1 + C.xxx;\r\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\r\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\r\n\r\n// Permutations\r\n  i = mod289(i);\r\n  vec4 p = permute( permute( permute(\r\n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\r\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))\r\n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\r\n\r\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\r\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\r\n  float n_ = 0.142857142857; // 1.0/7.0\r\n  vec3  ns = n_ * D.wyz - D.xzx;\r\n\r\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\r\n\r\n  vec4 x_ = floor(j * ns.z);\r\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\r\n\r\n  vec4 x = x_ *ns.x + ns.yyyy;\r\n  vec4 y = y_ *ns.x + ns.yyyy;\r\n  vec4 h = 1.0 - abs(x) - abs(y);\r\n\r\n  vec4 b0 = vec4( x.xy, y.xy );\r\n  vec4 b1 = vec4( x.zw, y.zw );\r\n\r\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\r\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\r\n  vec4 s0 = floor(b0)*2.0 + 1.0;\r\n  vec4 s1 = floor(b1)*2.0 + 1.0;\r\n  vec4 sh = -step(h, vec4(0.0));\r\n\r\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\r\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\r\n\r\n  vec3 p0 = vec3(a0.xy,h.x);\r\n  vec3 p1 = vec3(a0.zw,h.y);\r\n  vec3 p2 = vec3(a1.xy,h.z);\r\n  vec3 p3 = vec3(a1.zw,h.w);\r\n\r\n//Normalise gradients\r\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\r\n  p0 *= norm.x;\r\n  p1 *= norm.y;\r\n  p2 *= norm.z;\r\n  p3 *= norm.w;\r\n\r\n// Mix final noise value\r\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\r\n  m = m * m;\r\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),\r\n                                dot(p2,x2), dot(p3,x3) ) );\r\n  }\r\n\r\nvec3 snoiseVec3( vec3 x ){\r\n\r\n  float s  = snoise(vec3( x ));\r\n  float s1 = snoise(vec3( x.y - 19.1 , x.z + 33.4 , x.x + 47.2 ));\r\n  float s2 = snoise(vec3( x.z + 74.2 , x.x - 124.5 , x.y + 99.4 ));\r\n  vec3 c = vec3( s , s1 , s2 );\r\n  return c;\r\n\r\n}\r\n\r\n\r\nvec3 curlNoise( vec3 p ){\r\n\r\n  const float e = .1;\r\n  vec3 dx = vec3( e   , 0.0 , 0.0 );\r\n  vec3 dy = vec3( 0.0 , e   , 0.0 );\r\n  vec3 dz = vec3( 0.0 , 0.0 , e   );\r\n\r\n  vec3 p_x0 = snoiseVec3( p - dx );\r\n  vec3 p_x1 = snoiseVec3( p + dx );\r\n  vec3 p_y0 = snoiseVec3( p - dy );\r\n  vec3 p_y1 = snoiseVec3( p + dy );\r\n  vec3 p_z0 = snoiseVec3( p - dz );\r\n  vec3 p_z1 = snoiseVec3( p + dz );\r\n\r\n  float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;\r\n  float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;\r\n  float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;\r\n\r\n  const float divisor = 1.0 / ( 2.0 * e );\r\n  return normalize( vec3( x , y , z ) * divisor );\r\n\r\n}\r\n\r\n\r\nvarying vec2 vUv;\r\nuniform sampler2D gradationTex;\r\nuniform sampler2D colorNoise;\r\nuniform sampler2D map;\r\nuniform float threshold;\r\nuniform float width;\r\nvarying vec3 vPosition;\r\nvoid main() {\r\n\r\n\r\n    vec4 grad = texture2D( gradationTex, vUv );\r\n \tfloat zr = 1.0-texture2D( gradationTex, vUv ).x;\r\n\r\n    // sample neighbor pixels\r\n\tfloat ao = 0.0;\r\n\tfor( int i=0; i<8; i++ )\r\n\t{\r\n        vec2 off = -1.0 + 2.0*texture2D( colorNoise, (gl_FragCoord.xy + 23.71*float(i))/vec2(256.,256.) ).xz;\r\n\r\n        float z = 1.0-texture2D( gradationTex, (gl_FragCoord.xy + floor(off*16.0))/vec2(50.,25).xy ).x;\r\n        ao += clamp( (zr-z)/0.1, 0.0, 1.0);\r\n\t}\r\n    // average down the occlusion\r\n    ao = clamp( 1.0 - ao/8.0, 0.1, 0.5 );\r\n\r\n\tvec3 col = vec3(ao);\r\n\r\n\r\n    vec4 noisetex = 1.0-texture2D( colorNoise, vUv*4. );\r\n\r\n\r\n\r\n    if(noisetex.x > 0.5)\r\n    {\r\n        noisetex.x = 0.2;\r\n    }\r\n\r\n\r\n    float t_noise = snoise(vec3(vUv.xy,threshold)*1.5);\r\n    float threshold_x = -(threshold+t_noise*0.03)*width*2. +width;\r\n    if(vPosition.x < threshold_x)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    float d = distance(vPosition.xy, vec2(threshold_x,vPosition.y));\r\n\r\n    d = clamp(d,0.,3.);\r\n    d = d/3.;\r\n\r\n    if(d< 1.0)\r\n    {\r\n        if(snoise(vec3(vPosition.xy,d)*1.0) > 0.)\r\n        {\r\n            discard;\r\n        }\r\n    }\r\n\r\n\r\n    vec4 map = texture2D( map, vUv);\r\n    vec3 result = grad.xyz+noisetex.x*0.3;\r\n    result = mix(result, map.xyz,map.a);\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n    gl_FragColor =vec4(result,d);\r\n\r\n}"
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\r\n//uniform mat4 modelViewMatrix;\r\n//uniform mat4 projectionMatrix;\r\n//attribute vec3 position;\r\nattribute vec4 offset;\r\n//attribute vec3 normal;\r\n//attribute int number;\r\nvarying float vNumber;\r\n//attribute vec2 uv;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvoid main() {\r\n    vec3 vPosition = position;\r\n    vNormal = normal;\r\n    vNumber = offset.w;\r\n//    vec3 vcV = cross( orientation.xyz, vPosition );\r\n//    vPosition = vcV * ( 2.0 * orientation.w ) + ( cross( orientation.xyz, vcV ) * 2.0 + vPosition );\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float scale;\r\nvoid main() {\r\n\r\n    float diffuse  = clamp(dot(vNormal, vec3(0.,0.,1.)), 0.1, 1.0);\r\n    vec3 color = vec3(1.);\r\n//    if(diffuse > 0.1)\r\n//    {\r\n////        color = texture2D( map, vUv ).xyz;\r\n//        color = vec3(0.7,1.,0.7);\r\n//    }\r\n//    {\r\n//        color = vec3(1.0,0.7,0.7);\r\n////        color = vNormal;\r\n//    }\r\n\r\n//gl_FragColor = texture2D( map, vUv );\r\n    vec3 texColor = texture2D( map, vUv ).xyz;\r\n//    vec3 gradationColor = vec3(142./255.,201./255.,219./255.);\r\n    float per = (vNumber+1.)/20.;\r\n    color = mix(gradationColor,texColor,per);\r\n    color = mix(color,texColor,scale);\r\n\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
