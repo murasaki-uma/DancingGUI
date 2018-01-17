@@ -115,6 +115,7 @@ export default class ErrorGui
             uniforms:sideUniforms,
             fragmentShader:fragment_color,
             vertexShader:vertex,
+            visible:this.gui.values.visibleErrors,
         });
 
         let mats = [

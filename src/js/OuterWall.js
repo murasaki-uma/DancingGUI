@@ -51,7 +51,7 @@ export default class OuterWall{
         // let maxWidth = 60;
         let counter = 0;
         let time = new Date().getMilliseconds();
-        for ( let y = 1; y <= this.ySize; y ++ ) {
+        for ( let y = 0; y < this.ySize; y ++ ) {
             let widthCount = 0;
             let seedStep = Math.random()*0.001;
             let preX = 0;
@@ -59,7 +59,7 @@ export default class OuterWall{
            while (widthCount < this.width){
 
                counter += 0.002+seedStep;
-               let _y = y*yStep - this.height/2;
+               let _y = y*yStep - this.height/2 + yStep/2;
 
 
                let pre = widthCount;
