@@ -16,6 +16,8 @@ export default class DancingErrors
         this.arrayErrorGuiPos = [];
         this.instanceCount = 20;
         this.errorGuiInterval = {value:0.0};
+        this.errorOffsetAttribute;
+        this.backgroundScale = {value:1.0};
         this.errors = [];
         this.time = 0;
         this.init();
@@ -114,12 +116,24 @@ export default class DancingErrors
             value : 1.0,
             ease :Power2.easeInOut
         });
+
+        TweenMax.to(this.backgroundScale , 4.0 , {
+            value : 1.0,
+            // delay : 0.5,
+            ease :Power2.easeInOut
+        });
     }
 
     animationStart()
     {
         TweenMax.to(this.errorGuiInterval , 1.5 , {
             value : this.manager.gui.values.errorGuiInterval,
+            // delay : 0.5,
+            ease :Power2.easeInOut
+        });
+
+        TweenMax.to(this.backgroundScale , 4.0 , {
+            value : 0.001,
             // delay : 0.5,
             ease :Power2.easeInOut
         });
@@ -163,9 +177,9 @@ export default class DancingErrors
             this.errorOffsetAttribute.array[(19-i)*4+1] = this.arrayErrorGuiPos[i].y;
             this.errorOffsetAttribute.array[(19-i)*4+2] = -(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i;
 
-
-
         }
+
+        this.errorOffsetAttribute.needsUpdate = true;
 
     }
 
