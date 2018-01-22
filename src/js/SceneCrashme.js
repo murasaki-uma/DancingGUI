@@ -360,6 +360,8 @@ export default class SceneCrashme{
         this.camera.lookAt(this.cameraLookAt);
 
         this.camera.updateProjectionMatrix();
+
+        
         this.time ++;
         let p = this.curlNoise.getCurlNoise(new THREE.Vector3(
             this.errorOffsetAttribute.array[0]*0.011,
@@ -390,8 +392,6 @@ export default class SceneCrashme{
             this.errorOffsetAttribute.array[(19-i)*4] = this.arrayErrorGuiPos[i].x;
             this.errorOffsetAttribute.array[(19-i)*4+1] = this.arrayErrorGuiPos[i].y;
             this.errorOffsetAttribute.array[(19-i)*4+2] = -(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i;
-
-
 
         }
 
