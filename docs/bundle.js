@@ -53235,6 +53235,10 @@ function () {
 
     _classCallCheck(this, SceneManager);
 
+    this.mouseMove = function (e) {
+      _this.scenes[_this.sceneNum].mouseMove(e);
+    };
+
     this.update = function () {
       requestAnimationFrame(_this.update);
       _this.frameCount++; // if(this.frameCount % 2 == 0) { return; }
@@ -53287,6 +53291,7 @@ function () {
       window.addEventListener('resize', this.onWindowResize.bind(this));
       window.addEventListener('keydown', this.onKeyDown.bind(this));
       window.addEventListener('click', this.onClick.bind(this), false);
+      window.addEventListener('mousemove', this.mouseMove);
       var controls = new THREE.OrbitControls(this.debugCamera);
       controls.enableKeys = false;
       this.onWindowResize();
@@ -54548,6 +54553,7 @@ function () {
     this.visibles = this.gui.addFolder('visibles');
     this.animationSettings = this.gui.addFolder('animation settings');
     this.cameraAnimation = this.gui.addFolder('camera animation');
+    this.dancingErrors = this.gui.addFolder('dancing errors');
     this.errorGui = this.gui.addFolder('error gui');
     this.background = this.gui.addFolder('background');
     this.visibleOuterWalls;
@@ -54572,17 +54578,25 @@ function () {
       this.visibleErrors = this.visibles.add(this.values, 'visibleErrors');
       this.visibleMail = this.visibles.add(this.values, 'visibleMail');
       this.errorsLoiter = this.animationSettings.add(this.values, 'errorsLoiter');
-      this.cameraAnimation.add(this.values, 'cameraAnimeation01PosX', -150, 150);
-      this.cameraAnimation.add(this.values, 'cameraAnimeation01PosY', -150, 150);
-      this.cameraAnimation.add(this.values, 'cameraAnimeation01PosZ', -150, 150);
+      this.cameraAnimation.add(this.values, 'cameraAnimeation01PosX', -250, 250);
+      this.cameraAnimation.add(this.values, 'cameraAnimeation01PosY', -250, 250);
+      this.cameraAnimation.add(this.values, 'cameraAnimeation01PosZ', -250, 250);
       this.cameraAnimation.add(this.values, 'cameraAnimeation01LookX', -150, 150);
       this.cameraAnimation.add(this.values, 'cameraAnimeation01LookY', -150, 150);
       this.cameraAnimation.add(this.values, 'cameraAnimeation01LookZ', -150, 150);
       this.background.add(this.values, 'backgroundAnimationX', -150, 150);
       this.background.add(this.values, 'backgroundAnimationY', -150, 150);
       this.background.add(this.values, 'backgroundAnimationZ', -1000, 500);
-      this.errorGui.add(this.values, 'errorGuiInterval', 0.80);
-      this.errorGuiColor = this.errorGui.addColor(this.values, 'errorGuiColor');
+      this.dancingErrors.add(this.values, 'errorGuiInterval', 0.80);
+      this.errorGuiColor = this.dancingErrors.addColor(this.values, 'errorGuiColor');
+      this.dancingErrors.add(this.values, 'dancingErrorOffsetX', -20.0, 20.0);
+      this.dancingErrors.add(this.values, 'dancingErrorOffsetY', -20.0, 20.0);
+      this.dancingErrors.add(this.values, 'dancingErrorNoiseScaleX', 0.0, 0.1);
+      this.dancingErrors.add(this.values, 'dancingErrorNoiseScaleY', 0.0, 0.1);
+      this.dancingErrors.add(this.values, 'dancingErrorWorkAreaWidth', 0.0, 10.0);
+      this.dancingErrors.add(this.values, 'dancingErrorWorkAreaHeight', 0.0, 10.0);
+      this.dancingErrors.add(this.values, 'dancingErrorTrackAreaWidth', 0.0, 50.0);
+      this.dancingErrors.add(this.values, 'dancingErrorTrackAreaHeight', 0.0, 50.0);
       this.errorGuiSide = this.errorGui.addColor(this.values, 'errorGuiSide');
       this.errorGuiBack = this.errorGui.addColor(this.values, 'errorGuiBack');
       this.errorGui.add(this.values, 'errorPopUpRangeX_min', -300, 300);
@@ -54641,6 +54655,14 @@ var guiValues = function guiValues() {
   this.cameraAnimeation01LookX = 0.0;
   this.cameraAnimeation01LookY = 0.0;
   this.cameraAnimeation01LookZ = 0.0;
+  this.dancingErrorWorkAreaWidth = 5;
+  this.dancingErrorWorkAreaHeight = 7;
+  this.dancingErrorTrackAreaWidth = 5;
+  this.dancingErrorTrackAreaHeight = 7;
+  this.dancingErrorNoiseScaleX = 0.01;
+  this.dancingErrorNoiseScaleY = 0.01;
+  this.dancingErrorOffsetX = 0;
+  this.dancingErrorOffsetY = 0;
   this.errorGuiInterval = 20;
   this.errorGuiColor = [0, 128, 255];
   this.errorGuiSide = [0, 128, 255];
@@ -54668,7 +54690,7 @@ exports.default = guiValues;
 /* 9 */
 /***/ (function(module, exports) {
 
-module.exports = {"preset":"Default","remembered":{"Default":{"0":{"visibleOuterWalls":false,"visibleBackground":true,"visibleDancingErrors":true,"visibleErrors":false,"visibleMail":false,"errorsLoiter":false,"cameraAnimeation01PosX":-62.35286542176432,"cameraAnimeation01PosY":0,"cameraAnimeation01PosZ":143.37025112685126,"cameraAnimeation01LookX":24.68383773341921,"cameraAnimeation01LookY":0,"cameraAnimeation01LookZ":0,"backgroundAnimationX":0,"backgroundAnimationY":0,"backgroundAnimationZ":-50,"errorGuiInterval":20,"errorGuiColor":[0,255,223.06396016851787],"errorGuiSide":[33.9241382355327,129.64860206817312,123.2254208872162],"errorGuiBack":[0,128,255],"errorPopUpRangeX_min":-70.30779137153897,"errorPopUpRangeX_max":-10.964584674822902,"errorPopUpRangeY_min":-41.568576947842885,"errorPopUpRangeY_max":-34.70186735350933,"errorPopUpRangeZ_min":0,"errorPopUpRangeZ_max":0,"diffErrorPosX":78.44043786220219,"diffErrorPosY":46.79072762395364,"diffErrorPosZ":0,"errorPopUpDuration":0.5,"gradThreshold":0,"gradThresholdDulation":2}}},"closed":false,"folders":{"visibles":{"preset":"Default","closed":false,"folders":{}},"animation settings":{"preset":"Default","closed":true,"folders":{}},"camera animation":{"preset":"Default","closed":false,"folders":{}},"error gui":{"preset":"Default","closed":false,"folders":{}},"background":{"preset":"Default","closed":true,"folders":{}}}}
+module.exports = {"preset":"Default","remembered":{"Default":{"0":{"visibleOuterWalls":false,"visibleBackground":true,"visibleDancingErrors":true,"visibleErrors":true,"visibleMail":false,"errorsLoiter":true,"cameraAnimeation01PosX":-125.38123705021472,"cameraAnimeation01PosY":0,"cameraAnimeation01PosZ":111.98791189045085,"cameraAnimeation01LookX":3.8943074167596876,"cameraAnimeation01LookY":0,"cameraAnimeation01LookZ":0,"backgroundAnimationX":0,"backgroundAnimationY":0,"backgroundAnimationZ":-50,"errorGuiInterval":20,"errorGuiColor":[0,255,223.06396016851787],"dancingErrorOffsetX":0,"dancingErrorOffsetY":0,"dancingErrorNoiseScaleX":0.01,"dancingErrorNoiseScaleY":0.01,"dancingErrorWorkAreaWidth":3.4154734804696565,"dancingErrorWorkAreaHeight":3.2836017310581758,"dancingErrorTrackAreaWidth":45.42979352581667,"dancingErrorTrackAreaHeight":47.078190393460176,"errorGuiSide":[33.9241382355327,129.64860206817312,123.2254208872162],"errorGuiBack":[0,128,255],"errorPopUpRangeX_min":-70.30779137153897,"errorPopUpRangeX_max":-10.964584674822902,"errorPopUpRangeY_min":-41.568576947842885,"errorPopUpRangeY_max":-34.70186735350933,"errorPopUpRangeZ_min":0,"errorPopUpRangeZ_max":0,"diffErrorPosX":78.44043786220219,"diffErrorPosY":46.79072762395364,"diffErrorPosZ":0,"errorPopUpDuration":0.5,"gradThreshold":0,"gradThresholdDulation":2}}},"closed":false,"folders":{"visibles":{"preset":"Default","closed":false,"folders":{}},"animation settings":{"preset":"Default","closed":false,"folders":{}},"camera animation":{"preset":"Default","closed":false,"folders":{}},"dancing errors":{"preset":"Default","closed":false,"folders":{}},"error gui":{"preset":"Default","closed":true,"folders":{}},"background":{"preset":"Default","closed":true,"folders":{}}}}
 
 /***/ }),
 /* 10 */
@@ -54725,7 +54747,17 @@ var SceneCrashme =
 /*#__PURE__*/
 function () {
   function SceneCrashme(manager) {
+    var _this = this;
+
     _classCallCheck(this, SceneCrashme);
+
+    this.mouseMove = function (e) {
+      // for(let i = 0; i < this.dancingErrors.length; i++)
+      // {
+      //
+      // }
+      _this.dancingErrors.mouseMove(e);
+    };
 
     this.manager = manager;
     this.scene = new THREE.Scene();
@@ -54747,7 +54779,7 @@ function () {
   _createClass(SceneCrashme, [{
     key: "init",
     value: function init() {
-      var _this = this;
+      var _this2 = this;
 
       this.camera.position.set(0, 0, 100);
       this.camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -54759,7 +54791,7 @@ function () {
       this.backgroundPlane.position.set(0, 0, -5);
       this.scene.add(this.backgroundPlane);
       this.manager.gui.visibleBackground.onChange(function (e) {
-        _this.backgroundPlane.material.visible = e;
+        _this2.backgroundPlane.material.visible = e;
       });
       this.scene.add(this.dancingErrors.getMesh());
       var gp = new _MailGui.default(47.3, 22.8, this.manager.gui);
@@ -54771,7 +54803,7 @@ function () {
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = _this.mails[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (var _iterator = _this2.mails[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var _m = _step.value;
             _m.getMesh().material.visible = e;
           }
@@ -54807,7 +54839,7 @@ function () {
         var _iteratorError2 = undefined;
 
         try {
-          for (var _iterator2 = _this.errors[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          for (var _iterator2 = _this2.errors[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
             var _error2 = _step2.value;
 
             _error2.sideColor.value.setRGB(e[0] / 255, e[1] / 255, e[2] / 255);
@@ -54833,7 +54865,7 @@ function () {
         var _iteratorError3 = undefined;
 
         try {
-          for (var _iterator3 = _this.errors[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          for (var _iterator3 = _this2.errors[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
             var _error4 = _step3.value;
             var _iteratorNormalCompletion4 = true;
             var _didIteratorError4 = false;
@@ -54891,8 +54923,8 @@ function () {
       }
 
       this.manager.gui.visibleOuterWalls.onChange(function (e) {
-        for (var _i2 = 0; _i2 < _this.outerWalls.length; _i2++) {
-          _this.outerWalls[_i2].getMesh().material.visible = e;
+        for (var _i2 = 0; _i2 < _this2.outerWalls.length; _i2++) {
+          _this2.outerWalls[_i2].getMesh().material.visible = e;
         }
       });
     }
@@ -54940,7 +54972,7 @@ function () {
         x: this.manager.gui.values.cameraAnimeation01PosX,
         y: this.manager.gui.values.cameraAnimeation01PosY,
         z: this.manager.gui.values.cameraAnimeation01PosZ,
-        // delay : 0.5 ,
+        delay: 0.5,
         ease: _gsap.Power2.easeInOut
       });
 
@@ -54948,7 +54980,7 @@ function () {
         x: this.manager.gui.values.cameraAnimeation01LookX,
         y: this.manager.gui.values.cameraAnimeation01LookY,
         z: this.manager.gui.values.cameraAnimeation01LookZ,
-        // delay : 0.5,
+        delay: 0.5,
         ease: _gsap.Power2.easeInOut
       });
 
@@ -54961,7 +54993,7 @@ function () {
       });
 
       _gsap.TweenMax.to(this.backgroundScale, 4.0, {
-        value: 0.001,
+        value: 0.00001,
         // delay : 0.5,
         ease: _gsap.Power2.easeInOut
       });
@@ -55558,6 +55590,10 @@ function () {
       if (e.key == 'r') {
         _this.reset();
       }
+
+      if (e.key == 'l') {
+        _this.isAnimationLoop = false;
+      }
     };
 
     this.gui = gui;
@@ -55593,6 +55629,7 @@ function () {
     this.sideColor = {
       value: new THREE.Color()
     };
+    this.isAnimationLoop = true;
     this.init();
   }
 
@@ -55719,7 +55756,9 @@ function () {
           _this3.uniforms.isWire.value = false;
 
           if (_this3.animationSettings.get("Loiter")) {
-            _this3.start();
+            if (_this3.isAnimationLoop) {
+              _this3.start();
+            }
           }
 
           if (_this3.animationSettings.get("ScaleDown")) {
@@ -55760,7 +55799,9 @@ function () {
         onComplete: function onComplete() {
           _this4.reset();
 
-          _this4.start();
+          if (_this4.isAnimationLoop) {
+            _this4.start();
+          }
         }
       });
     }
@@ -56114,6 +56155,10 @@ function () {
     };
     this.errors = [];
     this.time = 0;
+    this.isMouseMove = false;
+    this.walkAreaScale = 0.0;
+    this.mousePos = new THREE.Vector2(0.0);
+    this.trackedPos = new THREE.Vector2(0.0);
     this.init();
   }
 
@@ -56124,7 +56169,7 @@ function () {
 
       var texture = new THREE.TextureLoader().load('img/errorgui.png');
       var instances = this.instanceCount;
-      var bufferGeometry = new THREE.BoxBufferGeometry(36, 13, 1); // copying data from a simple box geometry, but you can specify a custom geometry if you want
+      var bufferGeometry = new THREE.BoxBufferGeometry(36 * 0.7, 13 * 0.7, 1); // copying data from a simple box geometry, but you can specify a custom geometry if you want
 
       var geometry = new THREE.InstancedBufferGeometry();
       geometry.index = bufferGeometry.index;
@@ -56228,6 +56273,16 @@ function () {
       });
     }
   }, {
+    key: "mouseMove",
+    value: function mouseMove(e) {
+      var x = (e.x / window.innerWidth - 0.5) * 2;
+      var y = (e.y / window.innerHeight - 0.5) * 2;
+      console.log(x, y);
+      this.mousePos.x = x;
+      this.mousePos.y = y;
+      this.isMouseMove = true;
+    }
+  }, {
     key: "resetAnimation",
     value: function resetAnimation() {
       _gsap.TweenMax.to(this.errorGuiInterval, 1.0, {
@@ -56245,7 +56300,7 @@ function () {
     key: "animationStart",
     value: function animationStart() {
       _gsap.TweenMax.to(this.errorGuiInterval, 1.5, {
-        value: this.manager.gui.values.errorGuiInterval,
+        value: this.gui.values.errorGuiInterval,
         // delay : 0.5,
         ease: _gsap.Power2.easeInOut
       });
@@ -56264,10 +56319,31 @@ function () {
   }, {
     key: "update",
     value: function update() {
-      this.time++;
-      var p = this.curlNoise.getCurlNoise(new THREE.Vector3(this.errorOffsetAttribute.array[0] * 0.011, this.errorOffsetAttribute.array[1] * 0.011, this.time * 0.005)); // p.multiplyScalar(1.1);
+      if (this.isMouseMove) {
+        this.walkAreaScale += (0.0 - this.walkAreaScale) * 0.1;
+      } else {
+        this.walkAreaScale += (1.0 - this.walkAreaScale) * 0.1;
+      }
 
-      this.errorGuiPos.set(p.x * 5, p.z * 5, 0);
+      this.time++;
+      var xyscale = 0.010;
+      var p = this.curlNoise.getCurlNoise(new THREE.Vector3(this.errorOffsetAttribute.array[0] * this.gui.values.dancingErrorNoiseScaleX, this.errorOffsetAttribute.array[1] * this.gui.values.dancingErrorNoiseScaleY, this.time * 0.002)); // p.multiplyScalar(1.1);
+
+      this.trackedPos.x += (this.mousePos.x - this.trackedPos.x) * 0.05;
+      this.trackedPos.y += (this.mousePos.y - this.trackedPos.y) * 0.05;
+      /******
+        一定以上動いたかどうかでの判定のほうがよいかも。
+      ******/
+      // let mouseDiff = 1.0-this.trackedPos.distanceTo(this.mousePos);
+      // console.log(mouseDiff)*10.0;
+
+      var px = p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
+      var py = p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY;
+      var mousex = this.trackedPos.x * this.gui.values.dancingErrorTrackAreaWidth;
+      var mousey = -this.trackedPos.y * this.gui.values.dancingErrorTrackAreaHeight;
+      this.errorGuiPos.set( // px * this.walkAreaScale + mousex,
+      // py * this.walkAreaScale + mousey,
+      mousex + px, mousey + py, 0);
       this.arrayErrorGuiPos.unshift(this.errorGuiPos.clone()); // console.log(this.arrayErrorGuiPos.length);
 
       if (this.arrayErrorGuiPos.length > this.instanceCount) {
@@ -56276,13 +56352,16 @@ function () {
       // this.arrayErrorGuiPos.pop();
 
 
-      for (var i = 0; i < this.arrayErrorGuiPos.length; i++) {
-        this.errorOffsetAttribute.array[(19 - i) * 4] = this.arrayErrorGuiPos[i].x;
-        this.errorOffsetAttribute.array[(19 - i) * 4 + 1] = this.arrayErrorGuiPos[i].y;
-        this.errorOffsetAttribute.array[(19 - i) * 4 + 2] = -(this.errorGuiInterval.value / this.arrayErrorGuiPos.length) * i;
+      if (this.time % 2 == 0) {
+        for (var i = 0; i < this.arrayErrorGuiPos.length; i++) {
+          this.errorOffsetAttribute.array[(19 - i) * 4] = this.arrayErrorGuiPos[i].x;
+          this.errorOffsetAttribute.array[(19 - i) * 4 + 1] = this.arrayErrorGuiPos[i].y;
+          this.errorOffsetAttribute.array[(19 - i) * 4 + 2] = -(this.errorGuiInterval.value / this.arrayErrorGuiPos.length) * i;
+        }
       }
 
       this.errorOffsetAttribute.needsUpdate = true;
+      this.isMouseMove = false;
     }
   }]);
 
