@@ -22,8 +22,8 @@ export default class DancingErrors
         this.time = 0;
         this.isMouseMove = false;
         this.walkAreaScale  = 0.0;
-        this.mousePos = {x:0,y:0};
-        this.trackedPos = {x:0,y:0};
+        this.mousePos =  new THREE.Vector2(0.0);
+        this.trackedPos = new THREE.Vector2(0.0);
         this.init();
     }
 
@@ -182,9 +182,20 @@ export default class DancingErrors
         // p.multiplyScalar(1.1);
 
 
-        this.trackedPos.x += (this.mousePos.x - this.trackedPos.x) * 0.1;
-        this.trackedPos.y += (this.mousePos.y - this.trackedPos.y) * 0.1;
+        this.trackedPos.x += (this.mousePos.x - this.trackedPos.x) * 0.05;
+        this.trackedPos.y += (this.mousePos.y - this.trackedPos.y) * 0.05;
 
+
+
+        /******
+
+        一定以上動いたかどうかでの判定のほうがよいかも。
+        ******/
+
+
+
+        // let mouseDiff = 1.0-this.trackedPos.distanceTo(this.mousePos);
+        // console.log(mouseDiff)*10.0;
         let px =  p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
         let py = p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY;
 
