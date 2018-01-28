@@ -168,7 +168,11 @@ export default class SceneCrashme{
 
     mouseMove =(e)=>
     {
-
+        // for(let i = 0; i < this.dancingErrors.length; i++)
+        // {
+        //
+        // }
+        this.dancingErrors.mouseMove(e);
     }
 
     resetAnimation()

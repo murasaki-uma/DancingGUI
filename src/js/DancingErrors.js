@@ -20,6 +20,10 @@ export default class DancingErrors
         this.backgroundScale = {value:1.0};
         this.errors = [];
         this.time = 0;
+        this.isMouseMove = false;
+        this.walkAreaScale  = 0.0;
+        this.mousePos = {x:0,y:0};
+        this.trackedPos = {x:0,y:0};
         this.init();
     }
 
@@ -112,7 +116,15 @@ export default class DancingErrors
 
     mouseMove(e)
     {
+        let x = (e.x / window.innerWidth -0.5)*2;
+        let y = (e.y / window.innerHeight - 0.5)*2;
+        console.log(x,y);
 
+        this.mousePos.x = x;
+        this.mousePos.y = y;
+
+
+        this.isMouseMove = true;
     }
 
     resetAnimation()
@@ -151,6 +163,15 @@ export default class DancingErrors
 
     update()
     {
+
+
+        if(this.isMouseMove)
+        {
+            this.walkAreaScale +=(0.0 - this.walkAreaScale) * 0.1;
+        }
+        else {
+            this.walkAreaScale +=(1.0 - this.walkAreaScale) * 0.1;
+        }
         this.time ++;
         let xyscale = 0.010;
         let p = this.curlNoise.getCurlNoise(new THREE.Vector3(
@@ -160,9 +181,21 @@ export default class DancingErrors
         ));
         // p.multiplyScalar(1.1);
 
+
+        this.trackedPos.x += (this.mousePos.x - this.trackedPos.x) * 0.1;
+        this.trackedPos.y += (this.mousePos.y - this.trackedPos.y) * 0.1;
+
+        let px =  p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
+        let py = p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY;
+
+
+        let mousex = this.trackedPos.x * this.gui.values.dancingErrorTrackAreaWidth;
+        let mousey = -this.trackedPos.y * this.gui.values.dancingErrorTrackAreaHeight;
         this.errorGuiPos.set(
-            p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX,
-            p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY,
+            // px * this.walkAreaScale + mousex,
+            // py * this.walkAreaScale + mousey,
+            mousex + px,
+            mousey + py,
             0
         );
 
@@ -191,6 +224,9 @@ export default class DancingErrors
 
         this.errorOffsetAttribute.needsUpdate = true;
 
+        this.isMouseMove = false;
+
     }
+
 
 }

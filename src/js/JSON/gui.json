@@ -24,6 +24,14 @@
           255,
           223.06396016851787
         ],
+        "dancingErrorOffsetX": 0,
+        "dancingErrorOffsetY": 0,
+        "dancingErrorNoiseScaleX": 0.01,
+        "dancingErrorNoiseScaleY": 0.01,
+        "dancingErrorWorkAreaWidth": 3.4154734804696565,
+        "dancingErrorWorkAreaHeight": 3.2836017310581758,
+        "dancingErrorTrackAreaWidth": 45.42979352581667,
+        "dancingErrorTrackAreaHeight": 47.078190393460176,
         "errorGuiSide": [
           33.9241382355327,
           129.64860206817312,
@@ -66,9 +74,14 @@
       "closed": false,
       "folders": {}
     },
-    "error gui": {
+    "dancing errors": {
       "preset": "Default",
       "closed": false,
+      "folders": {}
+    },
+    "error gui": {
+      "preset": "Default",
+      "closed": true,
       "folders": {}
     },
     "background": {

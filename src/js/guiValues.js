@@ -20,6 +20,8 @@ export default class guiValues{
 
         this.dancingErrorWorkAreaWidth = 5;
         this.dancingErrorWorkAreaHeight = 7;
+        this.dancingErrorTrackAreaWidth = 5;
+        this.dancingErrorTrackAreaHeight = 7;
         this.dancingErrorNoiseScaleX = 0.01;
         this.dancingErrorNoiseScaleY = 0.01;
         this.dancingErrorOffsetX = 0;
