@@ -50,6 +50,7 @@ export default class SceneManager{
         window.addEventListener('resize',this.onWindowResize.bind(this));
         window.addEventListener('keydown', this.onKeyDown.bind(this));
         window.addEventListener( 'click', this.onClick.bind(this), false );
+        window.addEventListener('mousemove',this.mouseMove);
 
 
 
@@ -70,6 +71,12 @@ export default class SceneManager{
     {
         this.scenes.push(scene);
         this.cameraChange();
+    }
+
+    mouseMove=(e)=>
+    {
+
+        this.scenes[this.sceneNum].mouseMove(e);
     }
 
     onKeyDown(e)

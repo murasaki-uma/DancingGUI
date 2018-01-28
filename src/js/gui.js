@@ -22,6 +22,7 @@ export default class GUI{
 
         this.animationSettings= this.gui.addFolder('animation settings');
         this.cameraAnimation = this.gui.addFolder('camera animation');
+        this.dancingErrors = this.gui.addFolder('dancing errors');
         this.errorGui = this.gui.addFolder('error gui');
         this.background = this.gui.addFolder('background');
 
@@ -51,9 +52,9 @@ export default class GUI{
         this.visibleMail = this.visibles.add(this.values,'visibleMail');
         this.errorsLoiter = this.animationSettings.add(this.values,'errorsLoiter');
 
-        this.cameraAnimation.add(this.values,'cameraAnimeation01PosX',-150,150);
-        this.cameraAnimation.add(this.values,'cameraAnimeation01PosY',-150,150);
-        this.cameraAnimation.add(this.values,'cameraAnimeation01PosZ',-150,150);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosX',-250,250);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosY',-250,250);
+        this.cameraAnimation.add(this.values,'cameraAnimeation01PosZ',-250,250);
 
         this.cameraAnimation.add(this.values,'cameraAnimeation01LookX',-150,150);
         this.cameraAnimation.add(this.values,'cameraAnimeation01LookY',-150,150);
@@ -65,8 +66,14 @@ export default class GUI{
         this.background.add(this.values,'backgroundAnimationZ',-1000,500);
 
 
-        this.errorGui.add(this.values,'errorGuiInterval',0.80);
-        this.errorGuiColor = this.errorGui.addColor(this.values,'errorGuiColor');
+        this.dancingErrors.add(this.values,'errorGuiInterval',0.80);
+        this.errorGuiColor = this.dancingErrors.addColor(this.values,'errorGuiColor');
+        this.dancingErrors.add(this.values,'dancingErrorOffsetX',-20.0,20.0);
+        this.dancingErrors.add(this.values,'dancingErrorOffsetY',-20.0,20.0);
+        this.dancingErrors.add(this.values,'dancingErrorNoiseScaleX',0.0,0.1);
+        this.dancingErrors.add(this.values,'dancingErrorNoiseScaleY',0.0,0.1);
+        this.dancingErrors.add(this.values,'dancingErrorWorkAreaWidth',0.0,10.0);
+        this.dancingErrors.add(this.values,'dancingErrorWorkAreaHeight',0.0,10.0);
 
         this.errorGuiSide = this.errorGui.addColor(this.values,'errorGuiSide');
         this.errorGuiBack = this.errorGui.addColor(this.values,'errorGuiBack');

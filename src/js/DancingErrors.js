@@ -29,7 +29,7 @@ export default class DancingErrors
 
         let texture = new THREE.TextureLoader().load('img/errorgui.png');
         let instances = this.instanceCount;
-        let bufferGeometry = new THREE.BoxBufferGeometry( 36, 13, 1 );
+        let bufferGeometry = new THREE.BoxBufferGeometry( 36*0.7, 13*0.7, 1 );
         // copying data from a simple box geometry, but you can specify a custom geometry if you want
         let geometry = new THREE.InstancedBufferGeometry();
         geometry.index = bufferGeometry.index;
@@ -110,6 +110,11 @@ export default class DancingErrors
 
     }
 
+    mouseMove(e)
+    {
+
+    }
+
     resetAnimation()
     {
         TweenMax.to(this.errorGuiInterval , 1.0 , {
@@ -127,7 +132,7 @@ export default class DancingErrors
     animationStart()
     {
         TweenMax.to(this.errorGuiInterval , 1.5 , {
-            value : this.manager.gui.values.errorGuiInterval,
+            value : this.gui.values.errorGuiInterval,
             // delay : 0.5,
             ease :Power2.easeInOut
         });
@@ -147,16 +152,17 @@ export default class DancingErrors
     update()
     {
         this.time ++;
+        let xyscale = 0.010;
         let p = this.curlNoise.getCurlNoise(new THREE.Vector3(
-            this.errorOffsetAttribute.array[0]*0.011,
-            this.errorOffsetAttribute.array[1]*0.011,
-            this.time*0.005
+            this.errorOffsetAttribute.array[0] * this.gui.values.dancingErrorNoiseScaleX,
+            this.errorOffsetAttribute.array[1] * this.gui.values.dancingErrorNoiseScaleY,
+            this.time*0.002
         ));
         // p.multiplyScalar(1.1);
 
         this.errorGuiPos.set(
-            p.x * 5,
-            p.z * 5,
+            p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX,
+            p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY,
             0
         );
 
@@ -170,14 +176,18 @@ export default class DancingErrors
         // console.log(this.arrayErrorGuiPos);
         // this.arrayErrorGuiPos.pop();
 
-        for(let i = 0; i < this.arrayErrorGuiPos.length; i++ )
+        if(this.time % 2 == 0)
         {
+            for(let i = 0; i < this.arrayErrorGuiPos.length; i++ )
+            {
 
-            this.errorOffsetAttribute.array[(19-i)*4] = this.arrayErrorGuiPos[i].x;
-            this.errorOffsetAttribute.array[(19-i)*4+1] = this.arrayErrorGuiPos[i].y;
-            this.errorOffsetAttribute.array[(19-i)*4+2] = -(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i;
+                this.errorOffsetAttribute.array[(19-i)*4] = this.arrayErrorGuiPos[i].x;
+                this.errorOffsetAttribute.array[(19-i)*4+1] = this.arrayErrorGuiPos[i].y;
+                this.errorOffsetAttribute.array[(19-i)*4+2] = -(this.errorGuiInterval.value  / this.arrayErrorGuiPos.length)*i;
 
+            }
         }
+
 
         this.errorOffsetAttribute.needsUpdate = true;
 

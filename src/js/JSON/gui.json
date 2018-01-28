@@ -6,13 +6,13 @@
         "visibleOuterWalls": false,
         "visibleBackground": true,
         "visibleDancingErrors": true,
-        "visibleErrors": false,
+        "visibleErrors": true,
         "visibleMail": false,
-        "errorsLoiter": false,
-        "cameraAnimeation01PosX": -62.35286542176432,
+        "errorsLoiter": true,
+        "cameraAnimeation01PosX": -125.38123705021472,
         "cameraAnimeation01PosY": 0,
-        "cameraAnimeation01PosZ": 143.37025112685126,
-        "cameraAnimeation01LookX": 24.68383773341921,
+        "cameraAnimeation01PosZ": 111.98791189045085,
+        "cameraAnimeation01LookX": 3.8943074167596876,
         "cameraAnimeation01LookY": 0,
         "cameraAnimeation01LookZ": 0,
         "backgroundAnimationX": 0,
@@ -58,7 +58,7 @@
     },
     "animation settings": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
       "folders": {}
     },
     "camera animation": {

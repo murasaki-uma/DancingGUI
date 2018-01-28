@@ -60,6 +60,8 @@ export default class ErrorGui
         this.modifiedPos = {value:new THREE.Vector3()};
         this.sideColor = {value:new THREE.Color()};
 
+        this.isAnimationLoop = true;
+
 
         this.init()
     }
@@ -202,11 +204,16 @@ export default class ErrorGui
             value:1.0,
             delay : delay,
             onComplete:()=>{
+
+
+
+
                 this.uniforms.isWire.value = false;
                 if(this.animationSettings.get("Loiter"))
                 {
-
-                    this.start();
+                    if(this.isAnimationLoop) {
+                        this.start();
+                    }
 
                 }
 
@@ -255,7 +262,11 @@ export default class ErrorGui
             // delay : 0.5,
             onComplete:()=>{
                 this.reset();
-                this.start();
+
+                if(this.isAnimationLoop) {
+
+                    this.start();
+                }
             }
 
         });
@@ -306,6 +317,8 @@ export default class ErrorGui
             // }
         }
 
+
+
         if(e.key == 'a')
         {
             // TweenMax.to(this.mesh.position , 2.5, {
@@ -334,6 +347,11 @@ export default class ErrorGui
         {
             this.reset();
 
+        }
+
+        if(e.key== 'l')
+        {
+            this.isAnimationLoop = false;
         }
 
     }

@@ -166,6 +166,11 @@ export default class SceneCrashme{
 
     }
 
+    mouseMove =(e)=>
+    {
+
+    }
+
     resetAnimation()
     {
 
@@ -211,7 +216,7 @@ export default class SceneCrashme{
             x : this.manager.gui.values.cameraAnimeation01PosX,
             y : this.manager.gui.values.cameraAnimeation01PosY,
             z : this.manager.gui.values.cameraAnimeation01PosZ,
-            // delay : 0.5 ,
+            delay : 0.5 ,
             ease :Power2.easeInOut
         });
 
@@ -219,7 +224,7 @@ export default class SceneCrashme{
             x : this.manager.gui.values.cameraAnimeation01LookX,
             y : this.manager.gui.values.cameraAnimeation01LookY,
             z : this.manager.gui.values.cameraAnimeation01LookZ,
-            // delay : 0.5,
+            delay : 0.5,
             ease :Power2.easeInOut
         });
 
@@ -235,7 +240,7 @@ export default class SceneCrashme{
 
 
         TweenMax.to(this.backgroundScale , 4.0 , {
-            value : 0.001,
+            value : 0.00001,
             // delay : 0.5,
             ease :Power2.easeInOut
         });

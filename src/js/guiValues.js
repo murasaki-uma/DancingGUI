@@ -18,6 +18,12 @@ export default class guiValues{
         this.cameraAnimeation01LookY = 0.0;
         this.cameraAnimeation01LookZ = 0.0;
 
+        this.dancingErrorWorkAreaWidth = 5;
+        this.dancingErrorWorkAreaHeight = 7;
+        this.dancingErrorNoiseScaleX = 0.01;
+        this.dancingErrorNoiseScaleY = 0.01;
+        this.dancingErrorOffsetX = 0;
+        this.dancingErrorOffsetY = 0;
         this.errorGuiInterval = 20;
         this.errorGuiColor = [ 0, 128, 255 ];
         this.errorGuiSide = [ 0, 128, 255 ];
@@ -34,6 +40,7 @@ export default class guiValues{
         this.diffErrorPosY = 0;
         this.diffErrorPosZ = 0;
         this.errorPopUpDuration = 0.5;
+
 
 
         this.backgroundAnimationX = 0.0;
