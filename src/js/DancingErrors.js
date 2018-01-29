@@ -19,14 +19,24 @@ export default class DancingErrors
         this.errorOffsetAttribute;
         this.backgroundScale = {value:1.0};
         this.errors = [];
+        this.tmpRecord = {x:0,y:0};
         this.time = 0;
         this.isMouseMove = false;
         this.walkAreaScale  = 0.0;
         this.mousePos =  new THREE.Vector2(0.0);
         this.trackedPos = new THREE.Vector2(0.0);
-        this.recordPosition = [];
+        this.recordPosition = [{x:0,y:0}];
         this.recordPosCount = 0;
         this.isRecord = false;
+
+        this.debugTextRecordX = document.querySelector('.recordX');
+        this.debugTextRecordY = document.querySelector('.recordY');
+        this.debugTextMouseX = document.querySelector('.mouseX');
+        this.debugTextMouseY = document.querySelector('.mouseY');
+        this.debugTextRecordFrame = document.querySelector('.recordFrame');
+        this.debugTextRecordStatus = document.querySelector('.recordStatus');
+
+
         this.init();
     }
 
@@ -121,7 +131,7 @@ export default class DancingErrors
     {
         let x = (e.x / window.innerWidth -0.5)*2;
         let y = (e.y / window.innerHeight - 0.5)*2;
-        console.log(x,y);
+        // console.log(x,y);
 
         this.mousePos.x = x;
         this.mousePos.y = y;
@@ -166,6 +176,7 @@ export default class DancingErrors
 
     recordBegin()
     {
+        this.recordPosCount = 0;
         this.recordPosition = [];
         this.isRecord = true;
     }
@@ -187,7 +198,7 @@ export default class DancingErrors
         let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(storageObj))
         let downloadLink = document.createElement('a')
         downloadLink.setAttribute("href",dataStr)
-        downloadLink.setAttribute("download", "data.json")
+        downloadLink.setAttribute("download", "data" + new Date().getMilliseconds() +".json")
         downloadLink.click()
     }
 
@@ -228,6 +239,8 @@ export default class DancingErrors
 
 
 
+
+        // let record = {x:0,y:0};
         /******
 
         一定以上動いたかどうかでの判定のほうがよいかも。
@@ -256,13 +269,38 @@ export default class DancingErrors
         } else
         {
 
+
+
             if(this.recordPosition.length > 0)
             {
 
-                this.recordPosCount++;
-                if(this.recordPosCount >= this.recordPosition.length)
+
+                if(this.recordPosCount < this.recordPosition.length)
                 {
-                    this.recordPosCount = 0;
+
+
+
+                    this.tmpRecord.x = this.recordPosition[this.recordPosCount].x;
+                    this.tmpRecord.y = this.recordPosition[this.recordPosCount].y;
+                    this.recordPosCount++;
+
+                } else
+                {
+
+                    let last = new THREE.Vector2( this.tmpRecord.x, this.tmpRecord.y);
+                    let first = new THREE.Vector2(this.recordPosition[0].x,this.recordPosition[0].y);
+                    console.log(first,last);
+                    if(first.distanceTo(last) > 0.01)
+                    {
+                        this.tmpRecord.x += (first.x - this.tmpRecord.x) * 0.05;
+                        this.tmpRecord.y += (first.y - this.tmpRecord.y) * 0.05;
+                    }
+                    else
+                    {
+                        this.recordPosCount = 0;
+                    }
+
+
                 }
 
 
@@ -270,8 +308,8 @@ export default class DancingErrors
                 this.errorGuiPos.set(
                     // px * this.walkAreaScale + mousex,
                     // py * this.walkAreaScale + mousey,
-                    this.recordPosition[this.recordPosCount].x*this.gui.values.dancingErrorTrackAreaWidth,
-                    -this.recordPosition[this.recordPosCount].y*this.gui.values.dancingErrorTrackAreaHeight,
+                    this.tmpRecord.x*this.gui.values.dancingErrorTrackAreaWidth,
+                    -this.tmpRecord.y*this.gui.values.dancingErrorTrackAreaHeight,
                     0
                 );
             }
@@ -301,9 +339,25 @@ export default class DancingErrors
         }
 
 
+
+        this.debugTextRecordFrame.innerHTML = "record frame: " + this.recordPosCount;
+        this.debugTextRecordStatus.innerHTML = "isRecording: " + this.isRecord;
+        // if()
+        // {
+        //
+        // }
+        this.debugTextRecordX.innerHTML = Math.floor(this.tmpRecord.x*100)/100;
+        this.debugTextRecordY.innerHTML = Math.floor(this.tmpRecord.y*100)/100;
+
+        this.debugTextMouseX.innerHTML = Math.floor(this.trackedPos.x*100)/100;
+        this.debugTextMouseY.innerHTML = Math.floor(this.trackedPos.y*100)/100;
+
+
         this.errorOffsetAttribute.needsUpdate = true;
 
         this.isMouseMove = false;
+
+
 
     }
 

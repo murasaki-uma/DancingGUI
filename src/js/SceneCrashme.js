@@ -37,6 +37,8 @@ export default class SceneCrashme{
 
         this.dancingErrors = new DancingErrors(this.manager.gui);
 
+        this.debugMesh = document.querySelector('.mesh');
+
 
 
 
@@ -293,6 +295,11 @@ export default class SceneCrashme{
 
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
+
+        //
+        // this.debugMesh.style.width = window.innerWidth-1 + 'px';
+        // this.debugMesh.style.height = window.innerHeight-1 + 'px';
+
 
     }
 
