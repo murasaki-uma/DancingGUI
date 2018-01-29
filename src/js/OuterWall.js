@@ -22,6 +22,13 @@ export default class OuterWall{
 
         this.threshold = {value:0.0};
 
+        this.time = {value:0.0};
+
+
+        let purple = new THREE.Color(125,31,164);
+        let white = new THREE.Color(255,255,255);
+
+        // let Bac
 
         this.init();
     }
@@ -107,7 +114,8 @@ export default class OuterWall{
         var material = new THREE.ShaderMaterial( {
             uniforms: {
                 width:{value:this.width},
-                threshold:this.threshold
+                threshold:this.threshold,
+                time:this.time
                 // map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
             },
             vertexShader: vertex,
@@ -115,6 +123,8 @@ export default class OuterWall{
             side:THREE.DoubleSide
         } );
         this.mesh = new THREE.Mesh( geometry, material );
+        this.mesh.frustumCulled = false;
+
 
     }
 
@@ -130,6 +140,8 @@ export default class OuterWall{
                     console.log(this.threshold)
                 }
             });
+
+
         }
 
 
@@ -149,6 +161,7 @@ export default class OuterWall{
     }
     update()
     {
+        this.time.value++;
 
     }
 }

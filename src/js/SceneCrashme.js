@@ -133,7 +133,8 @@ export default class SceneCrashme{
 
 
         let rad = Math.PI*2/4;
-        let radius = 100;
+        let radius = 400;
+        let group = new THREE.Group();
         for(let i = 0; i < 4; i++)
         {
 
@@ -143,17 +144,23 @@ export default class SceneCrashme{
             let x = 0;
 
 
-            let o = new OuterWall(this.manager.gui,radius*4,radius*2,60,30,this.curlNoise);
+            let o = new OuterWall(this.manager.gui,radius*10,radius*2,400,120,this.curlNoise);
             this.outerWalls.push(o);
             o.getMesh().material.visible = this.manager.gui.values.visibleOuterWalls;
             o.getMesh().position.set(x,y,z);
             o.getMesh().rotateX(r+Math.PI/2);
+            group.add(o.getMesh());
 
-            this.scene.add(o.getMesh());
+
 
 
 
         }
+
+        group.rotateY(Math.PI/2);
+        group.position.set(0,0,-200);
+
+        this.scene.add(group);
 
         this.manager.gui.visibleOuterWalls.onChange((e)=>{
             for(let i = 0; i < this.outerWalls.length; i++)
@@ -322,6 +329,11 @@ export default class SceneCrashme{
 
         this.dancingErrors.update();
 
+
+        for(let i = 0; i < this.outerWalls.length; i++)
+        {
+            this.outerWalls[i].update();
+        }
 
 
         this.backgroundPlane.scale.set(

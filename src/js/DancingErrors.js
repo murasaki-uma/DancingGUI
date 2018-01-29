@@ -329,7 +329,7 @@ export default class DancingErrors
                 // this.curlNoise.snoise
 
                 let n = this.simplex.noise2D(this.errorOffsetAttribute.array[0]*0.04+this.excursionRad, this.time*0.001);
-                console.log(n);
+                // console.log(n);
                 let rad = this.gui.values.dancingErrorWorkAreaWidth*0.1 * n;
 
                 let px = Math.cos(this.time*0.02+ this.excursionRad) * (rad+this.gui.values.dancingErrorWorkAreaWidth);

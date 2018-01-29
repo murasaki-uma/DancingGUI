@@ -8,6 +8,7 @@ varying float vNumber;
 uniform float width;
 uniform float threshold;
 //uniform float scale;
+uniform float time;
 varying vec3 vColor;
 varying vec3 vPosition;
 const vec3 green = vec3(27./255.,225./255.,173./255.);
@@ -22,6 +23,12 @@ void main() {
     {
         discard;
     }
+
+    if( 0.0> sin(-time*0.2+vOffset.x*0.01))
+    {
+        discard;
+    }
+
 
     if(vPosition.x > 0.)
     {
