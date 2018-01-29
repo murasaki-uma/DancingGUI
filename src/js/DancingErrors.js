@@ -24,6 +24,9 @@ export default class DancingErrors
         this.walkAreaScale  = 0.0;
         this.mousePos =  new THREE.Vector2(0.0);
         this.trackedPos = new THREE.Vector2(0.0);
+        this.recordPosition = [];
+
+        this.isRecord = false;
         this.init();
     }
 
@@ -161,8 +164,42 @@ export default class DancingErrors
         return this.errorGui;
     }
 
+    recordBegin()
+    {
+        this.isRecord = true;
+    }
+
+    recordEnd()
+    {
+
+        console.log('end');
+        this.isRecord = false;
+
+        this.saveJson(this.recordPosition);
+
+    }
+
+
+    saveJson=(storageObj)=>
+    {
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(storageObj))
+        let downloadLink = document.createElement('a')
+        downloadLink.setAttribute("href",dataStr)
+        downloadLink.setAttribute("download", "data.json")
+        downloadLink.click()
+    }
+
+
     update()
     {
+
+
+
+        if(this.isRecord)
+        {
+            this.recordPosition.push({x:this.mousePos.x,y:this.mousePos.y});
+        }
+
 
 
         if(this.isMouseMove)

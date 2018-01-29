@@ -20,6 +20,9 @@ export default class SceneManager{
         this.activeCamera = null;
         this.frameCount = 0;
 
+
+        this.isRecord = false;
+
         this.stats;
 
 
@@ -90,6 +93,8 @@ export default class SceneManager{
         {
             this.saveCanvas('image/png');
         }
+
+
 
         console.log(e);
 
@@ -178,6 +183,15 @@ export default class SceneManager{
 
             this.renderer.render(this.scenes[this.sceneNum].scene,this.activeCamera);
         }
+    }
+
+    saveJson(storageObj)
+    {
+        let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(storageObj))
+        let downloadLink = document.createElement('a')
+        downloadLink.setAttribute("href",dataStr)
+        downloadLink.setAttribute("download", "data.json")
+        downloadLink.click()
     }
 
 

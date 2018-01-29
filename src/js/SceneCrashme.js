@@ -22,6 +22,7 @@ export default class SceneCrashme{
         this.time = 0;
 
 
+        this.isRecord = false;
 
         this.curlNoise = new CurlNoise();
         this.mails = [];
@@ -264,6 +265,22 @@ export default class SceneCrashme{
         {
             this.resetAnimation();
         }
+
+
+        if(e.code == "Space")
+        {
+            console.log('space');
+            this.isRecord = !this.isRecord;
+
+            if(this.isRecord)
+            {
+                this.dancingErrors.recordBegin();
+            } else {
+                this.dancingErrors.recordEnd();
+            }
+        }
+
+
     }
 
     onClick(e)
