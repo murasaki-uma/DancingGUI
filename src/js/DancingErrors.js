@@ -4,6 +4,7 @@ import CurlNoise from './curlNoise';
 import {TweenMax,Power2,Power4, TimelineLite} from "gsap";
 const errorVertex = require('./GLSL/errorVertex.glsl');
 const errorFragment = require('./GLSL/errorFragment.glsl');
+const SimplexNoise = require('../../node_modules/simplex-noise');
 
 
 export default class DancingErrors
@@ -36,6 +37,11 @@ export default class DancingErrors
         this.debugTextRecordFrame = document.querySelector('.recordFrame');
         this.debugTextRecordStatus = document.querySelector('.recordStatus');
 
+
+        this.isRecordPlay = false;
+        this.simplex = new SimplexNoise();
+        this.ANIMATION_NUM = 1;
+        this.excursionRad = Math.PI/2;
 
         this.init();
     }
@@ -232,87 +238,115 @@ export default class DancingErrors
             this.errorOffsetAttribute.array[1] * this.gui.values.dancingErrorNoiseScaleY,
             this.time*0.002
         ));
-        // p.multiplyScalar(1.1);
 
 
 
 
 
-
-
-        // let record = {x:0,y:0};
-        /******
-
-        一定以上動いたかどうかでの判定のほうがよいかも。
-        ******/
-
-
-
-        // let mouseDiff = 1.0-this.trackedPos.distanceTo(this.mousePos);
-        // console.log(mouseDiff)*10.0;
-        let px =  p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
-        let py = p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY;
 
 
         let mousex = this.trackedPos.x * this.gui.values.dancingErrorTrackAreaWidth;
         let mousey = -this.trackedPos.y * this.gui.values.dancingErrorTrackAreaHeight;
 
-        if(this.isRecord)
+
+        if(this.isRecordPlay) {
+
+            if (this.isRecord) {
+                this.errorGuiPos.set(
+                    // px * this.walkAreaScale + mousex,
+                    // py * this.walkAreaScale + mousey,
+                    mousex,
+                    mousey,
+                    0
+                );
+            } else {
+
+
+                if (this.recordPosition.length > 0) {
+
+
+                    if (this.recordPosCount < this.recordPosition.length) {
+
+
+                        this.tmpRecord.x = this.recordPosition[this.recordPosCount].x;
+                        this.tmpRecord.y = this.recordPosition[this.recordPosCount].y;
+                        this.recordPosCount++;
+
+                    } else {
+
+                        let last = new THREE.Vector2(this.tmpRecord.x, this.tmpRecord.y);
+                        let first = new THREE.Vector2(this.recordPosition[0].x, this.recordPosition[0].y);
+                        console.log(first, last);
+                        if (first.distanceTo(last) > 0.01) {
+                            this.tmpRecord.x += (first.x - this.tmpRecord.x) * 0.1;
+                            this.tmpRecord.y += (first.y - this.tmpRecord.y) * 0.1;
+                        }
+                        else {
+                            this.recordPosCount = 0;
+                        }
+
+
+                    }
+
+
+                    this.errorGuiPos.set(
+                        // px * this.walkAreaScale + mousex,
+                        // py * this.walkAreaScale + mousey,
+                        this.tmpRecord.x * this.gui.values.dancingErrorTrackAreaWidth,
+                        -this.tmpRecord.y * this.gui.values.dancingErrorTrackAreaHeight,
+                        0
+                    );
+                }
+            }
+        }
+        else
         {
-            this.errorGuiPos.set(
-                // px * this.walkAreaScale + mousex,
-                // py * this.walkAreaScale + mousey,
-                mousex,
-                mousey,
-                0
-            );
-        } else
-        {
-
-
-
-            if(this.recordPosition.length > 0)
+            /************ animation 0 **********/
+            if(this.ANIMATION_NUM == 0)
             {
 
-
-                if(this.recordPosCount < this.recordPosition.length)
-                {
-
-
-
-                    this.tmpRecord.x = this.recordPosition[this.recordPosCount].x;
-                    this.tmpRecord.y = this.recordPosition[this.recordPosCount].y;
-                    this.recordPosCount++;
-
-                } else
-                {
-
-                    let last = new THREE.Vector2( this.tmpRecord.x, this.tmpRecord.y);
-                    let first = new THREE.Vector2(this.recordPosition[0].x,this.recordPosition[0].y);
-                    console.log(first,last);
-                    if(first.distanceTo(last) > 0.01)
-                    {
-                        this.tmpRecord.x += (first.x - this.tmpRecord.x) * 0.1;
-                        this.tmpRecord.y += (first.y - this.tmpRecord.y) * 0.1;
-                    }
-                    else
-                    {
-                        this.recordPosCount = 0;
-                    }
-
-
-                }
-
+                let px =  p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
+                let py = p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY;
 
 
                 this.errorGuiPos.set(
                     // px * this.walkAreaScale + mousex,
                     // py * this.walkAreaScale + mousey,
-                    this.tmpRecord.x*this.gui.values.dancingErrorTrackAreaWidth,
-                    -this.tmpRecord.y*this.gui.values.dancingErrorTrackAreaHeight,
+                    px,
+                    py,
+                    // this.tmpRecord.x * this.gui.values.dancingErrorTrackAreaWidth,
+                    // -this.tmpRecord.y * this.gui.values.dancingErrorTrackAreaHeight,
                     0
                 );
             }
+
+            /************ animation 1 **********/
+
+
+            if(this.ANIMATION_NUM == 1)
+            {
+
+                // this.curlNoise.snoise
+
+                let n = this.simplex.noise2D(this.errorOffsetAttribute.array[0]*0.04+this.excursionRad, this.time*0.001);
+                console.log(n);
+                let rad = this.gui.values.dancingErrorWorkAreaWidth*0.1 * n;
+
+                let px = Math.cos(this.time*0.02+ this.excursionRad) * (rad+this.gui.values.dancingErrorWorkAreaWidth);
+                let py = Math.sin(this.time*0.02+ this.excursionRad) * (rad+this.gui.values.dancingErrorWorkAreaHeight);
+
+
+                this.errorGuiPos.set(
+                    // px * this.walkAreaScale + mousex,
+                    // py * this.walkAreaScale + mousey,
+                    px,
+                    py,
+                    // this.tmpRecord.x * this.gui.values.dancingErrorTrackAreaWidth,
+                    // -this.tmpRecord.y * this.gui.values.dancingErrorTrackAreaHeight,
+                    0
+                );
+            }
+
         }
 
 
@@ -323,8 +357,7 @@ export default class DancingErrors
         if(this.arrayErrorGuiPos.length > this.instanceCount){
             this.arrayErrorGuiPos.pop();
         }
-        // console.log(this.arrayErrorGuiPos);
-        // this.arrayErrorGuiPos.pop();
+
 
         if(this.time % 2 == 0)
         {

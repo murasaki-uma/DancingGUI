@@ -72,8 +72,8 @@ export default class GUI{
         this.dancingErrors.add(this.values,'dancingErrorOffsetY',-20.0,20.0);
         this.dancingErrors.add(this.values,'dancingErrorNoiseScaleX',0.0,0.1);
         this.dancingErrors.add(this.values,'dancingErrorNoiseScaleY',0.0,0.1);
-        this.dancingErrors.add(this.values,'dancingErrorWorkAreaWidth',0.0,10.0);
-        this.dancingErrors.add(this.values,'dancingErrorWorkAreaHeight',0.0,10.0);
+        this.dancingErrors.add(this.values,'dancingErrorWorkAreaWidth',0.0,40.0);
+        this.dancingErrors.add(this.values,'dancingErrorWorkAreaHeight',0.0,40.0);
         this.dancingErrors.add(this.values,'dancingErrorTrackAreaWidth',0.0,50.0);
         this.dancingErrors.add(this.values,'dancingErrorTrackAreaHeight',0.0,50.0);
 
