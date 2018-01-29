@@ -25,7 +25,7 @@ export default class DancingErrors
         this.mousePos =  new THREE.Vector2(0.0);
         this.trackedPos = new THREE.Vector2(0.0);
         this.recordPosition = [];
-
+        this.recordPosCount = 0;
         this.isRecord = false;
         this.init();
     }
@@ -166,6 +166,7 @@ export default class DancingErrors
 
     recordBegin()
     {
+        this.recordPosition = [];
         this.isRecord = true;
     }
 
@@ -176,6 +177,7 @@ export default class DancingErrors
         this.isRecord = false;
 
         this.saveJson(this.recordPosition);
+
 
     }
 
@@ -194,10 +196,13 @@ export default class DancingErrors
     {
 
 
+        this.trackedPos.x += (this.mousePos.x - this.trackedPos.x) * 0.05;
+        this.trackedPos.y += (this.mousePos.y - this.trackedPos.y) * 0.05;
+
 
         if(this.isRecord)
         {
-            this.recordPosition.push({x:this.mousePos.x,y:this.mousePos.y});
+            this.recordPosition.push({x:this.trackedPos.x,y:this.trackedPos.y});
         }
 
 
@@ -219,8 +224,7 @@ export default class DancingErrors
         // p.multiplyScalar(1.1);
 
 
-        this.trackedPos.x += (this.mousePos.x - this.trackedPos.x) * 0.05;
-        this.trackedPos.y += (this.mousePos.y - this.trackedPos.y) * 0.05;
+
 
 
 
@@ -239,13 +243,40 @@ export default class DancingErrors
 
         let mousex = this.trackedPos.x * this.gui.values.dancingErrorTrackAreaWidth;
         let mousey = -this.trackedPos.y * this.gui.values.dancingErrorTrackAreaHeight;
-        this.errorGuiPos.set(
-            // px * this.walkAreaScale + mousex,
-            // py * this.walkAreaScale + mousey,
-            mousex + px,
-            mousey + py,
-            0
-        );
+
+        if(this.isRecord)
+        {
+            this.errorGuiPos.set(
+                // px * this.walkAreaScale + mousex,
+                // py * this.walkAreaScale + mousey,
+                mousex,
+                mousey,
+                0
+            );
+        } else
+        {
+
+            if(this.recordPosition.length > 0)
+            {
+
+                this.recordPosCount++;
+                if(this.recordPosCount >= this.recordPosition.length)
+                {
+                    this.recordPosCount = 0;
+                }
+
+
+
+                this.errorGuiPos.set(
+                    // px * this.walkAreaScale + mousex,
+                    // py * this.walkAreaScale + mousey,
+                    this.recordPosition[this.recordPosCount].x*this.gui.values.dancingErrorTrackAreaWidth,
+                    -this.recordPosition[this.recordPosCount].y*this.gui.values.dancingErrorTrackAreaHeight,
+                    0
+                );
+            }
+        }
+
 
 
         this.arrayErrorGuiPos.unshift(this.errorGuiPos.clone());
