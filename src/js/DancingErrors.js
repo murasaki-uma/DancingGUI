@@ -292,8 +292,8 @@ export default class DancingErrors
                     console.log(first,last);
                     if(first.distanceTo(last) > 0.01)
                     {
-                        this.tmpRecord.x += (first.x - this.tmpRecord.x) * 0.05;
-                        this.tmpRecord.y += (first.y - this.tmpRecord.y) * 0.05;
+                        this.tmpRecord.x += (first.x - this.tmpRecord.x) * 0.1;
+                        this.tmpRecord.y += (first.y - this.tmpRecord.y) * 0.1;
                     }
                     else
                     {
