@@ -76,6 +76,8 @@ export default class GUI{
         this.dancingErrors.add(this.values,'dancingErrorWorkAreaHeight',0.0,40.0);
         this.dancingErrors.add(this.values,'dancingErrorTrackAreaWidth',0.0,50.0);
         this.dancingErrors.add(this.values,'dancingErrorTrackAreaHeight',0.0,50.0);
+        this.dancingErrors.add(this.values,'dancingErrorExcursionWidth',0.0,50.0);
+        this.dancingErrors.add(this.values,'dancingErrorExcursionHeight',0.0,50.0);
 
         this.errorGuiSide = this.errorGui.addColor(this.values,'errorGuiSide');
         this.errorGuiBack = this.errorGui.addColor(this.values,'errorGuiBack');

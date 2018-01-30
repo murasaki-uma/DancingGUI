@@ -55033,6 +55033,8 @@ function () {
       this.dancingErrors.add(this.values, 'dancingErrorWorkAreaHeight', 0.0, 40.0);
       this.dancingErrors.add(this.values, 'dancingErrorTrackAreaWidth', 0.0, 50.0);
       this.dancingErrors.add(this.values, 'dancingErrorTrackAreaHeight', 0.0, 50.0);
+      this.dancingErrors.add(this.values, 'dancingErrorExcursionWidth', 0.0, 50.0);
+      this.dancingErrors.add(this.values, 'dancingErrorExcursionHeight', 0.0, 50.0);
       this.errorGuiSide = this.errorGui.addColor(this.values, 'errorGuiSide');
       this.errorGuiBack = this.errorGui.addColor(this.values, 'errorGuiBack');
       this.errorGui.add(this.values, 'errorPopUpRangeX_min', -300, 300);
@@ -55095,6 +55097,8 @@ var guiValues = function guiValues() {
   this.dancingErrorWorkAreaHeight = 7;
   this.dancingErrorTrackAreaWidth = 5;
   this.dancingErrorTrackAreaHeight = 7;
+  this.dancingErrorExcursionWidth = 30;
+  this.dancingErrorExcursionHeight = 30;
   this.dancingErrorNoiseScaleX = 0.01;
   this.dancingErrorNoiseScaleY = 0.01;
   this.dancingErrorOffsetX = 0;
@@ -55126,7 +55130,7 @@ exports.default = guiValues;
 /* 10 */
 /***/ (function(module, exports) {
 
-module.exports = {"preset":"Default","remembered":{"Default":{"0":{"visibleOuterWalls":false,"visibleBackground":true,"visibleDancingErrors":true,"visibleErrors":true,"visibleMail":false,"errorsLoiter":true,"cameraAnimeation01PosX":-125.38123705021472,"cameraAnimeation01PosY":0,"cameraAnimeation01PosZ":111.98791189045085,"cameraAnimeation01LookX":3.8943074167596876,"cameraAnimeation01LookY":0,"cameraAnimeation01LookZ":0,"backgroundAnimationX":0,"backgroundAnimationY":0,"backgroundAnimationZ":-50,"errorGuiInterval":20,"errorGuiColor":[0,255,223.06396016851787],"dancingErrorOffsetX":0,"dancingErrorOffsetY":0,"dancingErrorNoiseScaleX":0.01,"dancingErrorNoiseScaleY":0.01,"dancingErrorWorkAreaWidth":3.4154734804696565,"dancingErrorWorkAreaHeight":3.2836017310581758,"dancingErrorTrackAreaWidth":45.42979352581667,"dancingErrorTrackAreaHeight":47.078190393460176,"errorGuiSide":[33.9241382355327,129.64860206817312,123.2254208872162],"errorGuiBack":[0,128,255],"errorPopUpRangeX_min":-70.30779137153897,"errorPopUpRangeX_max":-10.964584674822902,"errorPopUpRangeY_min":-41.568576947842885,"errorPopUpRangeY_max":-34.70186735350933,"errorPopUpRangeZ_min":0,"errorPopUpRangeZ_max":0,"diffErrorPosX":78.44043786220219,"diffErrorPosY":46.79072762395364,"diffErrorPosZ":0,"errorPopUpDuration":0.5,"gradThreshold":0,"gradThresholdDulation":2}}},"closed":false,"folders":{"visibles":{"preset":"Default","closed":false,"folders":{}},"animation settings":{"preset":"Default","closed":false,"folders":{}},"camera animation":{"preset":"Default","closed":false,"folders":{}},"dancing errors":{"preset":"Default","closed":false,"folders":{}},"error gui":{"preset":"Default","closed":true,"folders":{}},"background":{"preset":"Default","closed":true,"folders":{}}}}
+module.exports = {"preset":"Default","remembered":{"Default":{"0":{"visibleOuterWalls":false,"visibleBackground":true,"visibleDancingErrors":true,"visibleErrors":true,"visibleMail":false,"errorsLoiter":true,"cameraAnimeation01PosX":-125.38123705021472,"cameraAnimeation01PosY":0,"cameraAnimeation01PosZ":111.98791189045085,"cameraAnimeation01LookX":3.8943074167596876,"cameraAnimeation01LookY":0,"cameraAnimeation01LookZ":0,"backgroundAnimationX":0,"backgroundAnimationY":0,"backgroundAnimationZ":-50,"errorGuiInterval":20,"errorGuiColor":[0,255,223.06396016851787],"dancingErrorOffsetX":0,"dancingErrorOffsetY":0,"dancingErrorNoiseScaleX":0.005670469127068017,"dancingErrorNoiseScaleY":0.006989186621182826,"dancingErrorWorkAreaWidth":9.125518620224213,"dancingErrorWorkAreaHeight":9.125518620224213,"dancingErrorTrackAreaWidth":45.42979352581667,"dancingErrorTrackAreaHeight":47.078190393460176,"errorGuiSide":[33.9241382355327,129.64860206817312,123.2254208872162],"errorGuiBack":[0,128,255],"errorPopUpRangeX_min":-70.30779137153897,"errorPopUpRangeX_max":-10.964584674822902,"errorPopUpRangeY_min":-41.568576947842885,"errorPopUpRangeY_max":-34.70186735350933,"errorPopUpRangeZ_min":0,"errorPopUpRangeZ_max":0,"diffErrorPosX":78.44043786220219,"diffErrorPosY":46.79072762395364,"diffErrorPosZ":0,"errorPopUpDuration":0.5,"gradThreshold":0,"gradThresholdDulation":2}}},"closed":false,"folders":{"visibles":{"preset":"Default","closed":false,"folders":{}},"animation settings":{"preset":"Default","closed":false,"folders":{}},"camera animation":{"preset":"Default","closed":false,"folders":{}},"dancing errors":{"preset":"Default","closed":false,"folders":{}},"error gui":{"preset":"Default","closed":true,"folders":{}},"background":{"preset":"Default","closed":true,"folders":{}}}}
 
 /***/ }),
 /* 11 */
@@ -55201,12 +55205,12 @@ function () {
     this.time = 0;
     this.isRecord = false;
     this.curlNoise = new _curlNoise.default();
-    this.mails = [];
     this.cameraLookAt = new THREE.Vector3();
     this.backgroundPlane;
     this.backgroundScale = {
       value: 1.0
     };
+    this.mails = [];
     this.errors = [];
     this.outerWalls = [];
     this.dancingErrors = new _DancingErrors.default(this.manager.gui);
@@ -55353,7 +55357,7 @@ function () {
         var y = Math.cos(r) * radius;
         var z = Math.sin(r) * radius;
         var x = 0;
-        var o = new _OuterWall.default(this.manager.gui, radius * 10, radius * 2, 400, 120, this.curlNoise);
+        var o = new _OuterWall.default(this.manager.gui, radius * 8, radius * 2, 400, 120, this.curlNoise);
         this.outerWalls.push(o);
         o.getMesh().material.visible = this.manager.gui.values.visibleOuterWalls;
         o.getMesh().position.set(x, y, z);
@@ -55361,8 +55365,8 @@ function () {
         group.add(o.getMesh());
       }
 
-      group.rotateY(Math.PI / 2);
-      group.position.set(0, 0, -200);
+      group.rotateY(Math.PI / 2); // group.position.set(0,0,-200);
+
       this.scene.add(group);
       this.manager.gui.visibleOuterWalls.onChange(function (e) {
         for (var _i2 = 0; _i2 < _this2.outerWalls.length; _i2++) {
@@ -55941,13 +55945,13 @@ module.exports = g;
 /* 15 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vPosition;\r\nuniform vec3 modified;\r\nuniform float scale;\r\nvoid main() {\r\n    vPosition = position;\r\n    vPosition *= scale;\r\n    vPosition += modified;\r\n    vNormal = normal;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\r\n}"
+module.exports = "precision highp float;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vPosition;\r\nuniform vec3 modified;\r\nuniform float scale;\r\n\r\nvoid main() {\r\n\r\n    vPosition = position;\r\n    vPosition *= scale;\r\n    vPosition += modified;\r\n    vNormal = normal;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( vPosition, 1.0 );\r\n}"
 
 /***/ }),
 /* 16 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nuniform sampler2D gradMap;\r\nvarying vec3 vPosition;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform bool isWire;\r\nuniform float width;\r\n\r\nuniform float height;\r\nuniform vec3 modified;\r\nuniform float scale;\r\nvoid main() {\r\n\r\n    vec3 texColor = texture2D( map, vUv ).xyz;\r\n    vec3 gradColor = texture2D( gradMap, vUv ).xyz;\r\n\r\n    vec3 result = texColor;\r\n    if(isWire)\r\n    {\r\n        result = gradColor;\r\n\r\n        if(abs(vPosition.x-modified.x) < width*scale * 0.487)\r\n        {\r\n            if(abs(vPosition.y-modified.y) < height*scale * 0.473)\r\n            {\r\n\r\n                discard;\r\n            }\r\n        }\r\n    }\r\n    gl_FragColor =vec4(result , 1.);\r\n\r\n}"
+module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nuniform sampler2D gradMap;\r\nvarying vec3 vPosition;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform bool isWire;\r\nuniform float width;\r\n\r\nuniform float height;\r\nuniform vec3 modified;\r\nuniform float scale;\r\n\r\n\r\n\r\nvoid main() {\r\n\r\n    vec3 texColor = texture2D( map, vUv ).xyz;\r\n    vec3 gradColor = texture2D( gradMap, vUv ).xyz;\r\n\r\n    vec3 result = texColor;\r\n    if(isWire)\r\n    {\r\n        result = gradColor;\r\n\r\n        if(abs(vPosition.x-modified.x) < width*scale * 0.487)\r\n        {\r\n            if(abs(vPosition.y-modified.y) < height*scale * 0.473)\r\n            {\r\n\r\n                discard;\r\n            }\r\n        }\r\n    }\r\n    gl_FragColor =vec4(result , 1.);\r\n\r\n}"
 
 /***/ }),
 /* 17 */
@@ -56148,7 +56152,7 @@ module.exports = "precision highp float;\r\n\r\nattribute vec3 offset;\r\nattrib
 /* 20 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vOffset;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float width;\r\nuniform float threshold;\r\n//uniform float scale;\r\nuniform float time;\r\nvarying vec3 vColor;\r\nvarying vec3 vPosition;\r\nconst vec3 green = vec3(27./255.,225./255.,173./255.);\r\nconst vec3 purple = vec3(125./255.,31./255.,164./255.);\r\nvoid main() {\r\n\r\n    vec3 color = vec3(1.);\r\n\r\n    float d = vOffset.x / (threshold*width)+0.5;\r\n    color = mix(green,purple,d);\r\n    if(vOffset.x > threshold*width - width/2.)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    if( 0.0> sin(-time*0.2+vOffset.x*0.01))\r\n    {\r\n        discard;\r\n    }\r\n\r\n\r\n    if(vPosition.x > 0.)\r\n    {\r\n        color *= 0.8;\r\n    }\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
+module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vOffset;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float width;\r\nuniform float threshold;\r\n//uniform float scale;\r\nuniform float time;\r\nvarying vec3 vColor;\r\nvarying vec3 vPosition;\r\nconst vec3 green = vec3(27./255.,225./255.,173./255.);\r\nconst vec3 purple = vec3(125./255.,31./255.,164./255.);\r\n\r\n\r\nvec3 rgb2hsv(vec3 c)\r\n{\r\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\r\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\r\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\r\n\r\n    float d = q.x - min(q.w, q.y);\r\n    float e = 1.0e-10;\r\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\r\n}\r\n\r\n\r\nvec3 hsv2rgb(vec3 c)\r\n{\r\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\r\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\r\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\r\n}\r\n\r\n\r\n\r\nvoid main() {\r\n\r\n    vec3 color = vec3(1.);\r\n\r\n    float d = vOffset.x / (threshold*width)+0.5;\r\n    color = mix(green,purple,d);\r\n    if(vOffset.x > threshold*width - width/2.)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    float th = sin(-time*0.2+vOffset.x*0.01) + cos(-time*0.2 + vOffset.y*0.01)*0.5;\r\n    if( 0.0> th && th < 0.5)\r\n    {\r\n        discard;\r\n    }\r\n\r\n\r\n    if(vPosition.x > 0.)\r\n    {\r\n//        color *= 0.8;\r\n    } else\r\n    {\r\n        color *= 1.7;\r\n    }\r\n\r\n//    vec3 hsv = rgb2hsv(color);\r\n//    hsv.z *= 2.0;\r\n//\r\n//    color = hsv2rgb(color);\r\n\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
 
 /***/ }),
 /* 21 */
@@ -56187,8 +56191,46 @@ var SimplexNoise = __webpack_require__(3);
 var DancingErrors =
 /*#__PURE__*/
 function () {
-  function DancingErrors(gui) {
+  function DancingErrors(gui, record) {
+    var _this = this;
+
     _classCallCheck(this, DancingErrors);
+
+    this.onKeyDown = function (e) {
+      if (e.key == '0') {
+        // if(this.discreateEnd) {
+        _this.valueInit();
+
+        _this.ANIMATION_NUM = 0; // }
+      }
+
+      if (e.key == '1') {
+        // if(this.discreateEnd) {
+        _this.valueInit();
+
+        _this.ANIMATION_NUM = 1; // }
+      }
+
+      if (e.key == '2') {
+        _this.discreateEnd = false; // if(!this.discreateEnd)
+        // {
+
+        _gsap.TweenMax.to(_this.scale, 3.0, {
+          value: 0.0,
+          // delay : 0.5,
+          ease: _gsap.Power2.easeInOut,
+          onComplete: function onComplete() {
+            _this.discreateEnd = true;
+          }
+        }); // this.discreateEnd = true;
+        // }
+
+
+        _this.ANIMATION_NUM = 2;
+      }
+
+      console.log(_this.ANIMATION_NUM);
+    };
 
     this.saveJson = function (storageObj) {
       var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(storageObj));
@@ -56205,9 +56247,16 @@ function () {
     this.instanceCount = 20;
     this.errorGuiInterval = {
       value: 0.0
+    }; // this.scale = {value:1.0};
+
+    this.colorThreshold = {
+      value: 1.0
     };
     this.errorOffsetAttribute;
-    this.backgroundScale = {
+    this.errorScaleAttribute;
+    this.errorDiscreteAttribute;
+    this.discreateEnd = false;
+    this.scale = {
       value: 1.0
     };
     this.errors = [];
@@ -56234,7 +56283,7 @@ function () {
     this.debugTextRecordStatus = document.querySelector('.recordStatus');
     this.isRecordPlay = false;
     this.simplex = new SimplexNoise();
-    this.ANIMATION_NUM = 1;
+    this.ANIMATION_NUM = 2;
     this.excursionRad = Math.PI / 2;
     this.init();
   }
@@ -56242,8 +56291,9 @@ function () {
   _createClass(DancingErrors, [{
     key: "init",
     value: function init() {
-      var _this = this;
+      var _this2 = this;
 
+      window.addEventListener('keydown', this.onKeyDown);
       var texture = new THREE.TextureLoader().load('img/errorgui.png');
       var instances = this.instanceCount;
       var bufferGeometry = new THREE.BoxBufferGeometry(36 * 0.7, 13 * 0.7, 1); // copying data from a simple box geometry, but you can specify a custom geometry if you want
@@ -56258,6 +56308,8 @@ function () {
       var offsets = [];
       var number = [];
       var orientations = [];
+      var discreate = [];
+      var scales = [];
       var vector = new THREE.Vector4();
       var x, y, z;
 
@@ -56268,13 +56320,19 @@ function () {
         z = 0;
         vector.set(x, y, z, i).normalize();
         offsets.push(x + vector.x, y + vector.y, z + vector.z, i);
-        number.push(i); // this.arrayErrorGuiPos.push(new THREE.Vector3(0,0,0));
+        discreate.push(x + vector.x, y + vector.y, z + vector.z);
+        number.push(i);
+        scales.push(1.0); // this.arrayErrorGuiPos.push(new THREE.Vector3(0,0,0));
       }
 
-      this.errorOffsetAttribute = new THREE.InstancedBufferAttribute(new Float32Array(offsets), 4); // let numberAttribute = new THREE.InstancedBufferAttribute( new Int32Array( number ), 1 );
+      this.errorOffsetAttribute = new THREE.InstancedBufferAttribute(new Float32Array(offsets), 4);
+      this.errorScaleAttribute = new THREE.InstancedBufferAttribute(new Float32Array(scales), 1); // this.errorDiscreteAttribute = new THREE.InstancedBufferAttribute( new Float32Array( discreate ), 3 );
+      // let numberAttribute = new THREE.InstancedBufferAttribute( new Int32Array( number ), 1 );
 
+      console.log(this.errorOffsetAttribute);
       geometry.addAttribute('offset', this.errorOffsetAttribute);
-      geometry.addAttribute('normal', normal); // geometry.addAttribute('number', numberAttribute);
+      geometry.addAttribute('scale', this.errorScaleAttribute);
+      geometry.addAttribute('normal', normal); // geometry.addAttribute('discreate', this.errorDiscreteAttribute);
 
       var material = new THREE.ShaderMaterial({
         uniforms: {
@@ -56284,7 +56342,9 @@ function () {
           gradationColor: {
             value: new THREE.Color(this.gui.values.errorGuiColor[0] / 255, this.gui.values.errorGuiColor[1] / 255, this.gui.values.errorGuiColor[2] / 255)
           },
-          scale: this.backgroundScale
+          scale: this.scale,
+          colorThreshold: this.colorThreshold // fadeOutScale:this.scale
+
         },
         // side:THREE.DoubleSide,
         vertexShader: errorVertex,
@@ -56294,9 +56354,9 @@ function () {
       this.errorGui = new THREE.Mesh(geometry, material); // this.scene.add( this.errorGui );
 
       this.gui.errorGuiColor.onChange(function (e) {
-        _this.errorGui.material.uniforms.gradationColor.value.r = e[0] / 255;
-        _this.errorGui.material.uniforms.gradationColor.value.g = e[1] / 255;
-        _this.errorGui.material.uniforms.gradationColor.value.b = e[2] / 255;
+        _this2.errorGui.material.uniforms.gradationColor.value.r = e[0] / 255;
+        _this2.errorGui.material.uniforms.gradationColor.value.g = e[1] / 255;
+        _this2.errorGui.material.uniforms.gradationColor.value.b = e[2] / 255;
       });
       this.gui.visibleErrors.onChange(function (e) {
         var _iteratorNormalCompletion = true;
@@ -56304,7 +56364,7 @@ function () {
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = _this.errors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (var _iterator = _this2.errors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var _error = _step.value;
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
@@ -56346,7 +56406,7 @@ function () {
         }
       });
       this.gui.visibleDancingErrors.onChange(function (e) {
-        _this.errorGui.material.visible = e;
+        _this2.errorGui.material.visible = e;
       });
     }
   }, {
@@ -56360,6 +56420,17 @@ function () {
       this.isMouseMove = true;
     }
   }, {
+    key: "valueInit",
+    value: function valueInit() {
+      this.discreateEnd = false;
+      this.scale.value = 1.0;
+
+      for (var i = 0; i < this.errorOffsetAttribute.array.length; i += 4) {
+        this.errorOffsetAttribute.array[i] += 0;
+        this.errorOffsetAttribute.array[i + 1] += 0; // console.log(this.errorDiscreteAttribute[i*3]);
+      }
+    }
+  }, {
     key: "resetAnimation",
     value: function resetAnimation() {
       _gsap.TweenMax.to(this.errorGuiInterval, 1.0, {
@@ -56367,7 +56438,7 @@ function () {
         ease: _gsap.Power2.easeInOut
       });
 
-      _gsap.TweenMax.to(this.backgroundScale, 4.0, {
+      _gsap.TweenMax.to(this.colorThreshold, 4.0, {
         value: 1.0,
         // delay : 0.5,
         ease: _gsap.Power2.easeInOut
@@ -56382,7 +56453,7 @@ function () {
         ease: _gsap.Power2.easeInOut
       });
 
-      _gsap.TweenMax.to(this.backgroundScale, 4.0, {
+      _gsap.TweenMax.to(this.colorThreshold, 4.0, {
         value: 0.001,
         // delay : 0.5,
         ease: _gsap.Power2.easeInOut
@@ -56477,19 +56548,31 @@ function () {
 
         if (this.ANIMATION_NUM == 1) {
           // this.curlNoise.snoise
-          var n = this.simplex.noise2D(this.errorOffsetAttribute.array[0] * 0.04 + this.excursionRad, this.time * 0.001); // console.log(n);
+          var noisetime = Math.abs(this.simplex.noise2D(this.time * 0.005, this.time * 0.01) * 0.005);
+          var n = this.simplex.noise3D(this.errorOffsetAttribute.array[0] * 0.04 + this.excursionRad, this.errorOffsetAttribute.array[1] * 0.05 + this.excursionRad, this.time * 0.01); // console.log(n);
 
-          var rad = this.gui.values.dancingErrorWorkAreaWidth * 0.1 * n;
+          var rad = this.gui.values.dancingErrorExcursionWidth * 0.1 * n;
 
-          var _px = Math.cos(this.time * 0.02 + this.excursionRad) * (rad + this.gui.values.dancingErrorWorkAreaWidth);
+          var _px = Math.cos(this.time * 0.02 + this.excursionRad) * (rad + this.gui.values.dancingErrorExcursionWidth);
 
-          var _py = Math.sin(this.time * 0.02 + this.excursionRad) * (rad + this.gui.values.dancingErrorWorkAreaHeight);
+          var _py = Math.sin(this.time * 0.02 + this.excursionRad) * (rad + this.gui.values.dancingErrorExcursionHeight);
 
           this.errorGuiPos.set( // px * this.walkAreaScale + mousex,
           // py * this.walkAreaScale + mousey,
           _px, _py, // this.tmpRecord.x * this.gui.values.dancingErrorTrackAreaWidth,
           // -this.tmpRecord.y * this.gui.values.dancingErrorTrackAreaHeight,
           0);
+        }
+
+        if (this.ANIMATION_NUM == 2) {
+          for (var i = 0; i < this.errorOffsetAttribute.array.length; i += 4) {
+            // console.log(i);
+            var _p = this.curlNoise.getCurlNoise(new THREE.Vector3(this.errorOffsetAttribute.array[i] * this.gui.values.dancingErrorNoiseScaleX, this.errorOffsetAttribute.array[i + 1] * this.gui.values.dancingErrorNoiseScaleY, i * 0.03));
+
+            var speed = 0.2;
+            this.errorOffsetAttribute.array[i] += _p.x * this.scale.value * speed;
+            this.errorOffsetAttribute.array[i + 1] += _p.y * this.scale.value * speed; // console.log(this.errorDiscreteAttribute[i*3]);
+          }
         }
       }
 
@@ -56499,11 +56582,11 @@ function () {
         this.arrayErrorGuiPos.pop();
       }
 
-      if (this.time % 2 == 0) {
-        for (var i = 0; i < this.arrayErrorGuiPos.length; i++) {
-          this.errorOffsetAttribute.array[(19 - i) * 4] = this.arrayErrorGuiPos[i].x;
-          this.errorOffsetAttribute.array[(19 - i) * 4 + 1] = this.arrayErrorGuiPos[i].y;
-          this.errorOffsetAttribute.array[(19 - i) * 4 + 2] = -(this.errorGuiInterval.value / this.arrayErrorGuiPos.length) * i;
+      if (this.time % 2 == 0 && this.ANIMATION_NUM != 2) {
+        for (var _i = 0; _i < this.arrayErrorGuiPos.length; _i++) {
+          this.errorOffsetAttribute.array[(19 - _i) * 4] = this.arrayErrorGuiPos[_i].x;
+          this.errorOffsetAttribute.array[(19 - _i) * 4 + 1] = this.arrayErrorGuiPos[_i].y;
+          this.errorOffsetAttribute.array[(19 - _i) * 4 + 2] = -(this.errorGuiInterval.value / this.arrayErrorGuiPos.length) * _i;
         }
       }
 
@@ -56531,13 +56614,13 @@ exports.default = DancingErrors;
 /* 22 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\r\n//uniform mat4 modelViewMatrix;\r\n//uniform mat4 projectionMatrix;\r\n//attribute vec3 position;\r\nattribute vec4 offset;\r\n//attribute vec3 normal;\r\n//attribute int number;\r\nvarying float vNumber;\r\n//attribute vec2 uv;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvoid main() {\r\n    vec3 vPosition = position;\r\n    vNormal = normal;\r\n    vNumber = offset.w;\r\n//    vec3 vcV = cross( orientation.xyz, vPosition );\r\n//    vPosition = vcV * ( 2.0 * orientation.w ) + ( cross( orientation.xyz, vcV ) * 2.0 + vPosition );\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
+module.exports = "precision highp float;\r\n\r\nattribute vec4 offset;\r\nattribute vec3 discreate;\r\n\r\nvarying float vNumber;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\n\r\nuniform float scale;\r\n\r\n\r\nvoid main() {\r\n    vec3 vPosition = position;\r\n    vPosition *= scale;\r\n    vNormal = normal;\r\n    vNumber = offset.w;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
 
 /***/ }),
 /* 23 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float scale;\r\nvoid main() {\r\n\r\n    float diffuse  = clamp(dot(vNormal, vec3(0.,0.,1.)), 0.1, 1.0);\r\n    vec3 color = vec3(1.);\r\n//    if(diffuse > 0.1)\r\n//    {\r\n////        color = texture2D( map, vUv ).xyz;\r\n//        color = vec3(0.7,1.,0.7);\r\n//    }\r\n//    {\r\n//        color = vec3(1.0,0.7,0.7);\r\n////        color = vNormal;\r\n//    }\r\n\r\n//gl_FragColor = texture2D( map, vUv );\r\n    vec3 texColor = texture2D( map, vUv ).xyz;\r\n//    vec3 gradationColor = vec3(142./255.,201./255.,219./255.);\r\n    float per = (vNumber+1.)/20.;\r\n    color = mix(gradationColor,texColor,per);\r\n    color = mix(color,texColor,scale);\r\n\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
+module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float colorThreshold;\r\n\r\nvoid main() {\r\n\r\n    float diffuse  = clamp(dot(vNormal, vec3(0.,0.,1.)), 0.1, 1.0);\r\n    vec3 color = vec3(1.);\r\n//    if(diffuse > 0.1)\r\n//    {\r\n////        color = texture2D( map, vUv ).xyz;\r\n//        color = vec3(0.7,1.,0.7);\r\n//    }\r\n//    {\r\n//        color = vec3(1.0,0.7,0.7);\r\n////        color = vNormal;\r\n//    }\r\n\r\n//gl_FragColor = texture2D( map, vUv );\r\n    vec3 texColor = texture2D( map, vUv ).xyz;\r\n//    vec3 gradationColor = vec3(142./255.,201./255.,219./255.);\r\n    float per = (vNumber+1.)/20.;\r\n    color = mix(gradationColor,texColor,per);\r\n    color = mix(color,texColor,colorThreshold);\r\n\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
 
 /***/ }),
 /* 24 */

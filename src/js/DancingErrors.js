@@ -411,13 +411,13 @@ export default class DancingErrors
             {
 
                 // this.curlNoise.snoise
-
-                let n = this.simplex.noise2D(this.errorOffsetAttribute.array[0]*0.04+this.excursionRad, this.time*0.001);
+                let noisetime = Math.abs(this.simplex.noise2D(this.time*0.005,this.time*0.01)*0.005);
+                let n = this.simplex.noise3D(this.errorOffsetAttribute.array[0]*0.04+this.excursionRad,this.errorOffsetAttribute.array[1]*0.05+this.excursionRad, this.time*0.01);
                 // console.log(n);
-                let rad = this.gui.values.dancingErrorWorkAreaWidth*0.1 * n;
+                let rad = this.gui.values.dancingErrorExcursionWidth*0.1 * n;
 
-                let px = Math.cos(this.time*0.02+ this.excursionRad) * (rad+this.gui.values.dancingErrorWorkAreaWidth);
-                let py = Math.sin(this.time*0.02+ this.excursionRad) * (rad+this.gui.values.dancingErrorWorkAreaHeight);
+                let px = Math.cos(this.time*0.02+ this.excursionRad) * (rad+this.gui.values.dancingErrorExcursionWidth);
+                let py = Math.sin(this.time*0.02+ this.excursionRad) * (rad+this.gui.values.dancingErrorExcursionHeight);
 
 
                 this.errorGuiPos.set(
@@ -434,17 +434,7 @@ export default class DancingErrors
             if(this.ANIMATION_NUM == 2)
             {
 
-                // if(!this.discreateEnd)
-                // {
-                //     TweenMax.to(this.scale , 3.0 , {
-                //         value : 0.0,
-                //         // delay : 0.5,
-                //         ease :Power2.easeInOut
-                //     });
-                //
-                //     this.discreateEnd = true;
-                // }
-                // this.scale.value += (0.0 - this.scale.value) * 0.1;
+
                 for(let i = 0; i < this.errorOffsetAttribute.array.length; i+=4)
                 {
                     // console.log(i);
