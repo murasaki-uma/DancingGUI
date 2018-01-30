@@ -9,7 +9,7 @@ const SimplexNoise = require('../../node_modules/simplex-noise');
 
 export default class DancingErrors
 {
-    constructor(gui)
+    constructor(gui,record)
     {
         this.gui = gui;
         this.curlNoise = new CurlNoise();
@@ -17,9 +17,16 @@ export default class DancingErrors
         this.arrayErrorGuiPos = [];
         this.instanceCount = 20;
         this.errorGuiInterval = {value:0.0};
+        // this.scale = {value:1.0};
+        this.colorThreshold = {value:1.0};
         this.errorOffsetAttribute;
-        this.backgroundScale = {value:1.0};
+        this.errorScaleAttribute;
+        this.errorDiscreteAttribute;
+
+        this.discreateEnd = false;
+        this.scale = {value:1.0};
         this.errors = [];
+
         this.tmpRecord = {x:0,y:0};
         this.time = 0;
         this.isMouseMove = false;
@@ -29,6 +36,9 @@ export default class DancingErrors
         this.recordPosition = [{x:0,y:0}];
         this.recordPosCount = 0;
         this.isRecord = false;
+
+
+
 
         this.debugTextRecordX = document.querySelector('.recordX');
         this.debugTextRecordY = document.querySelector('.recordY');
@@ -40,7 +50,7 @@ export default class DancingErrors
 
         this.isRecordPlay = false;
         this.simplex = new SimplexNoise();
-        this.ANIMATION_NUM = 1;
+        this.ANIMATION_NUM = 2;
         this.excursionRad = Math.PI/2;
 
         this.init();
@@ -48,6 +58,8 @@ export default class DancingErrors
 
     init()
     {
+
+        window.addEventListener('keydown',this.onKeyDown);
 
 
         let texture = new THREE.TextureLoader().load('img/errorgui.png');
@@ -64,6 +76,8 @@ export default class DancingErrors
         let offsets = [];
         let number = [];
         let orientations = [];
+        let discreate = [];
+        let scales = [];
         let vector = new THREE.Vector4();
         let x, y, z;
 
@@ -74,17 +88,22 @@ export default class DancingErrors
             z = 0;
             vector.set( x, y, z, i ).normalize();
             offsets.push( x + vector.x, y + vector.y, z + vector.z, i );
+            discreate.push(x + vector.x, y + vector.y, z + vector.z);
             number.push(i);
+            scales.push(1.0);
             // this.arrayErrorGuiPos.push(new THREE.Vector3(0,0,0));
 
         }
         this.errorOffsetAttribute = new THREE.InstancedBufferAttribute( new Float32Array( offsets ), 4 );
-
+        this.errorScaleAttribute = new THREE.InstancedBufferAttribute( new Float32Array(scales),1);
+        // this.errorDiscreteAttribute = new THREE.InstancedBufferAttribute( new Float32Array( discreate ), 3 );
         // let numberAttribute = new THREE.InstancedBufferAttribute( new Int32Array( number ), 1 );
 
+        console.log(this.errorOffsetAttribute)
         geometry.addAttribute( 'offset', this.errorOffsetAttribute );
+        geometry.addAttribute( 'scale', this.errorScaleAttribute);
         geometry.addAttribute('normal', normal);
-        // geometry.addAttribute('number', numberAttribute);
+        // geometry.addAttribute('discreate', this.errorDiscreteAttribute);
         let material = new THREE.ShaderMaterial( {
             uniforms: {
                 map: { value: texture },
@@ -93,7 +112,9 @@ export default class DancingErrors
                         this.gui.values.errorGuiColor[1]/255,
                         this.gui.values.errorGuiColor[2]/255
                     )},
-                scale:this.backgroundScale
+                scale:this.scale,
+                colorThreshold:this.colorThreshold
+                // fadeOutScale:this.scale
             },
             // side:THREE.DoubleSide,
             vertexShader: errorVertex,
@@ -146,6 +167,69 @@ export default class DancingErrors
         this.isMouseMove = true;
     }
 
+    valueInit()
+    {
+
+        this.discreateEnd = false;
+        this.scale.value = 1.0
+
+        for(let i = 0; i < this.errorOffsetAttribute.array.length; i+=4)
+        {
+
+            this.errorOffsetAttribute.array[i] += 0;
+            this.errorOffsetAttribute.array[i+1] +=0;
+            // console.log(this.errorDiscreteAttribute[i*3]);
+
+        }
+    }
+
+    onKeyDown=(e)=>
+    {
+        if(e.key == '0')
+        {
+            // if(this.discreateEnd) {
+                this.valueInit();
+                this.ANIMATION_NUM = 0;
+            // }
+        }
+
+        if(e.key == '1')
+        {
+
+            // if(this.discreateEnd) {
+
+                this.valueInit();
+
+                this.ANIMATION_NUM = 1;
+            // }
+        }
+
+        if(e.key == '2')
+        {
+
+            this.discreateEnd = false;
+            // if(!this.discreateEnd)
+            // {
+                TweenMax.to(this.scale , 3.0 , {
+                    value : 0.0,
+                    // delay : 0.5,
+                    ease :Power2.easeInOut,
+                    onComplete:()=>
+                    {
+                        this.discreateEnd = true;
+                    }
+                });
+
+                // this.discreateEnd = true;
+            // }
+
+
+            this.ANIMATION_NUM = 2;
+        }
+
+        console.log(this.ANIMATION_NUM);
+    }
+
     resetAnimation()
     {
         TweenMax.to(this.errorGuiInterval , 1.0 , {
@@ -153,7 +237,7 @@ export default class DancingErrors
             ease :Power2.easeInOut
         });
 
-        TweenMax.to(this.backgroundScale , 4.0 , {
+        TweenMax.to(this.colorThreshold , 4.0 , {
             value : 1.0,
             // delay : 0.5,
             ease :Power2.easeInOut
@@ -168,7 +252,7 @@ export default class DancingErrors
             ease :Power2.easeInOut
         });
 
-        TweenMax.to(this.backgroundScale , 4.0 , {
+        TweenMax.to(this.colorThreshold , 4.0 , {
             value : 0.001,
             // delay : 0.5,
             ease :Power2.easeInOut
@@ -347,6 +431,37 @@ export default class DancingErrors
                 );
             }
 
+            if(this.ANIMATION_NUM == 2)
+            {
+
+                // if(!this.discreateEnd)
+                // {
+                //     TweenMax.to(this.scale , 3.0 , {
+                //         value : 0.0,
+                //         // delay : 0.5,
+                //         ease :Power2.easeInOut
+                //     });
+                //
+                //     this.discreateEnd = true;
+                // }
+                // this.scale.value += (0.0 - this.scale.value) * 0.1;
+                for(let i = 0; i < this.errorOffsetAttribute.array.length; i+=4)
+                {
+                    // console.log(i);
+                    let p = this.curlNoise.getCurlNoise(new THREE.Vector3(
+                        this.errorOffsetAttribute.array[i] * this.gui.values.dancingErrorNoiseScaleX,
+                        this.errorOffsetAttribute.array[i+1] * this.gui.values.dancingErrorNoiseScaleY,
+                        i*0.03
+                    ));
+
+                    let speed = 0.2;
+                    this.errorOffsetAttribute.array[i] += p.x * this.scale.value*speed;
+                    this.errorOffsetAttribute.array[i+1] += (p.y) * this.scale.value*speed;
+                    // console.log(this.errorDiscreteAttribute[i*3]);
+
+                }
+            }
+
         }
 
 
@@ -359,7 +474,7 @@ export default class DancingErrors
         }
 
 
-        if(this.time % 2 == 0)
+        if(this.time % 2 == 0 && this.ANIMATION_NUM != 2)
         {
             for(let i = 0; i < this.arrayErrorGuiPos.length; i++ )
             {

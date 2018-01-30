@@ -4,7 +4,8 @@ varying vec2 vUv;
 varying vec3 vNormal;
 uniform vec3 gradationColor;
 varying float vNumber;
-uniform float scale;
+uniform float colorThreshold;
+
 void main() {
 
     float diffuse  = clamp(dot(vNormal, vec3(0.,0.,1.)), 0.1, 1.0);
@@ -24,7 +25,7 @@ void main() {
 //    vec3 gradationColor = vec3(142./255.,201./255.,219./255.);
     float per = (vNumber+1.)/20.;
     color = mix(gradationColor,texColor,per);
-    color = mix(color,texColor,scale);
+    color = mix(color,texColor,colorThreshold);
 
     gl_FragColor =vec4(color , 1.);
 

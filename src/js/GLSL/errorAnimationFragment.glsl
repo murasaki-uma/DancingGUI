@@ -10,6 +10,9 @@ uniform float width;
 uniform float height;
 uniform vec3 modified;
 uniform float scale;
+
+
+
 void main() {
 
     vec3 texColor = texture2D( map, vUv ).xyz;

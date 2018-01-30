@@ -20,22 +20,20 @@ export default class SceneCrashme{
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,0.1,10000);
         this.time = 0;
-
-
         this.isRecord = false;
-
         this.curlNoise = new CurlNoise();
-        this.mails = [];
-
         this.cameraLookAt = new THREE.Vector3();
 
         this.backgroundPlane;
         this.backgroundScale = {value:1.0};
 
+
+        this.mails = [];
         this.errors = [];
         this.outerWalls = [];
-
         this.dancingErrors = new DancingErrors(this.manager.gui);
+
+
 
         this.debugMesh = document.querySelector('.mesh');
 
@@ -144,7 +142,7 @@ export default class SceneCrashme{
             let x = 0;
 
 
-            let o = new OuterWall(this.manager.gui,radius*10,radius*2,400,120,this.curlNoise);
+            let o = new OuterWall(this.manager.gui,radius*8,radius*2,400,120,this.curlNoise);
             this.outerWalls.push(o);
             o.getMesh().material.visible = this.manager.gui.values.visibleOuterWalls;
             o.getMesh().position.set(x,y,z);
@@ -158,7 +156,7 @@ export default class SceneCrashme{
         }
 
         group.rotateY(Math.PI/2);
-        group.position.set(0,0,-200);
+        // group.position.set(0,0,-200);
 
         this.scene.add(group);
 

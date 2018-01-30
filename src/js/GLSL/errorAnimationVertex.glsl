@@ -4,7 +4,9 @@ varying vec3 vNormal;
 varying vec3 vPosition;
 uniform vec3 modified;
 uniform float scale;
+
 void main() {
+
     vPosition = position;
     vPosition *= scale;
     vPosition += modified;
