@@ -360,8 +360,8 @@ export default class ErrorGui
     update(frame)
     {
 
-        if(frame%4 == 0)
-        {
+        // if(frame%4 == 0)
+        // {
             this.modifiedPos.value.set(
                 this.posisition.value.x,
                 this.posisition.value.y,
@@ -390,7 +390,7 @@ export default class ErrorGui
 
 
         // console.log(this.gradThreshold.value);
-    }
+    // }
 
 
 }

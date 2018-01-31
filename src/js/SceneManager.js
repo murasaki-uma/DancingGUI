@@ -26,6 +26,10 @@ export default class SceneManager{
         this.stats;
 
 
+        this.frameFraction = 4;
+        this.renderFraction = 4;
+
+
 
 
 
@@ -173,15 +177,21 @@ export default class SceneManager{
         if(this.scenes.length != 0) {
             this.scenes[this.sceneNum].update(this.frameCount);
 
-            if(this.DEBUG_MODE)
-            {
-                this.renderer.render(this.scenes[this.sceneNum].scene,this.scenes[this.sceneNum].camera);
-            } else
-            {
-                this.renderer.render(this.scenes[this.sceneNum].scene,this.debugCamera);
-            }
 
-            this.renderer.render(this.scenes[this.sceneNum].scene,this.activeCamera);
+            if(this.frameCount % this.frameFraction == 0)
+            {
+
+
+                if(this.DEBUG_MODE)
+                {
+                    this.renderer.render(this.scenes[this.sceneNum].scene,this.scenes[this.sceneNum].camera);
+                } else
+                {
+                    this.renderer.render(this.scenes[this.sceneNum].scene,this.debugCamera);
+                }
+
+                this.renderer.render(this.scenes[this.sceneNum].scene,this.activeCamera);
+            }
         }
     }
 

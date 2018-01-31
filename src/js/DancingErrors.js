@@ -9,8 +9,10 @@ const SimplexNoise = require('../../node_modules/simplex-noise');
 
 export default class DancingErrors
 {
-    constructor(gui,record)
+    constructor(gui,record,excursionRad)
     {
+        this.importedRecord = record;
+        this.importedRecordCount = 0;
         this.gui = gui;
         this.curlNoise = new CurlNoise();
         this.errorGuiPos = new THREE.Vector3(0,0,0);
@@ -51,7 +53,7 @@ export default class DancingErrors
         this.isRecordPlay = false;
         this.simplex = new SimplexNoise();
         this.ANIMATION_NUM = 2;
-        this.excursionRad = Math.PI/2;
+        this.excursionRad = excursionRad;
 
         this.init();
     }
@@ -170,6 +172,8 @@ export default class DancingErrors
     valueInit()
     {
 
+        this.isRecordPlay = false;
+        this.isRecord = false;
         this.discreateEnd = false;
         this.scale.value = 1.0
 
@@ -185,26 +189,38 @@ export default class DancingErrors
 
     onKeyDown=(e)=>
     {
-        if(e.key == '0')
-        {
-            // if(this.discreateEnd) {
-                this.valueInit();
-                this.ANIMATION_NUM = 0;
-            // }
-        }
-
         if(e.key == '1')
         {
-
             // if(this.discreateEnd) {
-
                 this.valueInit();
-
                 this.ANIMATION_NUM = 1;
             // }
         }
 
         if(e.key == '2')
+        {
+
+            // if(this.discreateEnd) {
+
+                this.valueInit();
+
+                this.ANIMATION_NUM = 2;
+            // }
+        }
+
+
+        if(e.key == '3')
+        {
+
+            // if(this.discreateEnd) {
+
+            this.valueInit();
+
+            this.ANIMATION_NUM = 3;
+            // }
+        }
+
+        if(e.key == '0')
         {
 
             this.discreateEnd = false;
@@ -224,7 +240,7 @@ export default class DancingErrors
             // }
 
 
-            this.ANIMATION_NUM = 2;
+            this.ANIMATION_NUM = 0;
         }
 
         console.log(this.ANIMATION_NUM);
@@ -266,6 +282,7 @@ export default class DancingErrors
 
     recordBegin()
     {
+        this.isRecordPlay = true;
         this.recordPosCount = 0;
         this.recordPosition = [];
         this.isRecord = true;
@@ -385,8 +402,54 @@ export default class DancingErrors
         }
         else
         {
-            /************ animation 0 **********/
-            if(this.ANIMATION_NUM == 0)
+
+
+
+
+
+            /************ animation 1 **********/
+
+            if(this.ANIMATION_NUM == 1) {
+                if (this.importedRecord.length > 0) {
+
+
+                    if (this.importedRecordCount < this.importedRecord.length) {
+
+
+                        this.tmpRecord.x = this.importedRecord[this.importedRecordCount].x;
+                        this.tmpRecord.y = this.importedRecord[this.importedRecordCount].y;
+                        this.importedRecordCount++;
+
+                    } else {
+
+                        let last = new THREE.Vector2(this.tmpRecord.x, this.tmpRecord.y);
+                        let first = new THREE.Vector2(this.importedRecord[0].x, this.importedRecord[0].y);
+                        console.log(first, last);
+                        if (first.distanceTo(last) > 0.01) {
+                            this.tmpRecord.x += (first.x - this.tmpRecord.x) * 0.1;
+                            this.tmpRecord.y += (first.y - this.tmpRecord.y) * 0.1;
+                        }
+                        else {
+                            this.importedRecordCount = 0;
+                        }
+
+
+                    }
+
+
+                    this.errorGuiPos.set(
+                        // px * this.walkAreaScale + mousex,
+                        // py * this.walkAreaScale + mousey,
+                        this.tmpRecord.x * this.gui.values.dancingErrorTrackAreaWidth,
+                        -this.tmpRecord.y * this.gui.values.dancingErrorTrackAreaHeight,
+                        0
+                    );
+                }
+            }
+
+            /************ animation 2 **********/
+
+            if(this.ANIMATION_NUM == 2)
             {
 
                 let px =  p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
@@ -404,10 +467,10 @@ export default class DancingErrors
                 );
             }
 
-            /************ animation 1 **********/
+            /************ animation 3 **********/
 
 
-            if(this.ANIMATION_NUM == 1)
+            if(this.ANIMATION_NUM == 3)
             {
 
                 // this.curlNoise.snoise
@@ -431,7 +494,7 @@ export default class DancingErrors
                 );
             }
 
-            if(this.ANIMATION_NUM == 2)
+            if(this.ANIMATION_NUM == 0)
             {
 
 
@@ -464,7 +527,7 @@ export default class DancingErrors
         }
 
 
-        if(this.time % 2 == 0 && this.ANIMATION_NUM != 2)
+        if(this.ANIMATION_NUM != 0)
         {
             for(let i = 0; i < this.arrayErrorGuiPos.length; i++ )
             {

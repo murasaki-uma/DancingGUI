@@ -13,6 +13,13 @@ import DancingErrors from './DancingErrors';
 import MailGui from './MailGui';
 
 import {TweenMax,Power2,Power4, TimelineLite} from "gsap";
+
+
+const record_cricle = require('./JSON/records/circle');
+const jumpingsidetoside01 = require('./JSON/records/jumpingsidetoside01.json');
+const leftuptprightdown = require('./JSON/records/leftuptprightdown.json');
+const rightuptoleftdownloop = require('./JSON/records/rightuptoleftdownloop.json');
+
 export default class SceneCrashme{
     constructor(manager)
     {
@@ -31,7 +38,8 @@ export default class SceneCrashme{
         this.mails = [];
         this.errors = [];
         this.outerWalls = [];
-        this.dancingErrors = new DancingErrors(this.manager.gui);
+        this.dancingErrors = [];
+        this.record = [];
 
 
 
@@ -69,7 +77,25 @@ export default class SceneCrashme{
         })
 
 
-        this.scene.add(this.dancingErrors.getMesh());
+
+
+
+        this.record.push(record_cricle);
+        this.record.push(jumpingsidetoside01);
+        this.record.push(leftuptprightdown);
+        this.record.push(rightuptoleftdownloop);
+        // console.log(record_cricle);
+        for(let i = 0; i <4; i++)
+        {
+            let r = i * Math.PI/2;
+            let d = new DancingErrors(this.manager.gui,this.record[i],r);
+            this.dancingErrors.push(d);
+
+
+            this.scene.add(d.getMesh());
+        }
+
+
 
 
 
@@ -176,24 +202,28 @@ export default class SceneCrashme{
 
     mouseMove =(e)=>
     {
-        // for(let i = 0; i < this.dancingErrors.length; i++)
-        // {
-        //
-        // }
-        this.dancingErrors.mouseMove(e);
+        for(let i = 0; i < this.dancingErrors.length; i++)
+        {
+            this.dancingErrors[i].mouseMove(e);
+        }
+
+
     }
 
     resetAnimation()
     {
+        for(let i = 0; i < this.dancingErrors.length; i++)
+        {
+            this.dancingErrors[i].resetAnimation();
+            TweenMax.to(this.camera.position , 1.0 , {
+                x : 0,
+                y : 0,
+                z : 100,
+                // delay : 2.0 ,
+                ease :Power2.easeInOut
+            });
+        }
 
-        this.dancingErrors.resetAnimation();
-        TweenMax.to(this.camera.position , 1.0 , {
-            x : 0,
-            y : 0,
-            z : 100,
-            // delay : 2.0 ,
-            ease :Power2.easeInOut
-        });
 
         TweenMax.to(this.cameraLookAt , 1.0 , {
             x : 0,
@@ -223,7 +253,9 @@ export default class SceneCrashme{
     cameraAnimation()
     {
 
-        this.dancingErrors.animationStart();
+        for(let i = 0; i < this.dancingErrors.length; i++) {
+            this.dancingErrors[i].animationStart();
+        }
         TweenMax.to(this.camera.position , 1.0 , {
             x : this.manager.gui.values.cameraAnimeation01PosX,
             y : this.manager.gui.values.cameraAnimeation01PosY,
@@ -281,9 +313,13 @@ export default class SceneCrashme{
 
             if(this.isRecord)
             {
-                this.dancingErrors.recordBegin();
+                // for(let i = 0; i < this.dancingErrors.length; i++) {
+                    this.dancingErrors[0].recordBegin();
+                // }
             } else {
-                this.dancingErrors.recordEnd();
+                // for(let i = 0; i < this.dancingErrors.length; i++) {
+                    this.dancingErrors[0].recordEnd();
+                // }
             }
         }
 
@@ -325,8 +361,9 @@ export default class SceneCrashme{
 
         this.time ++;
 
-        this.dancingErrors.update();
-
+        for(let i = 0; i < this.dancingErrors.length; i++) {
+            this.dancingErrors[i].update();
+        }
 
         for(let i = 0; i < this.outerWalls.length; i++)
         {
