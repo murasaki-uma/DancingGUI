@@ -115,7 +115,8 @@ export default class DancingErrors
                         this.gui.values.errorGuiColor[2]/255
                     )},
                 scale:this.scale,
-                colorThreshold:this.colorThreshold
+                colorThreshold:this.colorThreshold,
+                baseWindowScale :{value:this.gui.values.dancingErrorbaseWindowScale},
                 // fadeOutScale:this.scale
             },
             // side:THREE.DoubleSide,
@@ -123,6 +124,9 @@ export default class DancingErrors
             fragmentShader: errorFragment,
             visible:this.gui.values.visibleDancingErrors
         } );
+
+
+
 
 
 
@@ -137,22 +141,22 @@ export default class DancingErrors
         });
 
 
-        this.gui.visibleErrors.onChange((e)=>{
-            for(let error of this.errors)
-            {
-                for(let m of error.mesh.material)
-                {
-                    m.visible = e;
-                }
+        // this.gui.visibleErrors.onChange((e)=>{
+        //     for(let error of this.errors)
+        //     {
+        //         for(let m of error.mesh.material)
+        //         {
+        //             m.visible = e;
+        //         }
+        //
+        //     }
+        //
+        // });
 
-            }
-
-        });
-
-
-        this.gui.visibleDancingErrors.onChange((e)=>{
-            this.errorGui.material.visible = e;
-        });
+        //
+        // this.gui.visibleDancingErrors.onChange((e)=>{
+        //     this.errorGui.material.visible = e;
+        // });
 
     }
 

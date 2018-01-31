@@ -130,7 +130,7 @@ export default class OuterWall{
 
     onKeyDown =(e)=>
     {
-        if(e.key == 't')
+        if(e.key == 'o')
         {
             TweenMax.to(this.threshold , 2.0 , {
                 value:1.0,

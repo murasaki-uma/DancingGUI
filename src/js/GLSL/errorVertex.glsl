@@ -8,10 +8,12 @@ varying vec2 vUv;
 varying vec3 vNormal;
 
 uniform float scale;
+uniform float baseWindowScale;
 
 
 void main() {
     vec3 vPosition = position;
+    vPosition *= baseWindowScale;
     vPosition *= scale;
     vNormal = normal;
     vNumber = offset.w;

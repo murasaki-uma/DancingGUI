@@ -4,7 +4,7 @@
 import dat from '../../node_modules/dat.gui/build/dat.gui.min'
 
 import guiValues from './guiValues'
-const setting = require('./json/gui.json');
+const setting = require('./JSON/gui.json');
 export default class GUI{
     constructor()
     {
@@ -38,6 +38,7 @@ export default class GUI{
         this.errorGuiBack;
         this.gradThreshold;
         this.errorsLoiter;
+        this.dancingErrorbaseWindowScale;
 
         this.init();
     }
@@ -66,8 +67,10 @@ export default class GUI{
         this.background.add(this.values,'backgroundAnimationZ',-1000,500);
 
 
+        this.dancingErrorbaseWindowScale = this.dancingErrors.add(this.values,'dancingErrorbaseWindowScale', 0.0,2.0);
         this.dancingErrors.add(this.values,'errorGuiInterval',0.80);
         this.errorGuiColor = this.dancingErrors.addColor(this.values,'errorGuiColor');
+
         this.dancingErrors.add(this.values,'dancingErrorOffsetX',-20.0,20.0);
         this.dancingErrors.add(this.values,'dancingErrorOffsetY',-20.0,20.0);
         this.dancingErrors.add(this.values,'dancingErrorNoiseScaleX',0.0,0.1);

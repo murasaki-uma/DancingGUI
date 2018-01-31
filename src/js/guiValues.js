@@ -18,6 +18,7 @@ export default class guiValues{
         this.cameraAnimeation01LookY = 0.0;
         this.cameraAnimeation01LookZ = 0.0;
 
+        this.dancingErrorbaseWindowScale = 1.0;
         this.dancingErrorWorkAreaWidth = 5;
         this.dancingErrorWorkAreaHeight = 7;
         this.dancingErrorTrackAreaWidth = 5;
@@ -34,6 +35,7 @@ export default class guiValues{
         this.errorGuiBack = [ 0, 128, 255 ];
 
 
+
         this.errorPopUpRangeX_min = 0.0;
         this.errorPopUpRangeX_max = 0.0;
         this.errorPopUpRangeY_min = 0.0;
@@ -44,6 +46,7 @@ export default class guiValues{
         this.diffErrorPosY = 0;
         this.diffErrorPosZ = 0;
         this.errorPopUpDuration = 0.5;
+
 
 
 

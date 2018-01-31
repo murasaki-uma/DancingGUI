@@ -53608,11 +53608,11 @@ var _SceneManager = _interopRequireDefault(__webpack_require__(5));
 
 var _SceneCrashme = _interopRequireDefault(__webpack_require__(12));
 
-var _CancasPaint = _interopRequireDefault(__webpack_require__(27));
+var _CancasPaint = _interopRequireDefault(__webpack_require__(31));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var css = __webpack_require__(28);
+var css = __webpack_require__(32);
 
 window.addEventListener('DOMContentLoaded', function () {
   console.log('awake');
@@ -53675,13 +53675,15 @@ function () {
       if (_this.scenes.length != 0) {
         _this.scenes[_this.sceneNum].update(_this.frameCount);
 
-        if (_this.DEBUG_MODE) {
-          _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.scenes[_this.sceneNum].camera);
-        } else {
-          _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.debugCamera);
-        }
+        if (_this.frameCount % _this.frameFraction == 0) {
+          if (_this.DEBUG_MODE) {
+            _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.scenes[_this.sceneNum].camera);
+          } else {
+            _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.debugCamera);
+          }
 
-        _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.activeCamera);
+          _this.renderer.render(_this.scenes[_this.sceneNum].scene, _this.activeCamera);
+        }
       }
     };
 
@@ -53699,6 +53701,8 @@ function () {
     this.frameCount = 0;
     this.isRecord = false;
     this.stats;
+    this.frameFraction = 4;
+    this.renderFraction = 4;
     this.scenes = [];
     this.sceneNum = 0;
     this.gui = new _gui.default();
@@ -55002,6 +55006,7 @@ function () {
     this.errorGuiBack;
     this.gradThreshold;
     this.errorsLoiter;
+    this.dancingErrorbaseWindowScale;
     this.init();
   }
 
@@ -55023,6 +55028,7 @@ function () {
       this.background.add(this.values, 'backgroundAnimationX', -150, 150);
       this.background.add(this.values, 'backgroundAnimationY', -150, 150);
       this.background.add(this.values, 'backgroundAnimationZ', -1000, 500);
+      this.dancingErrorbaseWindowScale = this.dancingErrors.add(this.values, 'dancingErrorbaseWindowScale', 0.0, 2.0);
       this.dancingErrors.add(this.values, 'errorGuiInterval', 0.80);
       this.errorGuiColor = this.dancingErrors.addColor(this.values, 'errorGuiColor');
       this.dancingErrors.add(this.values, 'dancingErrorOffsetX', -20.0, 20.0);
@@ -55093,6 +55099,7 @@ var guiValues = function guiValues() {
   this.cameraAnimeation01LookX = 0.0;
   this.cameraAnimeation01LookY = 0.0;
   this.cameraAnimeation01LookZ = 0.0;
+  this.dancingErrorbaseWindowScale = 1.0;
   this.dancingErrorWorkAreaWidth = 5;
   this.dancingErrorWorkAreaHeight = 7;
   this.dancingErrorTrackAreaWidth = 5;
@@ -55183,6 +55190,14 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+var record_cricle = __webpack_require__(27);
+
+var jumpingsidetoside01 = __webpack_require__(28);
+
+var leftuptprightdown = __webpack_require__(29);
+
+var rightuptoleftdownloop = __webpack_require__(30);
+
 var SceneCrashme =
 /*#__PURE__*/
 function () {
@@ -55192,11 +55207,9 @@ function () {
     _classCallCheck(this, SceneCrashme);
 
     this.mouseMove = function (e) {
-      // for(let i = 0; i < this.dancingErrors.length; i++)
-      // {
-      //
-      // }
-      _this.dancingErrors.mouseMove(e);
+      for (var i = 0; i < _this.dancingErrors.length; i++) {
+        _this.dancingErrors[i].mouseMove(e);
+      }
     };
 
     this.manager = manager;
@@ -55213,7 +55226,8 @@ function () {
     this.mails = [];
     this.errors = [];
     this.outerWalls = [];
-    this.dancingErrors = new _DancingErrors.default(this.manager.gui);
+    this.dancingErrors = [];
+    this.record = [];
     this.debugMesh = document.querySelector('.mesh');
     this.init();
   }
@@ -55235,7 +55249,28 @@ function () {
       this.manager.gui.visibleBackground.onChange(function (e) {
         _this2.backgroundPlane.material.visible = e;
       });
-      this.scene.add(this.dancingErrors.getMesh());
+      this.record.push(record_cricle);
+      this.record.push(jumpingsidetoside01);
+      this.record.push(leftuptprightdown);
+      this.record.push(rightuptoleftdownloop); // console.log(record_cricle);
+
+      for (var i = 0; i < 4; i++) {
+        var r = i * Math.PI / 2;
+        var d = new _DancingErrors.default(this.manager.gui, this.record[i], r);
+        this.dancingErrors.push(d);
+        this.scene.add(d.getMesh());
+      }
+
+      this.manager.gui.dancingErrorbaseWindowScale.onChange(function (e) {
+        for (var _i = 0; _i < _this2.dancingErrors.length; _i++) {
+          _this2.dancingErrors[_i].getMesh().material.uniforms.baseWindowScale.value = e;
+        }
+      });
+      this.manager.gui.visibleDancingErrors.onChange(function (e) {
+        for (var _i2 = 0; _i2 < _this2.dancingErrors.length; _i2++) {
+          _this2.dancingErrors[_i2].getMesh().material.visible = e;
+        }
+      });
       var gp = new _MailGui.default(47.3, 22.8, this.manager.gui);
       this.mails.push(gp);
       this.scene.add(gp.getMesh());
@@ -55268,10 +55303,10 @@ function () {
       var gradTex = new THREE.TextureLoader().load('./img/gradationGreen_Purple.png');
       var errorsize = 10;
 
-      for (var i = 0; i < errorsize; i++) {
+      for (var _i3 = 0; _i3 < errorsize; _i3++) {
         var error = new _ErrorGui.default(36, 13, this.manager.gui, errorTex, gradTex);
         this.errors.push(error);
-        error.radian = Math.PI * 2 / errorsize * i;
+        error.radian = Math.PI * 2 / errorsize * _i3;
         this.scene.add(error.getMesh());
       }
 
@@ -55352,40 +55387,43 @@ function () {
       var radius = 400;
       var group = new THREE.Group();
 
-      for (var _i = 0; _i < 4; _i++) {
-        var r = rad * _i;
-        var y = Math.cos(r) * radius;
-        var z = Math.sin(r) * radius;
+      for (var _i4 = 0; _i4 < 4; _i4++) {
+        var _r = rad * _i4;
+
+        var y = Math.cos(_r) * radius;
+        var z = Math.sin(_r) * radius;
         var x = 0;
         var o = new _OuterWall.default(this.manager.gui, radius * 8, radius * 2, 400, 120, this.curlNoise);
         this.outerWalls.push(o);
         o.getMesh().material.visible = this.manager.gui.values.visibleOuterWalls;
         o.getMesh().position.set(x, y, z);
-        o.getMesh().rotateX(r + Math.PI / 2);
+        o.getMesh().rotateX(_r + Math.PI / 2);
         group.add(o.getMesh());
       }
 
-      group.rotateY(Math.PI / 2); // group.position.set(0,0,-200);
-
+      group.rotateY(Math.PI / 2);
+      group.position.set(0, 0, -2500);
       this.scene.add(group);
       this.manager.gui.visibleOuterWalls.onChange(function (e) {
-        for (var _i2 = 0; _i2 < _this2.outerWalls.length; _i2++) {
-          _this2.outerWalls[_i2].getMesh().material.visible = e;
+        for (var _i5 = 0; _i5 < _this2.outerWalls.length; _i5++) {
+          _this2.outerWalls[_i5].getMesh().material.visible = e;
         }
       });
     }
   }, {
     key: "resetAnimation",
     value: function resetAnimation() {
-      this.dancingErrors.resetAnimation();
+      for (var i = 0; i < this.dancingErrors.length; i++) {
+        this.dancingErrors[i].resetAnimation();
 
-      _gsap.TweenMax.to(this.camera.position, 1.0, {
-        x: 0,
-        y: 0,
-        z: 100,
-        // delay : 2.0 ,
-        ease: _gsap.Power2.easeInOut
-      });
+        _gsap.TweenMax.to(this.camera.position, 1.0, {
+          x: 0,
+          y: 0,
+          z: 100,
+          // delay : 2.0 ,
+          ease: _gsap.Power2.easeInOut
+        });
+      }
 
       _gsap.TweenMax.to(this.cameraLookAt, 1.0, {
         x: 0,
@@ -55412,7 +55450,9 @@ function () {
   }, {
     key: "cameraAnimation",
     value: function cameraAnimation() {
-      this.dancingErrors.animationStart();
+      for (var i = 0; i < this.dancingErrors.length; i++) {
+        this.dancingErrors[i].animationStart();
+      }
 
       _gsap.TweenMax.to(this.camera.position, 1.0, {
         x: this.manager.gui.values.cameraAnimeation01PosX,
@@ -55460,9 +55500,11 @@ function () {
         this.isRecord = !this.isRecord;
 
         if (this.isRecord) {
-          this.dancingErrors.recordBegin();
+          // for(let i = 0; i < this.dancingErrors.length; i++) {
+          this.dancingErrors[0].recordBegin(); // }
         } else {
-          this.dancingErrors.recordEnd();
+          // for(let i = 0; i < this.dancingErrors.length; i++) {
+          this.dancingErrors[0].recordEnd(); // }
         }
       }
     }
@@ -55508,10 +55550,13 @@ function () {
       this.camera.lookAt(this.cameraLookAt);
       this.camera.updateProjectionMatrix();
       this.time++;
-      this.dancingErrors.update();
 
-      for (var i = 0; i < this.outerWalls.length; i++) {
-        this.outerWalls[i].update();
+      for (var i = 0; i < this.dancingErrors.length; i++) {
+        this.dancingErrors[i].update();
+      }
+
+      for (var _i6 = 0; _i6 < this.outerWalls.length; _i6++) {
+        this.outerWalls[_i6].update();
       }
 
       this.backgroundPlane.scale.set(this.backgroundScale.value, this.backgroundScale.value, this.backgroundScale.value); // this.errorOffsetAttribute.needsUpdate = true;
@@ -55867,46 +55912,47 @@ function () {
   }, {
     key: "update",
     value: function update(frame) {
-      if (frame % 4 == 0) {
-        this.modifiedPos.value.set(this.posisition.value.x, this.posisition.value.y, this.posisition.value.z);
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+      // if(frame%4 == 0)
+      // {
+      this.modifiedPos.value.set(this.posisition.value.x, this.posisition.value.y, this.posisition.value.z);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
+      try {
+        for (var _iterator = this.mesh.material[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var _m = _step.value;
+          _m.uniforms.scale.value = this.scale.value;
+        } //     this.posisition.normalize();
+        //     this.mesh.translation.set(
+        //
+        //     );
+        //     // this.mesh.translateY(this.posisition.y);
+        //     // this.mesh.translateZ(this.posisition.z);
+        //
+        //     this.mesh.scale.set(
+        //         this.scale.value,
+        //         this.scale.value,
+        //         this.scale.value
+        //     );
+
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
         try {
-          for (var _iterator = this.mesh.material[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _m = _step.value;
-            _m.uniforms.scale.value = this.scale.value;
-          } //     this.posisition.normalize();
-          //     this.mesh.translation.set(
-          //
-          //     );
-          //     // this.mesh.translateY(this.posisition.y);
-          //     // this.mesh.translateZ(this.posisition.z);
-          //
-          //     this.mesh.scale.set(
-          //         this.scale.value,
-          //         this.scale.value,
-          //         this.scale.value
-          //     );
-
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
         } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
+          if (_didIteratorError) {
+            throw _iteratorError;
           }
         }
-      } // console.log(this.gradThreshold.value);
+      }
+    } // console.log(this.gradThreshold.value);
+    // }
 
-    }
   }]);
 
   return ErrorGui;
@@ -55996,7 +56042,7 @@ function () {
     _classCallCheck(this, OuterWall);
 
     this.onKeyDown = function (e) {
-      if (e.key == 't') {
+      if (e.key == 'o') {
         _gsap.TweenMax.to(_this.threshold, 2.0, {
           value: 1.0,
           // delay : 2.0 ,
@@ -56152,7 +56198,7 @@ module.exports = "precision highp float;\r\n\r\nattribute vec3 offset;\r\nattrib
 /* 20 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vOffset;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float width;\r\nuniform float threshold;\r\n//uniform float scale;\r\nuniform float time;\r\nvarying vec3 vColor;\r\nvarying vec3 vPosition;\r\nconst vec3 green = vec3(27./255.,225./255.,173./255.);\r\nconst vec3 purple = vec3(125./255.,31./255.,164./255.);\r\n\r\n\r\nvec3 rgb2hsv(vec3 c)\r\n{\r\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\r\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\r\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\r\n\r\n    float d = q.x - min(q.w, q.y);\r\n    float e = 1.0e-10;\r\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\r\n}\r\n\r\n\r\nvec3 hsv2rgb(vec3 c)\r\n{\r\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\r\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\r\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\r\n}\r\n\r\n\r\n\r\nvoid main() {\r\n\r\n    vec3 color = vec3(1.);\r\n\r\n    float d = vOffset.x / (threshold*width)+0.5;\r\n    color = mix(green,purple,d);\r\n    if(vOffset.x > threshold*width - width/2.)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    float th = sin(-time*0.2+vOffset.x*0.01) + cos(-time*0.2 + vOffset.y*0.01)*0.5;\r\n    if( 0.0> th && th < 0.5)\r\n    {\r\n        discard;\r\n    }\r\n\r\n\r\n    if(vPosition.x > 0.)\r\n    {\r\n//        color *= 0.8;\r\n    } else\r\n    {\r\n        color *= 1.7;\r\n    }\r\n\r\n//    vec3 hsv = rgb2hsv(color);\r\n//    hsv.z *= 2.0;\r\n//\r\n//    color = hsv2rgb(color);\r\n\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
+module.exports = "precision highp float;\r\nuniform sampler2D map;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\nvarying vec3 vOffset;\r\nuniform vec3 gradationColor;\r\nvarying float vNumber;\r\nuniform float width;\r\nuniform float threshold;\r\n//uniform float scale;\r\nuniform float time;\r\nvarying vec3 vColor;\r\nvarying vec3 vPosition;\r\nconst vec3 green = vec3(27./255.,225./255.,173./255.);\r\nconst vec3 purple = vec3(125./255.,31./255.,164./255.);\r\n\r\n\r\n\r\n\r\nvec3 rgb2hsv(vec3 c)\r\n{\r\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\r\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\r\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\r\n\r\n    float d = q.x - min(q.w, q.y);\r\n    float e = 1.0e-10;\r\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\r\n}\r\n\r\n\r\nvec3 hsv2rgb(vec3 c)\r\n{\r\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\r\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\r\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\r\n}\r\n\r\n\r\n\r\nvoid main() {\r\n\r\n    vec3 color = vec3(1.);\r\n\r\n    float d = vOffset.x / (threshold*width)+0.5;\r\n    color = mix(green,purple,d);\r\n    if(vOffset.x > threshold*width - width/2.)\r\n    {\r\n        discard;\r\n    }\r\n\r\n    float th = sin(-time*0.2+vOffset.x*0.01) + cos(-time*0.2 + vOffset.y*0.01)*0.5;\r\n    if( 0.0> th && th < 0.5)\r\n    {\r\n        discard;\r\n    }\r\n\r\n\r\n    if(vPosition.x > 0.)\r\n    {\r\n//        color *= 0.8;\r\n    } else\r\n    {\r\n        color *= 1.7;\r\n    }\r\n\r\n//    vec3 hsv = rgb2hsv(color);\r\n//    hsv.z *= 2.0;\r\n//\r\n//    color = hsv2rgb(color);\r\n\r\n    gl_FragColor =vec4(color , 1.);\r\n\r\n}"
 
 /***/ }),
 /* 21 */
@@ -56191,19 +56237,12 @@ var SimplexNoise = __webpack_require__(3);
 var DancingErrors =
 /*#__PURE__*/
 function () {
-  function DancingErrors(gui, record) {
+  function DancingErrors(gui, record, excursionRad) {
     var _this = this;
 
     _classCallCheck(this, DancingErrors);
 
     this.onKeyDown = function (e) {
-      if (e.key == '0') {
-        // if(this.discreateEnd) {
-        _this.valueInit();
-
-        _this.ANIMATION_NUM = 0; // }
-      }
-
       if (e.key == '1') {
         // if(this.discreateEnd) {
         _this.valueInit();
@@ -56212,6 +56251,20 @@ function () {
       }
 
       if (e.key == '2') {
+        // if(this.discreateEnd) {
+        _this.valueInit();
+
+        _this.ANIMATION_NUM = 2; // }
+      }
+
+      if (e.key == '3') {
+        // if(this.discreateEnd) {
+        _this.valueInit();
+
+        _this.ANIMATION_NUM = 3; // }
+      }
+
+      if (e.key == '0') {
         _this.discreateEnd = false; // if(!this.discreateEnd)
         // {
 
@@ -56226,7 +56279,7 @@ function () {
         // }
 
 
-        _this.ANIMATION_NUM = 2;
+        _this.ANIMATION_NUM = 0;
       }
 
       console.log(_this.ANIMATION_NUM);
@@ -56240,6 +56293,8 @@ function () {
       downloadLink.click();
     };
 
+    this.importedRecord = record;
+    this.importedRecordCount = 0;
     this.gui = gui;
     this.curlNoise = new _curlNoise.default();
     this.errorGuiPos = new THREE.Vector3(0, 0, 0);
@@ -56284,7 +56339,7 @@ function () {
     this.isRecordPlay = false;
     this.simplex = new SimplexNoise();
     this.ANIMATION_NUM = 2;
-    this.excursionRad = Math.PI / 2;
+    this.excursionRad = excursionRad;
     this.init();
   }
 
@@ -56343,7 +56398,10 @@ function () {
             value: new THREE.Color(this.gui.values.errorGuiColor[0] / 255, this.gui.values.errorGuiColor[1] / 255, this.gui.values.errorGuiColor[2] / 255)
           },
           scale: this.scale,
-          colorThreshold: this.colorThreshold // fadeOutScale:this.scale
+          colorThreshold: this.colorThreshold,
+          baseWindowScale: {
+            value: this.gui.values.dancingErrorbaseWindowScale
+          } // fadeOutScale:this.scale
 
         },
         // side:THREE.DoubleSide,
@@ -56357,57 +56415,21 @@ function () {
         _this2.errorGui.material.uniforms.gradationColor.value.r = e[0] / 255;
         _this2.errorGui.material.uniforms.gradationColor.value.g = e[1] / 255;
         _this2.errorGui.material.uniforms.gradationColor.value.b = e[2] / 255;
-      });
-      this.gui.visibleErrors.onChange(function (e) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = _this2.errors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _error = _step.value;
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
-
-            try {
-              for (var _iterator2 = _error.mesh.material[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                var _m = _step2.value;
-                _m.visible = e;
-              }
-            } catch (err) {
-              _didIteratorError2 = true;
-              _iteratorError2 = err;
-            } finally {
-              try {
-                if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                  _iterator2.return();
-                }
-              } finally {
-                if (_didIteratorError2) {
-                  throw _iteratorError2;
-                }
-              }
-            }
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-      });
-      this.gui.visibleDancingErrors.onChange(function (e) {
-        _this2.errorGui.material.visible = e;
-      });
+      }); // this.gui.visibleErrors.onChange((e)=>{
+      //     for(let error of this.errors)
+      //     {
+      //         for(let m of error.mesh.material)
+      //         {
+      //             m.visible = e;
+      //         }
+      //
+      //     }
+      //
+      // });
+      //
+      // this.gui.visibleDancingErrors.onChange((e)=>{
+      //     this.errorGui.material.visible = e;
+      // });
     }
   }, {
     key: "mouseMove",
@@ -56422,6 +56444,8 @@ function () {
   }, {
     key: "valueInit",
     value: function valueInit() {
+      this.isRecordPlay = false;
+      this.isRecord = false;
       this.discreateEnd = false;
       this.scale.value = 1.0;
 
@@ -56467,6 +56491,7 @@ function () {
   }, {
     key: "recordBegin",
     value: function recordBegin() {
+      this.isRecordPlay = true;
       this.recordPosCount = 0;
       this.recordPosition = [];
       this.isRecord = true;
@@ -56533,8 +56558,37 @@ function () {
           }
         }
       } else {
-        /************ animation 0 **********/
-        if (this.ANIMATION_NUM == 0) {
+        /************ animation 1 **********/
+        if (this.ANIMATION_NUM == 1) {
+          if (this.importedRecord.length > 0) {
+            if (this.importedRecordCount < this.importedRecord.length) {
+              this.tmpRecord.x = this.importedRecord[this.importedRecordCount].x;
+              this.tmpRecord.y = this.importedRecord[this.importedRecordCount].y;
+              this.importedRecordCount++;
+            } else {
+              var _last = new THREE.Vector2(this.tmpRecord.x, this.tmpRecord.y);
+
+              var _first = new THREE.Vector2(this.importedRecord[0].x, this.importedRecord[0].y);
+
+              console.log(_first, _last);
+
+              if (_first.distanceTo(_last) > 0.01) {
+                this.tmpRecord.x += (_first.x - this.tmpRecord.x) * 0.1;
+                this.tmpRecord.y += (_first.y - this.tmpRecord.y) * 0.1;
+              } else {
+                this.importedRecordCount = 0;
+              }
+            }
+
+            this.errorGuiPos.set( // px * this.walkAreaScale + mousex,
+            // py * this.walkAreaScale + mousey,
+            this.tmpRecord.x * this.gui.values.dancingErrorTrackAreaWidth, -this.tmpRecord.y * this.gui.values.dancingErrorTrackAreaHeight, 0);
+          }
+        }
+        /************ animation 2 **********/
+
+
+        if (this.ANIMATION_NUM == 2) {
           var px = p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
           var py = p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY;
           this.errorGuiPos.set( // px * this.walkAreaScale + mousex,
@@ -56543,10 +56597,10 @@ function () {
           // -this.tmpRecord.y * this.gui.values.dancingErrorTrackAreaHeight,
           0);
         }
-        /************ animation 1 **********/
+        /************ animation 3 **********/
 
 
-        if (this.ANIMATION_NUM == 1) {
+        if (this.ANIMATION_NUM == 3) {
           // this.curlNoise.snoise
           var noisetime = Math.abs(this.simplex.noise2D(this.time * 0.005, this.time * 0.01) * 0.005);
           var n = this.simplex.noise3D(this.errorOffsetAttribute.array[0] * 0.04 + this.excursionRad, this.errorOffsetAttribute.array[1] * 0.05 + this.excursionRad, this.time * 0.01); // console.log(n);
@@ -56564,7 +56618,7 @@ function () {
           0);
         }
 
-        if (this.ANIMATION_NUM == 2) {
+        if (this.ANIMATION_NUM == 0) {
           for (var i = 0; i < this.errorOffsetAttribute.array.length; i += 4) {
             // console.log(i);
             var _p = this.curlNoise.getCurlNoise(new THREE.Vector3(this.errorOffsetAttribute.array[i] * this.gui.values.dancingErrorNoiseScaleX, this.errorOffsetAttribute.array[i + 1] * this.gui.values.dancingErrorNoiseScaleY, i * 0.03));
@@ -56582,7 +56636,7 @@ function () {
         this.arrayErrorGuiPos.pop();
       }
 
-      if (this.time % 2 == 0 && this.ANIMATION_NUM != 2) {
+      if (this.ANIMATION_NUM != 0) {
         for (var _i = 0; _i < this.arrayErrorGuiPos.length; _i++) {
           this.errorOffsetAttribute.array[(19 - _i) * 4] = this.arrayErrorGuiPos[_i].x;
           this.errorOffsetAttribute.array[(19 - _i) * 4 + 1] = this.arrayErrorGuiPos[_i].y;
@@ -56614,7 +56668,7 @@ exports.default = DancingErrors;
 /* 22 */
 /***/ (function(module, exports) {
 
-module.exports = "precision highp float;\r\n\r\nattribute vec4 offset;\r\nattribute vec3 discreate;\r\n\r\nvarying float vNumber;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\n\r\nuniform float scale;\r\n\r\n\r\nvoid main() {\r\n    vec3 vPosition = position;\r\n    vPosition *= scale;\r\n    vNormal = normal;\r\n    vNumber = offset.w;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
+module.exports = "precision highp float;\r\n\r\nattribute vec4 offset;\r\nattribute vec3 discreate;\r\n\r\nvarying float vNumber;\r\nvarying vec2 vUv;\r\nvarying vec3 vNormal;\r\n\r\nuniform float scale;\r\nuniform float baseWindowScale;\r\n\r\n\r\nvoid main() {\r\n    vec3 vPosition = position;\r\n    vPosition *= baseWindowScale;\r\n    vPosition *= scale;\r\n    vNormal = normal;\r\n    vNumber = offset.w;\r\n    vUv = uv;\r\n    gl_Position = projectionMatrix * modelViewMatrix * vec4( offset.xyz + vPosition, 1.0 );\r\n}"
 
 /***/ }),
 /* 23 */
@@ -56815,6 +56869,30 @@ module.exports = "\r\n\r\nprecision highp float;\r\n\r\n\r\nvec3 mod289(vec3 x) 
 
 /***/ }),
 /* 27 */
+/***/ (function(module, exports) {
+
+module.exports = [{"x":-0.0031753087570850934,"y":-0.684755598841977},{"x":-0.004127654430341951,"y":-0.6846641603632928},{"x":-0.006302224089777237,"y":-0.6845772938085428},{"x":-0.009479176377351867,"y":-0.6844947705815303},{"x":-0.013608392161658878,"y":-0.684590589543743},{"x":-0.019118448744052125,"y":-0.685291373655406},{"x":-0.025940304084627296,"y":-0.6867410906869215},{"x":-0.0340083682454753,"y":-0.688728077964422},{"x":-0.043180965706217406,"y":-0.691051255947734},{"x":-0.053085409484398605,"y":-0.6934324910597549},{"x":-0.06328828186732154,"y":-0.6957817724301121},{"x":-0.07353656618665387,"y":-0.6980135897319514},{"x":-0.08382799184557514,"y":-0.7001338161686987},{"x":-0.09439849701520114,"y":-0.7020609232696715},{"x":-0.10507539756126649,"y":-0.7036303509737838},{"x":-0.11601210387367936,"y":-0.704685767223004},{"x":-0.12719562566412237,"y":-0.7053399806040141},{"x":-0.13877235231742419,"y":-0.7054388352323501},{"x":-0.1505638934317117,"y":-0.70518431507352},{"x":-0.16255950828393564,"y":-0.704506980852945},{"x":-0.17451089794910393,"y":-0.703602189301587},{"x":-0.18657900384529952,"y":-0.7023942052720478},{"x":-0.19867862508160597,"y":-0.7008981883882364},{"x":-0.21080818589101774,"y":-0.6991285402928663},{"x":-0.2232042845329748,"y":-0.6972731585743902},{"x":-0.23585359411584988,"y":-0.6953363299139633},{"x":-0.24929900964815263,"y":-0.6934963426865578},{"x":-0.26302453535622117,"y":-0.6917483548205225},{"x":-0.27701616573126725,"y":-0.6900877663477891},{"x":-0.2914193256986721,"y":-0.6885102072986924},{"x":-0.3062134387788179,"y":-0.6870115262020504},{"x":-0.32122022715733733,"y":-0.6858491032020524},{"x":-0.3365877872280419,"y":-0.6848319093659916},{"x":-0.3522980804063223,"y":-0.6838655752217339},{"x":-0.3681752398780697,"y":-0.682947557784689},{"x":-0.3838934620111504,"y":-0.6820754412194964},{"x":-0.3997781539899579,"y":-0.6808984984268143},{"x":-0.4155035320047457,"y":-0.6793448627040798},{"x":-0.43131565699181,"y":-0.6774333686977957},{"x":-0.44768638207872746,"y":-0.6745721532245784},{"x":-0.46419095186368,"y":-0.6709829183856492},{"x":-0.4808226741117658,"y":-0.6667891731632308},{"x":-0.49757519119982835,"y":-0.6618469270486232},{"x":-0.5146011935445989,"y":-0.6561064970724987},{"x":-0.5317282767245118,"y":-0.649607792427933},{"x":-0.5489513866978101,"y":-0.642040294792599},{"x":-0.5661069919660942,"y":-0.6334574438160353},{"x":-0.5827222772884244,"y":-0.6239100071653032},{"x":-0.5988242586620984,"y":-0.613359106110174},{"x":-0.6145973314432792,"y":-0.6016806978429928},{"x":-0.629661115664766,"y":-0.588844049710425},{"x":-0.6439717106751786,"y":-0.5752555057614891},{"x":-0.6575667759350704,"y":-0.560168688661568},{"x":-0.6704820879319677,"y":-0.5441811601518345},{"x":-0.6821960787734646,"y":-0.5271637397749048},{"x":-0.6928481795966961,"y":-0.5092550301380759},{"x":-0.7021740245851152,"y":-0.4907609197461547},{"x":-0.7103986566891928,"y":-0.47179778665083305},{"x":-0.717735866711876,"y":-0.4525632980151555},{"x":-0.7239125654397742,"y":-0.43324523764401446},{"x":-0.7289867784376268,"y":-0.41402200015205765},{"x":-0.7329342649125709,"y":-0.39488884439532584},{"x":-0.7351764405558312,"y":-0.37523151018949685},{"x":-0.7360366661470873,"y":-0.35577307056852375},{"x":-0.7359014995063996,"y":-0.3364164727892265},{"x":-0.7347413451660003,"y":-0.3169824087316467},{"x":-0.73268681759024,"y":-0.29773607575151034},{"x":-0.7298620005202519,"y":-0.2784067632531334},{"x":-0.7262260433513821,"y":-0.25873729617061614},{"x":-0.7220575983266702,"y":-0.23883179024710274},{"x":-0.7175420199976382,"y":-0.2190504794803922},{"x":-0.7129347602675976,"y":-0.19886450602902067},{"x":-0.7082404032065986,"y":-0.17855542706903305},{"x":-0.7034633036811894,"y":-0.157780965820111},{"x":-0.6989250591320505,"y":-0.13604174331307756},{"x":-0.6946137268103686,"y":-0.11425707775021113},{"x":-0.6905179611047708,"y":-0.09129683710311869},{"x":-0.686626983684453,"y":-0.06843931232113348},{"x":-0.6827718249764207,"y":-0.045330935555251015},{"x":-0.67895069404506,"y":-0.02198424940466616},{"x":-0.6750031593428071,"y":0.0013275066195741203},{"x":-0.6709355410582064,"y":0.024780295051661613},{"x":-0.6664363830529151,"y":0.048105740229392124},{"x":-0.6612098019955074,"y":0.07165864137123262},{"x":-0.6545778833243034,"y":0.09595027376260132},{"x":-0.6474045447136438,"y":0.11989840467377438},{"x":-0.6396374920811363,"y":0.14308466910907522},{"x":-0.6309889508104128,"y":0.16554716039229742},{"x":-0.6217410905714795,"y":0.18706074313923307},{"x":-0.6117651471540166,"y":0.20784707880457107},{"x":-0.6010181596375856,"y":0.22759409768664216},{"x":-0.5897767754652302,"y":0.2463537656246097},{"x":-0.5779069843110163,"y":0.2640012341378043},{"x":-0.5659163970002273,"y":0.2802436811417155},{"x":-0.5539697834994223,"y":0.29506424969787015},{"x":-0.5416681197212766,"y":0.30853403372865607},{"x":-0.5290291581796572,"y":0.32054635643246715},{"x":-0.5154348431278172,"y":0.3309127668338403},{"x":-0.5012504025587279,"y":0.34067374870120753},{"x":-0.4861878824307915,"y":0.3495982494194573},{"x":-0.47060864703941063,"y":0.3580765251017945},{"x":-0.4541417067509322,"y":0.3661308870000149},{"x":-0.4365933515721157,"y":0.37386963881726154},{"x":-0.41801765224747817,"y":0.3816569931133323},{"x":-0.3984659759843106,"y":0.38922919572247405},{"x":-0.37774902639144425,"y":0.39711965231265695},{"x":-0.3563218925321895,"y":0.40513823415695444},{"x":-0.3340613534611356,"y":0.4134527510205353},{"x":-0.31100907943887246,"y":0.4219612981384981},{"x":-0.2876808476891511,"y":0.43082839002599826},{"x":-0.26321744022532845,"y":0.4405587475281827},{"x":-0.23846926662676043,"y":0.45084788332250525},{"x":-0.21337120012081923,"y":0.46123231842467266},{"x":-0.1879407353528735,"y":0.47188150389716726},{"x":-0.16235322239475364,"y":0.48260798619359807},{"x":-0.136299053338508,"y":0.4932336844448938},{"x":-0.1102777514652334,"y":0.5039378538811857},{"x":-0.08412894325705109,"y":0.5146294629292867},{"x":-0.05738281355451599,"y":0.5253962476225436},{"x":-0.030227958591075903,"y":0.5358860171229495},{"x":-0.0022086241535856053,"y":0.5458512981483351},{"x":0.02536212451441114,"y":0.5553183151224514},{"x":0.05282417701884931,"y":0.5639635491921129},{"x":0.07986550785044652,"y":0.571479657446793},{"x":0.10618969277538451,"y":0.5774004480936171},{"x":0.13215004940645655,"y":0.5815443629711662},{"x":0.15760603899962577,"y":0.584000245867904},{"x":0.1827416100655175,"y":0.5847653903689339},{"x":0.2075727835304956,"y":0.5839243333940413},{"x":0.23195604911587558,"y":0.5817316010448967},{"x":0.2557550720569072,"y":0.5782547770902129},{"x":0.27868160416834753,"y":0.5735580661102667},{"x":0.300620539832946,"y":0.5670055983448231},{"x":0.3214625287143146,"y":0.5593870257446552},{"x":0.34126241815161473,"y":0.550755653551499},{"x":0.36007231311704985,"y":0.5411621217450042},{"x":0.3779417133342132,"y":0.530480322277963},{"x":0.3948382784611534,"y":0.5184162364776538},{"x":0.4104931899349211,"y":0.5053003027025516},{"x":0.4248098002794449,"y":0.4913593293792707},{"x":0.4381724848686473,"y":0.4767216764991573},{"x":0.45039084475219904,"y":0.4618577181097395},{"x":0.46136336600665256,"y":0.44669166147254524},{"x":0.4712317056428279,"y":0.4312386114999633},{"x":0.4799717076622738,"y":0.41542580984482574},{"x":0.48700486831090617,"y":0.3984001639518876},{"x":0.49313081537155135,"y":0.38109339617241167},{"x":0.49855363968233884,"y":0.36325823855891304},{"x":0.5033084973807616,"y":0.34492111060309283},{"x":0.5078256121942631,"y":0.3261071108220671},{"x":0.5119581411083595,"y":0.3066658667792216},{"x":0.515884043576751,"y":0.2869771727433964},{"x":0.519613650921723,"y":0.2674018332699897},{"x":0.5236329683756368,"y":0.2480212886448177},{"x":0.5277687802743153,"y":0.22900001515334337},{"x":0.5320152618955202,"y":0.21040715725281905},{"x":0.5366843400705854,"y":0.1920470781358227},{"x":0.5412786944956276,"y":0.17434367893286432},{"x":0.5458814264375129,"y":0.15726412564824202},{"x":0.5505714820997643,"y":0.1406901179721017},{"x":0.5555825905344586,"y":0.1244221625961447},{"x":0.5606606038648785,"y":0.10861917293323642},{"x":0.5658021768462378,"y":0.0929094686419753},{"x":0.5710041314959894,"y":0.07728838545377897},{"x":0.5763428138100788,"y":0.061490168271682355},{"x":0.5819701175640193,"y":0.04552367379538047},{"x":0.5877128815270881,"y":0.029310207875646286},{"x":0.5935653326888289,"y":0.012862119084651426},{"x":0.5996013517686732,"y":-0.004854157601288461},{"x":0.6053355698945253,"y":-0.02255570059230418},{"x":0.611100537431545,"y":-0.04128854274038932},{"x":0.6165772565917138,"y":-0.06047847100406671},{"x":0.6217801397938741,"y":-0.07992841504968219},{"x":0.6267228788359265,"y":-0.09979959011601341},{"x":0.6311803856877809,"y":-0.11989671862415002},{"x":0.6350181918002172,"y":-0.14020850290200176},{"x":0.6383466472895715,"y":-0.16072421016108285},{"x":0.6411912196869977,"y":-0.18108521219658272},{"x":0.6434173729883621,"y":-0.20129924426968043},{"x":0.6450560281484679,"y":-0.22137365487849606},{"x":0.6459778299156477,"y":-0.2414896411241183},{"x":0.6459805257214526,"y":-0.2612966921689577},{"x":0.6451100708639514,"y":-0.2808102547730533},{"x":0.6434894879556745,"y":-0.2999578953445052},{"x":0.6411562833991606,"y":-0.31858369395707087},{"x":0.6379873581180915,"y":-0.3365395266808201},{"x":0.6338657679899646,"y":-0.3540331078380683},{"x":0.6289978764158632,"y":-0.3711746580210778},{"x":0.6231035381506256,"y":-0.38763334672281136},{"x":0.6165515358462689,"y":-0.40361753304520737},{"x":0.6090572923872888,"y":-0.4191509421072327},{"x":0.6009853801488767,"y":-0.43390768071615676},{"x":0.5926821428874646,"y":-0.4479265823946346},{"x":0.5838416865367422,"y":-0.4612445389891886},{"x":0.5748083323686353,"y":-0.4738965977540149},{"x":0.5654329951152829,"y":-0.48591605358059986},{"x":0.5557327739309473,"y":-0.4972474286019183},{"x":0.545882643170908,"y":-0.5080122348721708},{"x":0.5355726379964896,"y":-0.5179774767870989},{"x":0.5251432124458715,"y":-0.5274444566062806},{"x":0.5142828772204033,"y":-0.5364380874345032},{"x":0.5031719079625577,"y":-0.5449820367213146},{"x":0.49182283637395363,"y":-0.5530987885437855},{"x":0.48008883741239883,"y":-0.5608097027751328},{"x":0.46767169712908047,"y":-0.5681350712949127},{"x":0.4549230329075471,"y":-0.5754426034444527},{"x":0.4418594209447094,"y":-0.5823847589865159},{"x":0.428814068945093,"y":-0.5892411307932877},{"x":0.41578606391053674,"y":-0.59610311606547},{"x":0.40277453849278766,"y":-0.6026220020740432},{"x":0.39009612902846574,"y":-0.608902051796125},{"x":0.3777341797198996,"y":-0.6148680990321027},{"x":0.36567286755930145,"y":-0.6205358439062816},{"x":0.35405589084800304,"y":-0.6259202015367514},{"x":0.3428610328135394,"y":-0.6310353412856978},{"x":0.3319084573633386,"y":-0.6358947240471969},{"x":0.3211860503681876,"y":-0.6405111376706211},{"x":0.31036484308787343,"y":-0.644896730612874},{"x":0.2997672358541147,"y":-0.6490630439080143},{"x":0.28938204866458356,"y":-0.6530210415383976},{"x":0.2790399303583385,"y":-0.6564327072315126},{"x":0.2688180925705803,"y":-0.6594995736120972},{"x":0.25871052127538463,"y":-0.6624130966736527},{"x":0.24879086822748842,"y":-0.6650067275542557},{"x":0.23904973751452668,"y":-0.6673835688768913},{"x":0.22931947286102258,"y":-0.6696415681333951},{"x":0.2195995309640032,"y":-0.6717866674270738},{"x":0.21012749092373953,"y":-0.6735631877142567},{"x":0.20112905288548905,"y":-0.6752508819870805},{"x":0.19234244151105587,"y":-0.676854191546263},{"x":0.1838364305466142,"y":-0.6783773356274865},{"x":0.17512079949547396,"y":-0.6798243225046487},{"x":0.16596793412387487,"y":-0.6810247440100783},{"x":0.15687588662403032,"y":-0.6819909284123619},{"x":0.1479209811817177,"y":-0.6829088035945312},{"x":0.13893763053533023,"y":-0.6836065689897175},{"x":0.13024471726253198,"y":-0.6840952300872699},{"x":0.12182771949464348,"y":-0.6844723501160075},{"x":0.1138315716151494,"y":-0.6848306141433081}]
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+module.exports = [{"x":-0.5731122995804177,"y":0.09019924150733363},{"x":-0.5738779064663485,"y":0.0900597686059846},{"x":-0.5739621461912626,"y":0.08880457488298288},{"x":-0.5733990871132107,"y":0.08632906145559396},{"x":-0.5721407083202512,"y":0.08285462923285436},{"x":-0.5700610040939492,"y":0.07875199400216593},{"x":-0.567120654853882,"y":0.07397237345201753},{"x":-0.5636842362590978,"y":0.06903077161983365},{"x":-0.5596961659252426,"y":0.06401548003162465},{"x":-0.5550232547350898,"y":0.05893018317519177},{"x":-0.5496193588793643,"y":0.05377838131394621},{"x":-0.5435210275913447,"y":0.04856339969812861},{"x":-0.5367629826426457,"y":0.04360916716310189},{"x":-0.5293782097163011,"y":0.038902646254826506},{"x":-0.5217195886195536,"y":0.034190874006239144},{"x":-0.5134792683525631,"y":0.029714690370081155},{"x":-0.5046863338738417,"y":0.02554250837763965},{"x":-0.4947253290772557,"y":0.022380860103906025},{"x":-0.4842977442954186,"y":0.019858449015310566},{"x":-0.473426908527593,"y":0.01802350571450494},{"x":-0.4624565277314384,"y":0.01692184927400824},{"x":-0.4510700357500112,"y":0.016757392736530763},{"x":-0.439529395698845,"y":0.01764366103073871},{"x":-0.42768154327724683,"y":0.019688502838864974},{"x":-0.41562222495582823,"y":0.022593412099487883},{"x":-0.4036835574379404,"y":0.025994615592348294},{"x":-0.3918595081834067,"y":0.029546528758200012},{"x":-0.3801443462790595,"y":0.0330812311895763},{"x":-0.3688541707657496,"y":0.03659958342320094},{"x":-0.35796773232392515,"y":0.0401024029689615},{"x":-0.3473040723958318,"y":0.04343008153743403},{"x":-0.33685205205578295,"y":0.046591376177482935},{"x":-0.3264403176201964,"y":0.049434221161712234},{"x":-0.3157453113854888,"y":0.05149338420146143},{"x":-0.3049419686457963,"y":0.05288824185586309},{"x":-0.2941964779305483,"y":0.05381239431800178},{"x":-0.2835059466385225,"y":0.054048799461764885},{"x":-0.2728676267985578,"y":0.05363184465307119},{"x":-0.26227890783805113,"y":0.05243381296572637},{"x":-0.2517373097130296,"y":0.05033337331984583},{"x":-0.24124047638171897,"y":0.04753603103717351},{"x":-0.2306253979002536,"y":0.044076631249549},{"x":-0.21973721482196118,"y":0.039827891908402746},{"x":-0.20883073993295315,"y":0.03531043476286232},{"x":-0.19782650197167526,"y":0.03053769570314743},{"x":-0.18664900323965097,"y":0.025843208672601124},{"x":-0.17522652092332758,"y":0.02114286860785639},{"x":-0.16373207590610012,"y":0.01667754554634889},{"x":-0.15233003802719383,"y":0.01243548863791677},{"x":-0.14069424352133253,"y":0.008405534574906254},{"x":-0.12835406510732378,"y":0.005218617910314909},{"x":-0.11566626538893507,"y":0.0030731641599475185},{"x":-0.10264822543138541,"y":0.0019972926400014654},{"x":-0.08963800065499299,"y":0.0016167543913213592},{"x":-0.07631365689233979,"y":0.002698707369429712},{"x":-0.063012443501099,"y":0.004849257165352778},{"x":-0.04989397566688006,"y":0.008014973938199811},{"x":-0.03694911611183188,"y":0.011824329491490307},{"x":-0.024571113682446074,"y":0.01608475696238492},{"x":-0.012570853818259457,"y":0.02061331783118628},{"x":-0.0008490635389220465,"y":0.025396605427999056},{"x":0.01060818063480862,"y":0.030101113568788355},{"x":0.021492562599852754,"y":0.034570396302538185},{"x":0.03183272546664468,"y":0.03881621489960053},{"x":0.041655880190097014,"y":0.042849742566809755},{"x":0.050987877177376725,"y":0.046681593850658516},{"x":0.06017481772365259,"y":0.04984069779886337},{"x":0.0693043405030648,"y":0.052039921930572164},{"x":0.07854008810813665,"y":0.05316687531279256},{"x":0.08795713514967515,"y":0.053114786559181795},{"x":0.09754641665585699,"y":0.05210299270034861},{"x":0.10729932090344999,"y":0.050500248839188445},{"x":0.1172076667553836,"y":0.04809552509009189},{"x":0.12734406798353082,"y":0.04508930537127294},{"x":0.13793827937535105,"y":0.041591856943126296},{"x":0.14888702457057063,"y":0.03794851108875266},{"x":0.16025296273110962,"y":0.034006177755646225},{"x":0.17209562006079207,"y":0.030100576165377944},{"x":0.18527540497415118,"y":0.02639025465462308},{"x":0.19908237427528286,"y":0.022865449219405958},{"x":0.21340478289270842,"y":0.019516884055949694},{"x":0.22813647300852316,"y":0.016656516998300563},{"x":0.24309620884362756,"y":0.014420323064985377},{"x":0.25843335981623716,"y":0.012937478523604594},{"x":0.27428982687365683,"y":0.012410893290287233},{"x":0.290639644211646,"y":0.012872946861538713},{"x":0.3072973726119962,"y":0.014274207297130581},{"x":0.3239260731132292,"y":0.01648752179193725},{"x":0.3404468112582108,"y":0.019311902719180808},{"x":0.3570257568689337,"y":0.02287718168105657},{"x":0.3734188420158407,"y":0.02762746854728441},{"x":0.38947458801794255,"y":0.03302235815119525},{"x":0.40520986183247953,"y":0.03910981281781352},{"x":0.4204799153646498,"y":0.045534434446369516},{"x":0.43506685207230156,"y":0.05227936468876636},{"x":0.44916559950084084,"y":0.059328588114312},{"x":0.46255940955795316,"y":0.06610554283048894},{"x":0.47528352911220983,"y":0.07254364981085704},{"x":0.48737144268875365,"y":0.07865985144220672},{"x":0.49885496058647033,"y":0.08447024299198892},{"x":0.5099250742934812,"y":0.08934857526901337},{"x":0.5206024540193216,"y":0.09310087385119221},{"x":0.5310675081672301,"y":0.09522209318990767},{"x":0.5410093096077432,"y":0.09595417217115006},{"x":0.5504540209762306,"y":0.09504579796515872},{"x":0.5589441816637535,"y":0.09273937815511249},{"x":0.5663667475001799,"y":0.08942558486884844},{"x":0.5729358699322449,"y":0.08531517170399464},{"x":0.5783726777218062,"y":0.08044796965448055},{"x":0.5825730148968091,"y":0.07454104831690488},{"x":0.5854379332838014,"y":0.06796716350330502},{"x":0.5871949755263638,"y":0.06083985584939077},{"x":0.5880603071358977,"y":0.05366795126862933},{"x":0.5884000570524147,"y":0.04661406453118022},{"x":0.5884012760647458,"y":0.039912872130603565},{"x":0.5881612765701901,"y":0.03354673935005574},{"x":0.5873705760857321,"y":0.027498913208535307},{"x":0.5861370955129567,"y":0.02199405575981664},{"x":0.5840006587437397,"y":0.017245595954985392},{"x":0.5810064135879033,"y":0.01353648375948151},{"x":0.5773580221689583,"y":0.010333597021387145},{"x":0.5730881918000602,"y":0.008012586777374722},{"x":0.5684691519849768,"y":0.006368974278922987},{"x":0.5635183631960173,"y":0.005449082100662482},{"x":0.5583327987339657,"y":0.005377109150400806},{"x":0.5530849690866565,"y":0.006110659466738028},{"x":0.5477779875133526,"y":0.00776984181016135},{"x":0.5424148116103538,"y":0.009987604731682151},{"x":0.5369982510941448,"y":0.012736019202395556},{"x":0.5316917468995661,"y":0.015988552644841936},{"x":0.5261682528021763,"y":0.019719999110434643},{"x":0.5205993900012957,"y":0.02366583556229062},{"x":0.514746269375829,"y":0.027975727424913863},{"x":0.5087838755211854,"y":0.032471087003948844},{"x":0.502878443803004,"y":0.03714264091357498},{"x":0.49694674026237146,"y":0.04206177189917129},{"x":0.4912312360466805,"y":0.04673494633548779},{"x":0.48580150704177416,"y":0.05125465451189704},{"x":0.4806432644871131,"y":0.05554837727948583},{"x":0.4757429340601851,"y":0.059707606370603766},{"x":0.4710876201546035,"y":0.0636588740071658},{"x":0.46666507194430096,"y":0.06741257826189974},{"x":0.4614990209194332,"y":0.07025686514671975},{"x":0.4559481856290885,"y":0.0719164356824872},{"x":0.45003180528654085,"y":0.072209948300929},{"x":0.44384854299649035,"y":0.07120570589791142},{"x":0.4375725145604922,"y":0.06912898114832458},{"x":0.4310475865816637,"y":0.06603339816949697},{"x":0.4244469757413265,"y":0.06180951494907344},{"x":0.41737253692210585,"y":0.05619297665149948},{"x":0.410169504931306,"y":0.04989495572590125},{"x":0.40308546698377606,"y":0.043109911227497126},{"x":0.39595370167317245,"y":0.036022579258744566},{"x":0.3888569812197389,"y":0.028567881731252402},{"x":0.3814720099722568,"y":0.020764186922957624},{"x":0.37413474387878864,"y":0.012548752235991781},{"x":0.3666820259774537,"y":0.003942164664288423},{"x":0.35920001471073537,"y":-0.004554863376464092},{"x":0.3517705605989928,"y":-0.012947809862813301},{"x":0.34463219334074735,"y":-0.021241878872479372},{"x":0.337529201037054,"y":-0.029281629355479302},{"x":0.33054020079227525,"y":-0.03699958477623782},{"x":0.3234987212992853,"y":-0.04433164242595841},{"x":0.3161662289642246,"y":-0.05121690473128439},{"x":0.3085572744291966,"y":-0.056955979302258264},{"x":0.3005249091000197,"y":-0.06112502075414615},{"x":0.2924118469247615,"y":-0.0640431081286281},{"x":0.28406135104154595,"y":-0.06561240420575723},{"x":0.27556567898786094,"y":-0.06638150332185269},{"x":0.2672536329805901,"y":-0.066230030401149},{"x":0.2591964175695027,"y":-0.06512382158357752},{"x":0.25122051952060953,"y":-0.06311061366398164},{"x":0.24340225881789096,"y":-0.06055652644509692},{"x":0.2354122101856781,"y":-0.05652629434898481},{"x":0.2274197347246257,"y":-0.05173526431477535},{"x":0.21942495377617577,"y":-0.04622147623937338},{"x":0.2115083684667882,"y":-0.04026164541056429},{"x":0.2037464548665999,"y":-0.034198843813652756},{"x":0.196292251094331,"y":-0.028118412448952475},{"x":0.18921075751067554,"y":-0.022342002652487206},{"x":0.18248333860620286,"y":-0.016854413345845202},{"x":0.1760922906469538,"y":-0.011641203504535298},{"x":0.1700207950856672,"y":-0.006688654155290889},{"x":0.16425287430244492,"y":-0.0019837322735086994},{"x":0.15877334955838376,"y":0.0026463284380015386},{"x":0.15228162741808515,"y":0.0058419991853075545},{"x":0.1451498611597211,"y":0.0075146145428024004},{"x":0.1370885095808347,"y":0.007018595122799412},{"x":0.1287871387641724,"y":0.005585067130893606},{"x":0.12057929307998307,"y":0.003421290919497281},{"x":0.11213875286328295,"y":0.00040339397576780525},{"x":0.10379869624905771,"y":-0.0034259176636781638},{"x":0.09523255564882348,"y":-0.007945880802146222},{"x":0.08677317867024083,"y":-0.0129615779408681},{"x":0.07809368372386705,"y":-0.018929377151282595},{"x":0.06928546256018173,"y":-0.02532051855835359},{"x":0.060515723194230514,"y":-0.03203364259033968},{"x":0.05154138397985661,"y":-0.03905265011599511},{"x":0.04205113150112101,"y":-0.046362246960636413},{"x":0.03215114727333184,"y":-0.053787518734497136},{"x":0.021781532031851743,"y":-0.06132268169111631},{"x":0.010965767327365261,"y":-0.06880185634753884},{"x":-0.0002738393669772781,"y":-0.07622784211877456},{"x":-0.011674938395412983,"y":-0.08352310598717425},{"x":-0.023470612697507283,"y":-0.09045360666215395},{"x":-0.03531959010121713,"y":-0.09703758230338466},{"x":-0.04721920545146174,"y":-0.10329235916255385},{"x":-0.05916692685091438,"y":-0.10915420471685598},{"x":-0.07116034899711465,"y":-0.11448238060771727},{"x":-0.08319718685272516,"y":-0.11898280047067544},{"x":-0.0955164271885455,"y":-0.12213550487376557},{"x":-0.10762163476802497,"y":-0.12432864943761537},{"x":-0.1194431253768906,"y":-0.12544982723036974},{"x":-0.1309950848636731,"y":-0.1255526365905834},{"x":-0.14229098978447657,"y":-0.12452761101606627},{"x":-0.15318287116341994,"y":-0.12243114225355486},{"x":-0.16369093017759623,"y":-0.1196375723100832},{"x":-0.1736735862410637,"y":-0.11618175624469934},{"x":-0.18339826705762788,"y":-0.11217699882540744},{"x":-0.19263671383336384,"y":-0.10781113204372006},{"x":-0.20149362412240304,"y":-0.10334278875348274},{"x":-0.21006846060117035,"y":-0.0990176701658487},{"x":-0.21861648451644944,"y":-0.09490880750759637},{"x":-0.2272998082005948,"y":-0.09100538798225664},{"x":-0.2362724383693432,"y":-0.08729713943318392},{"x":-0.24551990969846446,"y":-0.08417526562110772},{"x":-0.25551079524248016,"y":-0.08185102519490398},{"x":-0.26620792429064555,"y":-0.08076569125673055},{"x":-0.2774955988156631,"y":-0.08085731848218593},{"x":-0.2895050632478703,"y":-0.0819066738892715},{"x":-0.3033256300211681,"y":-0.08466779568799157},{"x":-0.3185452006101418,"y":-0.08801259355395286},{"x":-0.3336468794863871,"y":-0.09119015152661608},{"x":-0.3488777187918105,"y":-0.09420883160064615},{"x":-0.36431164635704316,"y":-0.09707657767097472},{"x":-0.3800188936211846,"y":-0.09980093643778686},{"x":-0.39558386533883916,"y":-0.1023088848043498},{"x":-0.4113352186956914,"y":-0.10421028098113311},{"x":-0.4269420912014213,"y":-0.10561564503953436},{"x":-0.44209016349022484,"y":-0.10630920119974689},{"x":-0.45712391898130844,"y":-0.10608596247095442},{"x":-0.4719686876624681,"y":-0.10507196105951576},{"x":-0.48631237546583983,"y":-0.10330673509956323},{"x":-0.5004211939915832,"y":-0.10034669104707103},{"x":-0.5141461149993996,"y":-0.09673272457811763},{"x":-0.5275063333651852,"y":-0.09233714688970894},{"x":-0.5405200842210417,"y":-0.08735942346663488},{"x":-0.5532046909424655,"y":-0.08198904651944587},{"x":-0.5655766107361783,"y":-0.07640603364816484},{"x":-0.5773299345402053,"y":-0.07054082418708779},{"x":-0.588495592154031,"y":-0.06432733550379595},{"x":-0.5991029668871655,"y":-0.05754240417367431},{"x":-0.6091799728836432,"y":-0.050455179714790105},{"x":-0.6187531285802971,"y":-0.043321354169307213},{"x":-0.6278476264921182,"y":-0.035982872667738405},{"x":-0.6364873995083483,"y":-0.028850930317430877},{"x":-0.6443736404654068,"y":-0.02159443031318724},{"x":-0.6517851835225223,"y":-0.014620562847247207},{"x":-0.6582634484621519,"y":-0.007594426445061267},{"x":-0.6640962567464398,"y":-0.000759211939167467},{"x":-0.6693158812081532,"y":0.005734241841431644},{"x":-0.6741137527426009,"y":0.011903022933000799},{"x":-0.6781894155877859,"y":0.017763364969991497},{"x":-0.6814182084739915,"y":0.023090112519406923},{"x":-0.6838424748991665,"y":0.028070330229442997},{"x":-0.6855024411863625,"y":0.03256095966825152},{"x":-0.6857932355257582,"y":0.03658648024939388},{"x":-0.6853460174793738,"y":0.04025033987766196},{"x":-0.6840369159623183,"y":0.043490429138790886},{"x":-0.6820697968523053,"y":0.04648832147495479},{"x":-0.6794775610289826,"y":0.04885516442285901},{"x":-0.6765326218842859,"y":0.050943280299550864},{"x":-0.6734133862884638,"y":0.052606220534773804},{"x":-0.6704501124724329,"y":0.0541860137582356},{"x":-0.6676350023472035,"y":0.0556868173205243},{"x":-0.6649606477282356,"y":0.05711258070469857},{"x":-0.6624200108402161,"y":0.05846705591966413},{"x":-0.6593633189798773,"y":0.05943303752624708},{"x":-0.6562986900083754,"y":0.06002995020486657},{"x":-0.6529049773729084,"y":0.06027624740192075},{"x":-0.6496809503692148,"y":0.06051022973912223},{"x":-0.6466181247157058,"y":0.06073251295946363},{"x":-0.6437084403448723,"y":0.06094368201878796},{"x":-0.6409442401925804,"y":0.06114429262514608},{"x":-0.6383182500479032,"y":0.06133487270118629},{"x":-0.6358235594104599,"y":0.061515923773424484}]
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+module.exports = [{"x":-0.9409055402979253,"y":-0.957392667517757},{"x":-0.9419310028328682,"y":-0.9578389924417889},{"x":-0.9429051922410641,"y":-0.9582630011196193},{"x":-0.9438306721788501,"y":-0.958665809363558},{"x":-0.9447098781197468,"y":-0.9590484771953},{"x":-0.9455451237635987,"y":-0.9594120116354548},{"x":-0.946338607125258,"y":-0.9597573693536018},{"x":-0.9470924163188343,"y":-0.9600854591858415},{"x":-0.9478085350527319,"y":-0.9603971445264693},{"x":-0.9473634459206741,"y":-0.9604526682143399},{"x":-0.9454936659075986,"y":-0.9603450307939998},{"x":-0.9421096578533763,"y":-0.9599220053970424},{"x":-0.9374479048642445,"y":-0.9593597463461158},{"x":-0.9318938375953087,"y":-0.958504830400101},{"x":-0.9259743868730996,"y":-0.9576926602513871},{"x":-0.9203509086870009,"y":-0.9569210986101089},{"x":-0.915008604410207,"y":-0.9561881150508945},{"x":-0.9099334153472529,"y":-0.9554917806696409},{"x":-0.9051119857374466,"y":-0.9541887233121813},{"x":-0.9005316276081305,"y":-0.9525498565130518},{"x":-0.8965018307936404,"y":-0.9501108159728844},{"x":-0.892995067228235,"y":-0.9471521877644566},{"x":-0.89014595695364,"y":-0.9436999512711817},{"x":-0.8878412314532248,"y":-0.9396985944453933},{"x":-0.8860536714882806,"y":-0.9352557657656256},{"x":-0.8848378046341239,"y":-0.9303133463626692},{"x":-0.884084660383125,"y":-0.925136893158409},{"x":-0.8836103309009463,"y":-0.9194975304571846},{"x":-0.8834812613012366,"y":-0.9132580188100271},{"x":-0.8838409602940526,"y":-0.9062879807404158},{"x":-0.8845042177455879,"y":-0.8987843274932907},{"x":-0.8854558557329065,"y":-0.8910143172132533},{"x":-0.8863599118208593,"y":-0.8829912677519491},{"x":-0.8874599226606845,"y":-0.8747278310684415},{"x":-0.8885853188106085,"y":-0.8662360265238407},{"x":-0.8896544451530363,"y":-0.8572065026635669},{"x":-0.8906701151783426,"y":-0.847826530377221},{"x":-0.8916350017023836,"y":-0.8381136320861066},{"x":-0.8925516439002227,"y":-0.8285656088619135},{"x":-0.8933420681360797,"y":-0.8191742169512958},{"x":-0.8940125853080539,"y":-0.8099316247885746},{"x":-0.8944888049172494,"y":-0.8011511622339895},{"x":-0.8942981267292647,"y":-0.7926493378833165},{"x":-0.8933935097818689,"y":-0.7845726047501771},{"x":-0.8915694934567626,"y":-0.7767393233498775},{"x":-0.8886308901665612,"y":-0.7692977060195929},{"x":-0.8845530434074292,"y":-0.7622281695558226},{"x":-0.8793929153528134,"y":-0.7555121099152408},{"x":-0.8731242342153978,"y":-0.7491318532566881},{"x":-0.8658024276493224,"y":-0.743070609431063},{"x":-0.8573193802218402,"y":-0.7373124277967191},{"x":-0.8474116105676613,"y":-0.7318421552440925},{"x":-0.8363915123543908,"y":-0.7266453963190972},{"x":-0.8241539303058031,"y":-0.7217084753403517},{"x":-0.8100362659448538,"y":-0.7170184004105433},{"x":-0.7952579253164214,"y":-0.7125628292272255},{"x":-0.7800930997901502,"y":-0.7083300366030735},{"x":-0.7647218853151121,"y":-0.7039881137624948},{"x":-0.7494761447471057,"y":-0.6998632870639451},{"x":-0.7343496043907793,"y":-0.6959447017003229},{"x":-0.7194970759397291,"y":-0.692141853142973},{"x":-0.7051460163549613,"y":-0.6882885696277651},{"x":-0.6912713521931618,"y":-0.6845477578264089},{"x":-0.6779296495352722,"y":-0.680913794153212},{"x":-0.6650942603060971,"y":-0.6771407588160405},{"x":-0.6524987112779305,"y":-0.6729950280123675},{"x":-0.6402917821449021,"y":-0.6688160063631525},{"x":-0.6286951994685251,"y":-0.6646855508725811},{"x":-0.6176784459259671,"y":-0.6602804633850867},{"x":-0.6072125300605369,"y":-0.6557748604243328},{"x":-0.5974306816925583,"y":-0.6508529979163479},{"x":-0.5886202408555188,"y":-0.6455356888384935},{"x":-0.5812149522854116,"y":-0.6394417432097205},{"x":-0.5753857159251603,"y":-0.6326901853194831},{"x":-0.5708125716080019,"y":-0.6253138957808545},{"x":-0.5671915571755118,"y":-0.6173441111762544},{"x":-0.5645554519855466,"y":-0.60889069872089},{"x":-0.5625334671676198,"y":-0.5998976473453907},{"x":-0.5615772118156697,"y":-0.5900711691481292},{"x":-0.5613118560480373,"y":-0.5797737053178278},{"x":-0.5617028548855069,"y":-0.5690288051361385},{"x":-0.562395847189463,"y":-0.5577786479587221},{"x":-0.5636972766949416,"y":-0.5458881117115478},{"x":-0.5655767215418666,"y":-0.5336297927338293},{"x":-0.5678445092589854,"y":-0.5211824650859108},{"x":-0.5701596792944285,"y":-0.5085555792013026},{"x":-0.5726002483843694,"y":-0.4955977280680217},{"x":-0.5749187890198133,"y":-0.4816037277913247},{"x":-0.577121402623485,"y":-0.4677480802951025},{"x":-0.5785707987302529,"y":-0.45233982624025115},{"x":-0.579224252362872,"y":-0.4364189054976051},{"x":-0.5790411747929599,"y":-0.4201713363253712},{"x":-0.577902620876463,"y":-0.4038540285307546},{"x":-0.5756955927265306,"y":-0.3874704690448744},{"x":-0.5724735140548343,"y":-0.3717457026094711},{"x":-0.5681263656832822,"y":-0.3563260197243865},{"x":-0.5628711728010474,"y":-0.3416773209835561},{"x":-0.5564317942253036,"y":-0.3277610571797672},{"x":-0.5488674392407266,"y":-0.3145406065661678},{"x":-0.5401539708156677,"y":-0.30230194833088264},{"x":-0.5306703880305114,"y":-0.29115637777881326},{"x":-0.519731723934452,"y":-0.2810492405257988},{"x":-0.5083753628181152,"y":-0.27176822998306943},{"x":-0.49662218953251497,"y":-0.2632720398151108},{"x":-0.4841705012777542,"y":-0.2557620063889102},{"x":-0.471376767210651,"y":-0.24902843694356255},{"x":-0.4578561603613725,"y":-0.24295231581811658},{"x":-0.4437254102211174,"y":-0.23750077059657723},{"x":-0.42869348054607437,"y":-0.23288314986947492},{"x":-0.41272504446089286,"y":-0.2285766026406363},{"x":-0.3956257697298096,"y":-0.22480615262087394},{"x":-0.3777737416934799,"y":-0.221544994949734},{"x":-0.35952814142552614,"y":-0.21844689516215107},{"x":-0.34074787583334953,"y":-0.2158244702115816},{"x":-0.32194199329570133,"y":-0.21333316650854062},{"x":-0.30335293221612525,"y":-0.21096642799065168},{"x":-0.2851306232258978,"y":-0.2087180263986572},{"x":-0.2676586579810016,"y":-0.20642165996244527},{"x":-0.2510602909983502,"y":-0.20424011184804394},{"x":-0.2350506848085613,"y":-0.20200725621554552},{"x":-0.21960040137199177,"y":-0.19924450366940338},{"x":-0.2049226321072507,"y":-0.1958981565933911},{"x":-0.19097875130574668,"y":-0.19183700979018506},{"x":-0.17773206454431786,"y":-0.1872571881699621},{"x":-0.16579079893768076,"y":-0.18170347070212156},{"x":-0.1552504551322758,"y":-0.17538493710286152},{"x":-0.14604098703804144,"y":-0.1680190583311186},{"x":-0.137854693313149,"y":-0.1598987790312427},{"x":-0.1308011869433115,"y":-0.15090143430582328},{"x":-0.12506498611704625,"y":-0.14123126234995473},{"x":-0.12058022555717464,"y":-0.13076151960134233},{"x":-0.11712356154619694,"y":-0.11985295444725758},{"x":-0.11448281755248838,"y":-0.10836712308415691},{"x":-0.11245642587100543,"y":-0.096172503898674},{"x":-0.11117444059031689,"y":-0.0835451136676537},{"x":-0.110519255538293,"y":-0.07018582109573854},{"x":-0.11029875899932048,"y":-0.05653218360951616},{"x":-0.11041083069565671,"y":-0.042438533530884774},{"x":-0.11116038562389638,"y":-0.02728533179419619},{"x":-0.11187246280572406,"y":-0.011767095677621908},{"x":-0.11254893612846037,"y":0.004017730637935212},{"x":-0.11311119993296982,"y":0.01997562518061744},{"x":-0.11308264958262358,"y":0.036659281772428595},{"x":-0.11273398334143453,"y":0.053150295229917835},{"x":-0.11175966359558466,"y":0.06977906755743557},{"x":-0.10986942961194691,"y":0.08629813342575465},{"x":-0.10743062051077079,"y":0.102712978157835},{"x":-0.10414912163957309,"y":0.11894862034857998},{"x":-0.10006706748685489,"y":0.1348536352012392},{"x":-0.0954656433729623,"y":0.15004359177317403},{"x":-0.08988850268341386,"y":0.16471462790223787},{"x":-0.08362558880326246,"y":0.1786521122248485},{"x":-0.07638964698367812,"y":0.1915719524836943},{"x":-0.06790778521327234,"y":0.20328445349623772},{"x":-0.05856384289794635,"y":0.21401036714861107},{"x":-0.048079380656586006,"y":0.22395940773264003},{"x":-0.036431038633403,"y":0.2330902264398332},{"x":-0.023516239113308413,"y":0.24152392682594098},{"x":-0.009478690823237842,"y":0.2493755572689262},{"x":0.005625468798309901,"y":0.2565138363421279},{"x":0.02262715355775132,"y":0.26329520146166946},{"x":0.039662998452211023,"y":0.26973749832523397},{"x":0.05777631155210851,"y":0.27617845019325454},{"x":0.07627013263045164,"y":0.2826181243155084},{"x":0.09512543628831813,"y":0.2890565845792839},{"x":0.11400260498837167,"y":0.29557408413941355},{"x":0.1325790020701428,"y":0.3021666710310796},{"x":0.15038735100200545,"y":0.3089909758115224},{"x":0.16778759759981515,"y":0.3161957975101203},{"x":0.18431783186773437,"y":0.32400268766669127},{"x":0.2000215544222576,"y":0.3326221202440624},{"x":0.2149400908490547,"y":0.34209366058310225},{"x":0.22911270045451193,"y":0.35229451083381885},{"x":0.24169243520670594,"y":0.3635891678101712},{"x":0.2532412539608401,"y":0.3753615939425175},{"x":0.2638910883689074,"y":0.38742751584924084},{"x":0.27352611594403115,"y":0.40001283612734817},{"x":0.28235784873203856,"y":0.4128510074725445},{"x":0.2903460656201955,"y":0.42625015717910975},{"x":0.2975329424034944,"y":0.44010204386706686},{"x":0.3043604753476284,"y":0.45406326083971194},{"x":0.31068585994037556,"y":0.4679679566589934},{"x":0.3166949753034854,"y":0.48189914984448795},{"x":0.32240363489843976,"y":0.4960159004517022},{"x":0.3278268615136464,"y":0.5100683532238244},{"x":0.33346124191063287,"y":0.5243804929002435},{"x":0.33913544669613016,"y":0.5383779879023844},{"x":0.3448474846507127,"y":0.5520765704639613},{"x":0.35059546411592624,"y":0.5654109937450936},{"x":0.3570206748329595,"y":0.5782390807859865},{"x":0.36416964109131156,"y":0.5907465333224691},{"x":0.3718454034097363,"y":0.6026286132321275},{"x":0.3802627795415003,"y":0.613916589146303},{"x":0.3897062322042967,"y":0.6246401662647697},{"x":0.4001244575715738,"y":0.6348275645273131},{"x":0.41154910286019764,"y":0.6443452079529122},{"x":0.4236083036657408,"y":0.6532265842834141},{"x":0.4360291746560872,"y":0.6613431219497566},{"x":0.44815054550527644,"y":0.6690538327327821},{"x":0.46030893462872646,"y":0.6763790079766562},{"x":0.47250249111272424,"y":0.6830973470726108},{"x":0.4850509999976025,"y":0.6893995767518591},{"x":0.4979367136633172,"y":0.6953866949471451},{"x":0.5108212284624665,"y":0.7010744572326668},{"x":0.5234634467821084,"y":0.7064778314039124},{"x":0.5360362551503985,"y":0.7116110368665957},{"x":0.5483019665086343,"y":0.7166479669799619},{"x":0.5603563215594084,"y":0.7217538204352942},{"x":0.5720491164139139,"y":0.7267647661416771},{"x":0.5831572715256941,"y":0.7321667042580094},{"x":0.5937100188818852,"y":0.7380202776257024},{"x":0.6037351288702668,"y":0.7444632894060051},{"x":0.6130178258029593,"y":0.7512256902925614},{"x":0.621595230332747,"y":0.7582915108300584},{"x":0.6295829929318653,"y":0.7656455800359493},{"x":0.6371713674010276,"y":0.7732734854768142},{"x":0.6443803231467319,"y":0.7809209579551788},{"x":0.651228831105151,"y":0.7887474040429852},{"x":0.6578152995177391,"y":0.7965834901359442},{"x":0.664635145474328,"y":0.8045891191576153},{"x":0.6718374718018978,"y":0.8125954290377457},{"x":0.6802873988548898,"y":0.8206023857334126},{"x":0.6898421607449426,"y":0.8283693795181133},{"x":0.7002857440260235,"y":0.8360687934612132},{"x":0.711895251036941,"y":0.8437040065547925},{"x":0.7245319997391132,"y":0.8512782288413271},{"x":0.7365369110061768,"y":0.858473740013535},{"x":0.7479415767098873,"y":0.8653094756271326},{"x":0.7587760091284121,"y":0.8718034244600502},{"x":0.7690687199260108,"y":0.877972675851322},{"x":0.7788467951837296,"y":0.8838334646730301},{"x":0.7881359666785623,"y":0.8894012140536529},{"x":0.7969606795986535,"y":0.8946905759652445},{"x":0.8053441568727401,"y":0.8997154697812565},{"x":0.8133084602831223,"y":0.9044891189064679},{"x":0.8208745485229855,"y":0.9090240855754188},{"x":0.8280623323508555,"y":0.9133323039109221},{"x":0.834890726987332,"y":0.9174251113296503},{"x":0.8413777018919847,"y":0.921313278377442},{"x":0.8475403280514048,"y":0.9250070370728442},{"x":0.8533948229028538,"y":0.9285161078334762},{"x":0.8589565930117304,"y":0.9318497250560767},{"x":0.8642402746151632,"y":0.9350166614175471},{"x":0.8692597721384243,"y":0.938025250960944},{"x":0.8740282947855224,"y":0.9408834110271711},{"x":0.8785583913002655,"y":0.9435986630900868},{"x":0.8828619829892714,"y":0.9461781525498567},{"x":0.8869503950938271,"y":0.9486286675366381},{"x":0.8908343865931551,"y":0.9509566567740805},{"x":0.8945241785175166,"y":0.9531682465496507},{"x":0.8980294808456601,"y":0.9552692568364425},{"x":0.9013595180573964,"y":0.9572652166088946},{"x":0.9045230534085459,"y":0.9591613783927242},{"x":0.9075284119921379,"y":0.9609627320873623},{"x":0.9103835026465502,"y":0.9626740180972684},{"x":0.913095838768242,"y":0.9642997398066793},{"x":0.9156725580838492,"y":0.9658441754306195},{"x":0.918120441433676,"y":0.9673113892733628},{"x":0.9204459306160114,"y":0.9687052424239689},{"x":0.9226551453392301,"y":0.9700294029170448},{"x":0.9247538993262879,"y":0.9712873553854667},{"x":0.9267477156139928,"y":0.9724824102304677},{"x":0.9286418410873125,"y":0.9736177123332186},{"x":0.9304412602869662,"y":0.9746962493308319},{"x":0.9321507085266372,"y":0.9757208594785646},{"x":0.9337746843543246,"y":0.9766942391189106},{"x":0.9353174613906277,"y":0.9776189497772394}]
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports) {
+
+module.exports = [{"x":0.7457538927803273,"y":-0.8180297507637103},{"x":0.745926005215266,"y":-0.8183872848774896},{"x":0.7460895120284576,"y":-0.8187269422855799},{"x":0.7462448435009897,"y":-0.8190496168232656},{"x":0.7473570386249756,"y":-0.818794810400707},{"x":0.7495390259220226,"y":-0.8177508196801905},{"x":0.7527373157834777,"y":-0.8161174888004311},{"x":0.7571422506373906,"y":-0.8140044772312997},{"x":0.7625327265299584,"y":-0.8111149991596304},{"x":0.7689398522613383,"y":-0.8077284552962759},{"x":0.7759912519312296,"y":-0.8038696989308206},{"x":0.7828508533218064,"y":-0.800203880383638},{"x":0.7893674746428543,"y":-0.7967213527638145},{"x":0.7955582648978499,"y":-0.7934129515249823},{"x":0.8014395156400956,"y":-0.7902699703480917},{"x":0.8070267038452291,"y":-0.7872841382300455},{"x":0.8123345326401059,"y":-0.7844475977179017},{"x":0.8173769699952389,"y":-0.7817528842313651},{"x":0.8221672854826152,"y":-0.7791929064191553},{"x":0.8267180851956227,"y":-0.776760927497556},{"x":0.8310413449229799,"y":-0.7744505475220367},{"x":0.8351484416639692,"y":-0.7722556865452933},{"x":0.839050183567909,"y":-0.7701705686173871},{"x":0.8427568383766517,"y":-0.7681897065858762},{"x":0.8462781604449574,"y":-0.7663078876559408},{"x":0.8496234164098478,"y":-0.7645201596725022},{"x":0.8528014095764938,"y":-0.7628218180882356},{"x":0.8558205030848073,"y":-0.7612083935831823},{"x":0.8586886419177052,"y":-0.7596756403033816},{"x":0.8614133738089582,"y":-0.758219524687571},{"x":0.8640018691056486,"y":-0.7568362148525509},{"x":0.8664609396375044,"y":-0.7555220705092819},{"x":0.8687970566427674,"y":-0.7542736333831762},{"x":0.8710163677977673,"y":-0.7530876181133759},{"x":0.8731247133950172,"y":-0.7519609036070656},{"x":0.8751276417124045,"y":-0.7508905248260708},{"x":0.8770304236139226,"y":-0.7498736649841257},{"x":0.8788380664203648,"y":-0.7489076481342778},{"x":0.8805553270864848,"y":-0.7479899321269223},{"x":0.8821867247192988,"y":-0.7471181019199347},{"x":0.8837365524704721,"y":-0.7462898632232964},{"x":0.8852088888340868,"y":-0.7455030364614901},{"x":0.8866076083795207,"y":-0.744755551037774},{"x":0.8879363919476829,"y":-0.7440454398852437},{"x":0.8891987363374371,"y":-0.74337083429034},{"x":0.8903979635077035,"y":-0.7427299589751815},{"x":0.8915372293194566,"y":-0.7421211274257808},{"x":0.892619531840622,"y":-0.7415427374538502},{"x":0.893245789975279,"y":-0.7409932669805162},{"x":0.8931172625343929,"y":-0.7404712700308488},{"x":0.8917893736842006,"y":-0.7398951804667562},{"x":0.8891613197909873,"y":-0.7391073179951425},{"x":0.884735408142274,"y":-0.7380380787994753},{"x":0.8782799882174754,"y":-0.7363807618683227},{"x":0.8680476608323251,"y":-0.7332024615455561},{"x":0.8556742166974612,"y":-0.7295415365436593},{"x":0.8415078692066397,"y":-0.7254221180965886},{"x":0.8266028937527385,"y":-0.7208671308766028},{"x":0.8118000802548122,"y":-0.7164597005557077},{"x":0.7974158640234221,"y":-0.7121924492889488},{"x":0.7837508586036015,"y":-0.7081385605855278},{"x":0.7707691034547719,"y":-0.7042873663172778},{"x":0.7584364360633837,"y":-0.7006287317624404},{"x":0.746720402041565,"y":-0.6971530289353449},{"x":0.7355901697208372,"y":-0.6938511112496042},{"x":0.7250164490161458,"y":-0.6907142894481504},{"x":0.714971414346689,"y":-0.6877343087367693},{"x":0.705428631410705,"y":-0.6849033270609574},{"x":0.6963629876215203,"y":-0.682213894468936},{"x":0.6877506260217947,"y":-0.6796589335065156},{"x":0.6795688825020555,"y":-0.6772317205922163},{"x":0.6717962261583033,"y":-0.6749258683236319},{"x":0.6644122026317386,"y":-0.6727353086684768},{"x":0.6573973802815022,"y":-0.6706542769960794},{"x":0.6507332990487775,"y":-0.6686772969073018},{"x":0.6444024218776891,"y":-0.6667991658229632},{"x":0.6383880885651552,"y":-0.6650149412928414},{"x":0.6326744719182479,"y":-0.6633199279892258},{"x":0.627246536103686,"y":-0.661709665350791},{"x":0.6220899970798521,"y":-0.6601799158442779},{"x":0.61719128500721,"y":-0.6587266538130905},{"x":0.6125375085382,"y":-0.6573460548834624},{"x":0.6081164208926405,"y":-0.6560344859003158},{"x":0.603916387629359,"y":-0.6547884953663264},{"x":0.5999263560292415,"y":-0.6536048043590366},{"x":0.59613582600913,"y":-0.6524802979021112},{"x":0.592534822490024,"y":-0.6514120167680321},{"x":0.5891138691468732,"y":-0.6503971496906569},{"x":0.5858639634708801,"y":-0.6494330259671505},{"x":0.5827765530786866,"y":-0.6485171084298194},{"x":0.5798435132061027,"y":-0.6476469867693548},{"x":0.577057125327148,"y":-0.6468203711919136},{"x":0.5744100568421411,"y":-0.6460350863933444},{"x":0.5718953417813846,"y":-0.6452890658347037},{"x":0.5695063624736658,"y":-0.644580346303995},{"x":0.567236832131333,"y":-0.6439070627498217},{"x":0.5650807783061169,"y":-0.6432674433733571},{"x":0.5630325271721616,"y":-0.6426598049657156},{"x":0.561086688594904,"y":-0.6420825484784562},{"x":0.5592381419465092,"y":-0.6415341548155599},{"x":0.5574820226305343,"y":-0.6410131808358084},{"x":0.555813709280358,"y":-0.6405182555550444},{"x":0.5542288115976906,"y":-0.6400480765383186},{"x":0.5527231587991566,"y":-0.6390400592390691},{"x":0.5516947179009993,"y":-0.6373607106476049},{"x":0.5514411717165603,"y":-0.6352039822523537},{"x":0.5520041613622435,"y":-0.6322729731958708},{"x":0.5538251751590831,"y":-0.6283658201254919},{"x":0.5569216977516113,"y":-0.6228897905466432},{"x":0.5613907254042236,"y":-0.6157629433609308},{"x":0.5669224753076458,"y":-0.6070678194486983},{"x":0.5729011103847073,"y":-0.5971234100319971},{"x":0.5791435146725459,"y":-0.586152564309868},{"x":0.5853953421543526,"y":-0.5746075664071252},{"x":0.5914149641141591,"y":-0.5630784711661595},{"x":0.5971336049759752,"y":-0.5521258306872421},{"x":0.6025663137947006,"y":-0.5417208222322705},{"x":0.6077273871724896,"y":-0.5318360642000475},{"x":0.6126304068813893,"y":-0.5224455440694357},{"x":0.6172882756048439,"y":-0.5135245499453545},{"x":0.6217132508921258,"y":-0.5050496055274772},{"x":0.6259169774150436,"y":-0.4969984083304939},{"x":0.6299105176118155,"y":-0.48934977099335975},{"x":0.6337043807987488,"y":-0.4820835655230823},{"x":0.6373085508263354,"y":-0.4751806703263187},{"x":0.6407325123525428,"y":-0.4686229198893933},{"x":0.6439852758024398,"y":-0.4623930569743142},{"x":0.647075401079842,"y":-0.456474687204989},{"x":0.650011020093374,"y":-0.4508522359241301},{"x":0.6527998581562294,"y":-0.4455109072073141},{"x":0.655449254315942,"y":-0.44043664492633894},{"x":0.6579661806676691,"y":-0.4356160957594125},{"x":0.6603572607018098,"y":-0.4310365740508324},{"x":0.6626287867342434,"y":-0.42668602842768133},{"x":0.6647867364650554,"y":-0.4225530100856878},{"x":0.6668367887093267,"y":-0.41862664266079397},{"x":0.6687843383413845,"y":-0.4148965936071448},{"x":0.6706345104918394,"y":-0.41135304700617814},{"x":0.6723921740347716,"y":-0.40798667773525976},{"x":0.6740619544005572,"y":-0.4047886269278873},{"x":0.6756482457480534,"y":-0.4017504786608835},{"x":0.6771552225281748,"y":-0.39886423780722985},{"x":0.6785868504692902,"y":-0.3961223089962589},{"x":0.6799468970133499,"y":-0.39351747662583647},{"x":0.6812389412302065,"y":-0.3910428858739352},{"x":0.6824663832362202,"y":-0.388692024659629},{"x":0.6836324531419333,"y":-0.3864587065060381},{"x":0.6847402195523608,"y":-0.3843370542601267},{"x":0.6857925976422669,"y":-0.3823214846265109},{"x":0.6867923568276776,"y":-0.3804066934745759},{"x":0.6877421280538178,"y":-0.37858764188023764},{"x":0.6886444107186511,"y":-0.3768595428656163},{"x":0.6895015792502427,"y":-0.37521784880172604},{"x":0.688627786461364,"y":-0.3747007414458418},{"x":0.6855468794534083,"y":-0.3750916065387462},{"x":0.6797261271206093,"y":-0.37666581530563403},{"x":0.6709809783208489,"y":-0.3791236231770805},{"x":0.6592968811732952,"y":-0.3822604652740404},{"x":0.645142326503698,"y":-0.3862027748090553},{"x":0.6289623805965194,"y":-0.3905895085625881},{"x":0.6115013998303591,"y":-0.3956390227094387},{"x":0.5928234359481659,"y":-0.4008370234584896},{"x":0.5745970551475421,"y":-0.40593550909390513},{"x":0.5566389065702293,"y":-0.41093945537136706},{"x":0.5395786654217821,"y":-0.4156932043349559},{"x":0.5233714363307573,"y":-0.4202092658503653},{"x":0.5079745686942838,"y":-0.4244995242900042},{"x":0.4933475444396339,"y":-0.4285752698076612},{"x":0.4794518713977165,"y":-0.4324472280494353},{"x":0.466250982007895,"y":-0.43612558837912074},{"x":0.4537101370875646,"y":-0.43962003069232186},{"x":0.44179633441325067,"y":-0.4429397508898629},{"x":0.43047822187265244,"y":-0.44609348507752694},{"x":0.4197260149590841,"y":-0.44908953255580775},{"x":0.4095114183911942,"y":-0.45193577766017456},{"x":0.3998075516516988,"y":-0.454639710509323},{"x":0.39058887824917815,"y":-0.457208446716014},{"x":0.3818311385167836,"y":-0.4596487461123705},{"x":0.3735112857710087,"y":-0.46196703053890914},{"x":0.3656074256625226,"y":-0.4641694007441209},{"x":0.3580987585594608,"y":-0.466261652439072},{"x":0.350965524811552,"y":-0.4682492915492756},{"x":0.3441889527510387,"y":-0.47013754870396895},{"x":0.3372688941810109,"y":-0.4725729326961963},{"x":0.32956943661022403,"y":-0.47649039672698396},{"x":0.31911990368646526,"y":-0.48406122572784405},{"x":0.30654011428992334,"y":-0.49365928713591856},{"x":0.29209735294841754,"y":-0.5044614871736696},{"x":0.27644746922382624,"y":-0.515685886752436},{"x":0.2608566070166542,"y":-0.5265896437379898},{"x":0.2460452879198408,"y":-0.5371085977980831},{"x":0.23197453477786803,"y":-0.5471016041551717},{"x":0.21860731929299393,"y":-0.5565949601944059},{"x":0.20590846458236353,"y":-0.5656136484316784},{"x":0.19384455260726466,"y":-0.5741814022570872},{"x":0.18238383623092072,"y":-0.5823207683912257},{"x":0.171496155673394,"y":-0.5900531662186572},{"x":0.16115285914374358,"y":-0.5973989441547172},{"x":0.15132672744057568,"y":-0.6043774331939741},{"x":0.1419919023225662,"y":-0.6110069977812682},{"x":0.13288266090418707,"y":-0.6169843142915633},{"x":0.12422888155672691,"y":-0.6196956438857261},{"x":0.11600779117663976,"y":-0.6185023612904774},{"x":0.10859968457600713,"y":-0.6138402745010136},{"x":0.10204429841794632,"y":-0.6058828237270456},{"x":0.09613822497614868,"y":-0.5951155470154327},{"x":0.09068822691062099,"y":-0.5816789356630572},{"x":0.08551072874836968,"y":-0.5663479960972259},{"x":0.08059210549423095,"y":-0.5498589844238801},{"x":0.07591941340279915,"y":-0.5331519213293903},{"x":0.07148035591593893,"y":-0.5172802113896249},{"x":0.06726325130342173,"y":-0.5022020869468478},{"x":0.06325700192153039,"y":-0.4878778687262095},{"x":0.05945106500873361,"y":-0.4742698614166031},{"x":0.05583542494157667,"y":-0.461342254472477},{"x":0.05240056687777758,"y":-0.44906102787555724},{"x":0.04913745171716845,"y":-0.43739386260848345},{"x":0.04603749231458977,"y":-0.42631005560476337},{"x":0.043092530882140025,"y":-0.4157804389512293},{"x":0.04029481752131277,"y":-0.4057773031303719},{"x":0.037636989828526875,"y":-0.3962743241005574},{"x":0.03511205352038027,"y":-0.38724649402223366},{"x":0.032713364027641,"y":-0.37867005544782606},{"x":0.030434609009538698,"y":-0.37052243880213886},{"x":0.028269791742341507,"y":-0.36278220298873604},{"x":0.026213215338504174,"y":-0.35542897896600334},{"x":0.02425946775485871,"y":-0.34844341614440727},{"x":0.022403407550395518,"y":-0.341807131463891},{"x":0.020640150356155487,"y":-0.33550266101740056},{"x":0.018965056021627454,"y":-0.32951341409323465},{"x":0.017373716403825824,"y":-0.323823629515277},{"x":0.01586194376691428,"y":-0.31841833416621723},{"x":0.014425759761848308,"y":-0.3132833035846105},{"x":0.013061384957035637,"y":-0.30840502453208407},{"x":0.011765228892463599,"y":-0.30377065943218395},{"x":0.010533880631120162,"y":-0.29936801258727885},{"x":0.009364099782843898,"y":-0.295185498084619},{"x":0.008252807976981446,"y":-0.2912121093070922},{"x":0.007197080761412117,"y":-0.28743738996844165},{"x":0.006194139906621255,"y":-0.28385140659672364},{"x":0.005241346094569936,"y":-0.28044472239359153},{"x":0.004336191973121183,"y":-0.277208372400616},{"x":0.0034762955577448676,"y":-0.2741338399072893},{"x":0.002659393963137368,"y":-0.2712130340386289},{"x":0.0018833374482602433,"y":-0.2684382684634015},{"x":0.0011460837591269748,"y":-0.2658022411669355},{"x":0.0004456927544503696,"y":-0.26329801523529284},{"x":-0.00021967869999240525,"y":-0.26091900060023226},{"x":-0.0008517815817130414,"y":-0.25865893669692475},{"x":-0.0014522793193476457,"y":-0.2565118759887826},{"x":-0.0020227521701005197,"y":-0.2541513984684132},{"x":-0.0001531258156147817,"y":-0.2503852880477993},{"x":0.005240382565198108,"y":-0.24520363391004446},{"x":0.014463893983562001,"y":-0.23899798308864006},{"x":0.027084750731329238,"y":-0.2323006901892201},{"x":0.042450770429489464,"y":-0.22545710716331963},{"x":0.05753080425528187,"y":-0.2189557032887142},{"x":0.07201760809396472,"y":-0.21277936960783903},{"x":0.08578007174071343,"y":-0.2069118526110076},{"x":0.09885441220512471,"y":-0.20133771146401777},{"x":0.11127503564631543,"y":-0.19604227737437743},{"x":0.1230746279154466,"y":-0.19101161498921912},{"x":0.1342842405711212,"y":-0.1862324857233187},{"x":0.1449333725940121,"y":-0.18169231292071333},{"x":0.15505004801575845,"y":-0.1773791487582382},{"x":0.16466088966641748,"y":-0.17328164280388683},{"x":0.17379118923454356,"y":-0.16938901214725305},{"x":0.18246497382426333,"y":-0.16569101302345093},{"x":0.19070506918449712,"y":-0.16217791385583893},{"x":0.1985331597767192,"y":-0.15884046964660753},{"x":0.2059698458393302,"y":-0.1556698976478377},{"x":0.21303469759881064,"y":-0.15265785424900635},{"x":0.21974630677031706,"y":-0.1497964130201166},{"x":0.22612233548324817,"y":-0.14707804385267131},{"x":0.2321795627605327,"y":-0.1444955931435983},{"x":0.23793392867395302,"y":-0.14204226496997893},{"x":0.2434005762917023,"y":-0.13971160320504053},{"x":0.24859389152856415,"y":-0.13749747452834904},{"x":0.2535275410035829,"y":-0.13539405228549214},{"x":0.2582145080048507,"y":-0.1333958011547781},{"x":0.26266712665605507,"y":-0.13149746258059972},{"x":0.26689711437469926,"y":-0.1296940409351303},{"x":0.2709156027074113,"y":-0.12798079037193433},{"x":0.2747331666234877,"y":-0.12635320233689815},{"x":0.27835985234376026,"y":-0.12480699370361378},{"x":0.2818052037780192,"y":-0.12333809550199364},{"x":0.2850782876405652,"y":-0.1219426422104545},{"x":0.2881877173099839,"y":-0.12061696158349233},{"x":0.2911416754959316,"y":-0.11935756498787826},{"x":0.293947935772582,"y":-0.1181611382220449},{"x":0.2966138830353998,"y":-0.1170245327945032},{"x":0.29914653293507676,"y":-0.11594475763833859},{"x":0.30155255033976985,"y":-0.11491897123998221},{"x":0.3039990385784084,"y":-0.11378408923772648},{"x":0.30632320240511496,"y":-0.11158325686886342},{"x":0.3085311580404862,"y":-0.10812919426599764},{"x":0.3106287158940889,"y":-0.10332417801701212},{"x":0.3126213958550115,"y":-0.09667440857085277},{"x":0.3145144418178879,"y":-0.08827212358737829},{"x":0.3163128354826205,"y":-0.07852571869108876},{"x":0.3180213094641165,"y":-0.06774297726335068},{"x":0.3196443597465377,"y":-0.056296485978370794},{"x":0.3211862575148378,"y":-0.044299624790919784},{"x":0.322811832098903,"y":-0.03177991219612119},{"x":0.32435612795376495,"y":-0.01924464553579388},{"x":0.3258232090158838,"y":-0.007336142208482934},{"x":0.32721693602489665,"y":0.003976935952462464},{"x":0.3285409766834589,"y":0.014724360205360592},{"x":0.329798815309093,"y":0.024934413245613813},{"x":0.33099376200344544,"y":0.034633963633854375},{"x":0.33212896136308023,"y":0.04384853650268291},{"x":0.3332074007547333,"y":0.05260238072807001},{"x":0.33423191817680376,"y":0.06091853274218776},{"x":0.3352052097277706,"y":0.06881887715559962},{"x":0.3361298367011892,"y":0.07632420434834089},{"x":0.3370082323259368,"y":0.0834542651814451},{"x":0.33784270816944706,"y":0.09022782297289408},{"x":0.3386354602207818,"y":0.09666270287477063},{"x":0.33938857466954975,"y":0.10277583878155336},{"x":0.34010403339587936,"y":0.10858331789299694},{"x":0.34078371918589245,"y":0.11410042304886835},{"x":0.3414294206864049,"y":0.11934167294694618},{"x":0.34204283711189176,"y":0.12432086035012013},{"x":0.34262558271610427,"y":0.12905108838313537},{"x":0.34317919104010614,"y":0.13354480501449983},{"x":0.3437051189479079,"y":0.1378138358142961},{"x":0.34420475046031956,"y":0.14186941507410256},{"x":0.34467940039711065,"y":0.14572221537091867},{"x":0.34513031783706216,"y":0.149382375652894},{"x":0.3455586894050161,"y":0.15285952792077054},{"x":0.3459656423945724,"y":0.15616282257525327},{"x":0.34635224773465084,"y":0.15930095249701184},{"x":0.3467195228077254,"y":0.16228217592268251},{"x":0.3470684341271462,"y":0.16511433817706964},{"x":0.347399899880596,"y":0.1678048923187374},{"x":0.34771479234637326,"y":0.1703609187533218},{"x":0.34801394018886167,"y":0.17278914386617694},{"x":0.34749427211832534,"y":0.1748553803376636},{"x":0.3452320987053351,"y":0.176417342676033},{"x":0.3413145452170137,"y":0.17693889735458102},{"x":0.33228740316516625,"y":0.17567014013721283},{"x":0.31969232561140953,"y":0.17310154892826718},{"x":0.3040292527391992,"y":0.16961888527495728},{"x":0.28641621453953825,"y":0.16598958495667854},{"x":0.26807611120805974,"y":0.16254174965431373},{"x":0.2504922413389751,"y":0.15926630611706716},{"x":0.23378756496334466,"y":0.15615463475668293},{"x":0.21791812240649575,"y":0.15319854696431792},{"x":0.20284215197748928,"y":0.15039026356157115},{"x":0.18851998006993315,"y":0.14772239432896173},{"x":0.1749139167577548,"y":0.14518791855798277},{"x":0.1619881566111854,"y":0.14278016657555276},{"x":0.14970868447194446,"y":0.14049280219224425},{"x":0.13804318593966558,"y":0.13831980602810118},{"x":0.12696096233400062,"y":0.13625545967216524},{"x":0.11643284990861891,"y":0.1342943306340261},{"x":0.10643114310450628,"y":0.13243125804779393},{"x":0.09692952164059929,"y":0.13066133909087335},{"x":0.08790298124988764,"y":0.12897991608179882},{"x":0.07932776787871158,"y":0.127382564223178},{"x":0.07118131517609433,"y":0.12586507995748825},{"x":0.06344218510860794,"y":0.12442346990508296},{"x":0.05609001154449587,"y":0.12305394035529794},{"x":0.0491054466585894,"y":0.12175288728300218},{"x":0.04247011001697826,"y":0.1205168868643212},{"x":0.03616654020744767,"y":0.11934268646657427},{"x":0.03017814888839361,"y":0.11822719608871468},{"x":0.024489177135292254,"y":0.11716748022974807},{"x":0.019084653969845967,"y":0.1161607501637298},{"x":0.013950356962671995,"y":0.11520435660101244},{"x":0.00907277480585672,"y":0.11429578271643095},{"x":0.00443907175688221,"y":0.11343263752607854},{"x":0.00003705386035642456,"y":0.11261264959524375},{"x":-0.004144863141343071,"y":0.11183366106095069},{"x":-0.008117684292957592,"y":0.11109362195337229},{"x":-0.012213407795351513,"y":0.11006981495353847},{"x":-0.016908203643526062,"y":0.10813488876079339},{"x":-0.0226544333327324,"y":0.10509382194905685},{"x":-0.029962226135549153,"y":0.10092172908736985},{"x":-0.03883388974838584,"y":0.09591573886395564},{"x":-0.0492716164828315,"y":0.09027793107071776},{"x":-0.06159903244325585,"y":0.08420028150996454},{"x":-0.0754001097599998,"y":0.07794535965579752},{"x":-0.09011885025270722,"y":0.07152202912288735},{"x":-0.10538782735421977,"y":0.06509909526898837},{"x":-0.12085798582573708,"y":0.05867653826015001},{"x":-0.13587617978203864,"y":0.05233453171602784},{"x":-0.15014346404052514,"y":0.046309625499111766},{"x":-0.1636973840860873,"y":0.0405859645930415},{"x":-0.17657360812937137,"y":0.03514848673227475},{"x":-0.18880602097049123,"y":0.02998288276454633},{"x":-0.2004268131695551,"y":0.025075558995204337},{"x":-0.21146656575866576,"y":0.020413601414329442},{"x":-0.2219543307183209,"y":0.015984741712498293},{"x":-0.23215886498626337,"y":0.012338672229118768},{"x":-0.2418531725408087,"y":0.010799525305714151},{"x":-0.25146469397807697,"y":0.012545034204822995},{"x":-0.2625248997936426,"y":0.020297894764028518},{"x":-0.2745594265081405,"y":0.031031195695434145},{"x":-0.2875999439287142,"y":0.04395437528516124},{"x":-0.3012746091116997,"y":0.05783524513357359},{"x":-0.3146674702959861,"y":0.07142303379910822},{"x":-0.32763184597732825,"y":0.0844116254932747},{"x":-0.3399480028746033,"y":0.09675078760273287},{"x":-0.3516483519270146,"y":0.10847299160671812},{"x":-0.3627636835268053,"y":0.1196090854105041},{"x":-0.37332324854660653,"y":0.1301883745241008},{"x":-0.3833548353154177,"y":0.14023869918201765},{"x":-0.3934475437104185,"y":0.1499468925308558},{"x":-0.40319638838984934,"y":0.15933006113606923},{"x":-0.41326164935620896,"y":0.16872522608247348},{"x":-0.4233059623867908,"y":0.17797140262919184},{"x":-0.43284805976584356,"y":0.18675527034857428},{"x":-0.44215420983221376,"y":0.19526032960580475},{"x":-0.45099505239526544,"y":0.20350052082399087},{"x":-0.45786652164045394,"y":0.211649472328902},{"x":-0.4620632277127721,"y":0.22003251595383622},{"x":-0.462754278545783,"y":0.2287983320166095},{"x":-0.4595522559368218,"y":0.23824855174296428},{"x":-0.45241065600171704,"y":0.2485093398735386},{"x":-0.441848001015136,"y":0.25929959060239577},{"x":-0.4282765012859226,"y":0.27051263833771305},{"x":-0.4147404897264496,"y":0.28124522614817304},{"x":-0.4018812787449503,"y":0.29144118456811},{"x":-0.3896650283125259,"y":0.30112734506705013},{"x":-0.378622291366353,"y":0.31024900507913467},{"x":-0.36845323467584884,"y":0.31891458209061496},{"x":-0.3588730166719599,"y":0.3271468802515213},{"x":-0.3500933529766256,"y":0.3349675635043823},{"x":-0.3420742158744181,"y":0.3424774050565088},{"x":-0.3350991224440413,"y":0.3504136791501148},{"x":-0.32903548464981347,"y":0.3590758340057606},{"x":-0.3238377297099273,"y":0.3690691152806129},{"x":-0.3195429493337557,"y":0.38080812142516285},{"x":-0.3165883099056531,"y":0.3948471058911942},{"x":-0.31474603267403606,"y":0.4094672205244613},{"x":-0.3131566410081799,"y":0.42399786912133364},{"x":-0.3118074906297966,"y":0.4381227551359967},{"x":-0.3105257977703325,"y":0.4515413968499266},{"x":-0.3093081895538416,"y":0.46428910647816},{"x":-0.30815146174817526,"y":0.47639943062498175},{"x":-0.3070525703327922,"y":0.48822500841209676},{"x":-0.30624978104444844,"y":0.5001008470051247},{"x":-0.30653214729769224,"y":0.512184818287587},{"x":-0.30872965568843463,"y":0.5241457457773777},{"x":-0.31435426615160134,"y":0.5355888193545875},{"x":-0.3219484499501306,"y":0.5464597392529367},{"x":-0.33077064160053404,"y":0.5567069206944598},{"x":-0.3401163538934977,"y":0.5658803958305467},{"x":-0.3496378673885334,"y":0.5741942349002864},{"x":-0.35900484861717746,"y":0.5816112272450876},{"x":-0.36822502419274944,"y":0.5884969850488316},{"x":-0.377305734397903,"y":0.5947176851147541},{"x":-0.38593240909279886,"y":0.6004669652535632},{"x":-0.39469045101758016,"y":0.6059287813854319},{"x":-0.4043771503316529,"y":0.6111175067107073},{"x":-0.4155087751301828,"y":0.6160467957697189},{"x":-0.4292992527723875,"y":0.6207296203757798},{"x":-0.44424908113055267,"y":0.6251783037515377},{"x":-0.45949643414798,"y":0.6294045529585077},{"x":-0.47462450633125625,"y":0.6332591047813121},{"x":-0.4889961749053687,"y":0.6369209290129763},{"x":-0.5026492600507755,"y":0.6403996620330572},{"x":-0.5156196909389119,"y":0.6433836885544998},{"x":-0.5278612144305516,"y":0.6458977439022359},{"x":-0.5392495041913391,"y":0.6482860964825852},{"x":-0.5500683794640873,"y":0.6502342615862827},{"x":-0.5606678543815582,"y":0.6520850184347954},{"x":-0.5717019857782359,"y":0.6538432374408824},{"x":-0.5837117417947904,"y":0.6561550851919337},{"x":-0.5958444826793273,"y":0.6586721104030667},{"x":-0.6081744450405379,"y":0.6613840542012774},{"x":-0.6200486809878679,"y":0.6640405932714862},{"x":-0.6313292051378314,"y":0.6665643053881846},{"x":-0.6420457030802967,"y":0.668961831899048},{"x":-0.6522263761256388,"y":0.6712394820843682},{"x":-0.6618980155187137,"y":0.6734032497604224},{"x":-0.6714076163504951,"y":0.6755390215145826},{"x":-0.6804417371406873,"y":0.6783699293001205},{"x":-0.6883810650746498,"y":0.6823423710869189},{"x":-0.6952803397951939,"y":0.686918115403463},{"x":-0.7011915639629904,"y":0.6917462272756315},{"x":-0.7068072269223972,"y":0.6963329335541916},{"x":-0.7121421067338336,"y":0.7006903045188236},{"x":-0.7172102425546982,"y":0.7048298069352241},{"x":-0.7220249715845196,"y":0.7087623342308045},{"x":-0.7265989641628499,"y":0.7124982351616058},{"x":-0.7309442571122636,"y":0.7160473410458672},{"x":-0.7350722854142067,"y":0.7194189916359155},{"x":-0.7389135264489626,"y":0.7229428295440956},{"x":-0.7425627054319807,"y":0.7263706680187754},{"x":-0.7456274962053977,"y":0.7301884618030812},{"x":-0.7482978898838738,"y":0.7342163282077145},{"x":-0.750593606322156,"y":0.7381229937540249},{"x":-0.752694151086434,"y":0.7419947109468369},{"x":-0.7546896686124982,"y":0.7456728422800083},{"x":-0.7565854102622591,"y":0.7491670670465211},{"x":-0.758386364829532,"y":0.7524865805747083},{"x":-0.7600972716684413,"y":0.7556401184264862},{"x":-0.7617226331654051,"y":0.7586359793856751},{"x":-0.7632667265875207,"y":0.7614820472969045},{"x":-0.7647336153385306,"y":0.7641858118125725},{"x":-0.7661271596519899,"y":0.7667543881024571},{"x":-0.7674510267497762,"y":0.7691945355778474},{"x":-0.7687087004926733,"y":0.7715126756794684},{"x":-0.7699034905484254,"y":0.7737149087760081},{"x":-0.77103854110139,"y":0.7758070302177209},{"x":-0.7721168391267064,"y":0.7777945455873481},{"x":-0.7731412222507569,"y":0.7796826851884939},{"x":-0.7741143862186048,"y":0.7814764178095824},{"x":-0.7750388919880604,"y":0.7831804637996166},{"x":-0.7759171724690432,"y":0.784799307490149},{"x":-0.7767515389259769,"y":0.7863372089961548},{"x":-0.7775441870600639,"y":0.7877982154268602},{"x":-0.7782972027874465,"y":0.7891861715360304},{"x":-0.7790125677284601,"y":0.7905047298397422},{"x":-0.779692164422423,"y":0.7915167828425426},{"x":-0.7794535369086973,"y":0.7917565010380258},{"x":-0.7775387378767673,"y":0.7907011539331974},{"x":-0.7735492607900029,"y":0.7881749174073475},{"x":-0.7675084536990557,"y":0.7839305660838927},{"x":-0.759197339695775,"y":0.7778134283169875},{"x":-0.7492921350904075,"y":0.7701577208145303},{"x":-0.7382744736735077,"y":0.76096017960139},{"x":-0.7265215216940124,"y":0.7503780888250093},{"x":-0.7141504295321414,"y":0.7388816382730933},{"x":-0.7014332617532835,"y":0.7263561610106014},{"x":-0.6890304089550083,"y":0.7141361877635998},{"x":-0.6769261553882868,"y":0.7018856734836796},{"x":-0.6654271144999014,"y":0.689926915070121},{"x":-0.6545030256559353,"y":0.6785660945772405},{"x":-0.6441251412541675,"y":0.667773315109004},{"x":-0.6342661510724881,"y":0.6575201746141792},{"x":-0.6249001103998926,"y":0.6477796911440957},{"x":-0.6160023717609269,"y":0.6385262318475164},{"x":-0.6075495200539095,"y":0.6297354455157661},{"x":-0.599519310932243,"y":0.6213841985006033},{"x":-0.5918906122666597,"y":0.6134505138361986},{"x":-0.5846433485343557,"y":0.6059135134050142},{"x":-0.5777584479886669,"y":0.598753362995389},{"x":-0.5712177924702625,"y":0.591951220106245},{"x":-0.5650041697277783,"y":0.5854891843615583},{"x":-0.5591012281224184,"y":0.5793502504041058},{"x":-0.5534934335973264,"y":0.573518263144526},{"x":-0.548166028798489,"y":0.5679778752479252},{"x":-0.5431049942395935,"y":0.5627145067461544},{"x":-0.5382970114086427,"y":0.5577143066694722},{"x":-0.5337294277192395,"y":0.552964116596624},{"x":-0.5293902232143064,"y":0.5484514360274183},{"x":-0.52526797893462,"y":0.5441643894866729},{"x":-0.5213518468689179,"y":0.5400916952729647},{"x":-0.5176315214065009,"y":0.536222635769942},{"x":-0.5140972122172048,"y":0.5325470292420704},{"x":-0.5107396184873735,"y":0.5290552030405924},{"x":-0.5075499044440337,"y":0.5257379681491883},{"x":-0.504519676102861,"y":0.5225865950023544},{"x":-0.5016409591787468,"y":0.5195927905128621},{"x":-0.4989061781008384,"y":0.5167486762478445},{"x":-0.49630813607682545,"y":0.5140467676960777},{"x":-0.4938399961540131,"y":0.5114799545718993},{"x":-0.4914952632273414,"y":0.5090414821039299},{"x":-0.48926776694700325,"y":0.5056022387926388},{"x":-0.487151645480682,"y":0.5005707234849235},{"x":-0.485462873496037,"y":0.49162077592334774},{"x":-0.4845016269273445,"y":0.47999081972541613},{"x":-0.4839099860954467,"y":0.46565447039912927},{"x":-0.48334792730514387,"y":0.4481857003675449},{"x":-0.482492428045996,"y":0.4285430552850137},{"x":-0.4813581603414454,"y":0.4074767685993516},{"x":-0.4798786767616722,"y":0.38585994700980103},{"x":-0.4782320098046175,"y":0.36500319665209363},{"x":-0.47666767619541556,"y":0.34518928381227165},{"x":-0.4751815592666737,"y":0.32636606661444073},{"x":-0.47376974818436896,"y":0.30848401027650135},{"x":-0.47242852765617943,"y":0.291496056755459},{"x":-0.47115436815439937,"y":0.27535750091046873},{"x":-0.46994391662770835,"y":0.260025872857728},{"x":-0.46879398767735186,"y":0.24546082620762427},{"x":-0.46770155517451323,"y":0.23162403189002573},{"x":-0.4666637442968165,"y":0.21847907728830712},{"x":-0.4656778239630046,"y":0.20599137041667445},{"x":-0.46474119964588334,"y":0.1941280488886234},{"x":-0.4638514065446181,"y":0.1828578934369749},{"x":-0.4630061030984161,"y":0.17215124575790883},{"x":-0.4622030648245242,"y":0.16197993046279607},{"x":-0.46144017846432694,"y":0.15231718093243896},{"x":-0.4607154364221395,"y":0.14313756887859969},{"x":-0.4600269314820615,"y":0.13441693742745237},{"x":-0.45937285178898735,"y":0.12613233754886244},{"x":-0.45875147608056693,"y":0.118261967664202},{"x":-0.45816116915756755,"y":0.11078511627377458},{"x":-0.4576003775807181,"y":0.10368210745286853},{"x":-0.45706762558271113,"y":0.09693424907300778},{"x":-0.45656151118460453,"y":0.09052378361214007},{"x":-0.45608070250640326,"y":0.08443384142431574},{"x":-0.455623934262112,"y":0.07864839634588264},{"x":-0.4551900044300353,"y":0.07315222352137118},{"x":-0.4547777710895625,"y":0.0679308593380853},{"x":-0.4543861494161133,"y":0.06297056336396371},{"x":-0.4540141088263366,"y":0.058258282188548206},{"x":-0.45366067026604867,"y":0.053781615071903474},{"x":-0.4533249036337752,"y":0.04952878131109098},{"x":-0.4530059253331154,"y":0.04548858923831911},{"x":-0.4527028959474886,"y":0.041650406769185834},{"x":-0.4524150180311431,"y":0.03800413342350922},{"x":-0.45214153401061485,"y":0.03454017374511644},{"x":-0.45188172419111305,"y":0.031249412050643296},{"x":-0.45163490486258634,"y":0.028123188440893808},{"x":-0.45140042650048595,"y":0.025153276011631795},{"x":-0.4511776720564906,"y":0.022331859203832884},{"x":-0.4506445119263349,"y":0.020293052931692562},{"x":-0.447565662535806,"y":0.021563885449502485},{"x":-0.4414253215312022,"y":0.026059067279673716},{"x":-0.43141193326814686,"y":0.0331362261851367},{"x":-0.41796030766583275,"y":0.041784146231132475},{"x":-0.4010815848870427,"y":0.05096197981773143},{"x":-0.3816705924594108,"y":0.06016207649645191},{"x":-0.36049703068209943,"y":0.06906255326505353},{"x":-0.3384528865434928,"y":0.0778387760428594},{"x":-0.3159032325700159,"y":0.0864969575294093},{"x":-0.2939987461826727,"y":0.09480242240354028},{"x":-0.2730287124105165,"y":0.10269261403396471},{"x":-0.25310718032696816,"y":0.11018829608286793},{"x":-0.23418172484759725,"y":0.11730919402932598},{"x":-0.21620254214219486,"y":0.12407404707846112},{"x":-0.1991223185720626,"y":0.1305006574751395},{"x":-0.18289610618043697,"y":0.13660593735198398},{"x":-0.16748120440839262,"y":0.14240595323498623},{"x":-0.15283704772495046,"y":0.14791596832383835},{"x":-0.13892509887568044,"y":0.15315048265824788},{"x":-0.1257087474688739,"y":0.15812327127593692},{"x":-0.11315321363240768,"y":0.16284742046274153},{"x":-0.10122545648776479,"y":0.1673353621902059},{"x":-0.08989408720035404,"y":0.17159890683129705},{"x":-0.07912928637731383,"y":0.17564927424033364},{"x":-0.06890272559542562,"y":0.1794971232789184},{"x":-0.05918749285263183,"y":0.18315257986557393},{"x":-0.04995802174697772,"y":0.18662526362289666},{"x":-0.04119002419660632,"y":0.18992431319235328},{"x":-0.03286042652375349,"y":0.19305841028333706},{"x":-0.024947308734543303,"y":0.19603580251977165},{"x":-0.017429846834793625,"y":0.1988643251443845},{"x":-0.010288258030031432,"y":0.20155142163776674},{"x":-0.0035037486655073473,"y":0.20410416330647985},{"x":0.002941535230790532,"y":0.2065292678917573},{"x":0.009064554932273518,"y":0.20883311724777087},{"x":0.014881423648682356,"y":0.21102177413598378},{"x":0.02040744892927075,"y":0.21310099817978603},{"x":0.025657172945829722,"y":0.21507626102139818},{"x":0.03064441076156075,"y":0.21695276072092973},{"x":0.03538228668650523,"y":0.21873543543548468},{"x":0.039883268815202474,"y":0.2204289764143119},{"x":0.04415920183746486,"y":0.22203784034419774},{"x":0.048221338208614135,"y":0.2235662610775893},{"x":0.05208036776120594,"y":0.2250182607743113},{"x":0.055746445836168154,"y":0.2263976604861972},{"x":0.05922922000738226,"y":0.22770809021248878},{"x":0.06253785547003565,"y":0.22895299845246578},{"x":0.06568105915955638,"y":0.23013566128044394},{"x":0.06866710266460108,"y":0.2312591909670232},{"x":0.07150384399439354,"y":0.23232654416927348},{"x":0.07419874825769637,"y":0.23334052971141125},{"x":0.07675890730783407,"y":0.23430381597644215},{"x":0.07919105840546488,"y":0.2352189379282215},{"x":0.08158198780030418,"y":0.23608830378241186},{"x":0.0840945282816716,"y":0.2369142013438927},{"x":0.08680298514733079,"y":0.2376988040272995},{"x":0.08977794843015717,"y":0.23820359919081024},{"x":0.09316686451347246,"y":0.23852276967232827},{"x":0.09710980746143227,"y":0.23826463439641032},{"x":0.10206139104334458,"y":0.23729767372711105},{"x":0.10933774271304231,"y":0.23381290231020216},{"x":0.11753645043269566,"y":0.22889852022596713},{"x":0.12612908128726666,"y":0.22294677785540654},{"x":0.13509593912000945,"y":0.21649069798428816},{"x":0.14393599746947522,"y":0.20963568994954848},{"x":0.15265559630982783,"y":0.20248189262127714},{"x":0.16126075861652295,"y":0.19496405300224215},{"x":0.16975720621624343,"y":0.18718056566889027},{"x":0.17815037484433802,"y":0.17922490546884592},{"x":0.1862042708931179,"y":0.1715868358168952},{"x":0.19385547213945878,"y":0.16433066964754203},{"x":0.20112411332348262,"y":0.15743731178665651},{"x":0.20802932244830527,"y":0.15088862181881527},{"x":0.2145892711168868,"y":0.14466736634936608},{"x":0.22082122235203924,"y":0.13875717365338935},{"x":0.22674157602543407,"y":0.13314249059221148},{"x":0.23236591201515916,"y":0.12780854168409247},{"x":0.237709031205398,"y":0.12274129022137943},{"x":0.2427849944361249,"y":0.11792740133180205},{"x":0.24760715950531542,"y":0.11335420688670353},{"x":0.25218821632104643,"y":0.10900967216385993},{"x":0.2565402202959909,"y":0.10488236417715852},{"x":0.2606746240721881,"y":0.10096142158979217},{"x":0.2646023076595755,"y":0.09723652613179413},{"x":0.2683336070675935,"y":0.09369787544669601},{"x":0.2718783415052106,"y":0.09033615729585279},{"x":0.27524583922094686,"y":0.08714252505255173},{"x":0.2784449620508963,"y":0.08410857442141571},{"x":0.28148412873934825,"y":0.0812263213218365},{"x":0.28437133709337764,"y":0.07848818087723626},{"x":0.28711418502970554,"y":0.07588694745486603},{"x":0.28971989056921704,"y":0.07341577570361431},{"x":0.292195310831753,"y":0.07106816253992518},{"x":0.2945469600811621,"y":0.0688379300344205},{"x":0.29678102686810076,"y":0.06671920915419105},{"x":0.2989033903156925,"y":0.06438565447033875},{"x":0.3009196355909047,"y":0.06216877752067908},{"x":0.3027546827502662,"y":0.05974197457086806},{"x":0.30449797755165964,"y":0.05727612684473043},{"x":0.30599333590880334,"y":0.054853379042991104},{"x":0.3073335404959998,"y":0.05247157616943017},{"x":0.3086067348538365,"y":0.05020886343954728},{"x":0.3098162694937813,"y":0.04805928634615853},{"x":0.3109653274017289,"y":0.046017188107439225},{"x":0.3120569324142791,"y":0.04407719478065588},{"x":0.3130939571762018,"y":0.0422342011202117},{"x":0.31407913070002835,"y":0.040483357142789736},{"x":0.31469350213930347,"y":0.03849928551660454},{"x":0.31487522574616467,"y":0.03605307023836853},{"x":0.31408323294760243,"y":0.033007433566867105},{"x":0.3115623510429876,"y":0.02883099933840346},{"x":0.3067559376709025,"y":0.022938767735557065},{"x":0.2997782694047207,"y":0.015416528627047055},{"x":0.2910594523975072,"y":0.0063457823881566105},{"x":0.2814904026072138,"y":-0.0034743134674180224},{"x":0.27143517508135473,"y":-0.013525136687391148},{"x":0.2614003938192484,"y":-0.02371495844163426},{"x":0.2517065799160673,"y":-0.033716058955799544},{"x":0.2424974567080453,"y":-0.04321710444425656},{"x":0.23374878966042437,"y":-0.05224309765829073},{"x":0.2254375559651845,"y":-0.06081779121162319},{"x":0.21754188395470664,"y":-0.06896375008728903},{"x":0.21004099554475267,"y":-0.07670241101917157},{"x":0.20291515155529638,"y":-0.08405413890445998},{"x":0.1961455997653129,"y":-0.09103828039548398},{"x":0.1897145255648286,"y":-0.09767321481195677},{"x":0.18360500507436853,"y":-0.10397640250760593},{"x":0.17780096060843145,"y":-0.10996443081847262},{"x":0.17228711836579122,"y":-0.11565305771379598},{"x":0.167048968235283,"y":-0.12105725326435318},{"x":0.1620727256113002,"y":-0.12619123903738252},{"x":0.15734529511851655,"y":-0.1310685255217604},{"x":0.15285423615037208,"y":-0.13570194768191937},{"x":0.14858773013063484,"y":-0.1401036987340704},{"x":0.14453454941188446,"y":-0.14428536223361385},{"x":0.14068402772907157,"y":-0.14825794255818014},{"x":0.13702603213039935,"y":-0.15203189386651814},{"x":0.13355093631166073,"y":-0.15561714760943923},{"x":0.13024959528385904,"y":-0.15902313866521425},{"x":0.12711332130744743,"y":-0.16225883016820053},{"x":0.12413386102985641,"y":-0.1653327370960375},{"x":0.12130337376614493,"y":-0.1682529486774826},{"x":0.11861441086561904,"y":-0.17102714967985547},{"x":0.11605989611011944,"y":-0.17366264063210968},{"x":0.11363310709239481,"y":-0.17616635703675118},{"x":0.11132765752555641,"y":-0.1785448876211606},{"x":0.10913748043705994,"y":-0.18080449167634957},{"x":0.1070568122029883,"y":-0.18295111552877907},{"x":0.10508017738062023,"y":-0.1849904081885871},{"x":0.10320237429937057,"y":-0.18692773621540476},{"x":0.1014184613721834,"y":-0.1887681978408815},{"x":0.09972374409135558,"y":-0.19051663638508443},{"x":0.09811376267456914,"y":-0.1921776530020772},{"x":0.09658428032862204,"y":-0.19375561878822034},{"x":0.09513127209997228,"y":-0.19525468628505632},{"x":0.09375091428275502,"y":-0.1966788004070505},{"x":0.09243957435639862,"y":-0.1986732485182136},{"x":0.09119380142636004,"y":-0.2028133631572588},{"x":0.09001031714282338,"y":-0.2095532082311521},{"x":0.08888600707346357,"y":-0.21892318214196818},{"x":0.08781791250757175,"y":-0.2310323558335867},{"x":0.0868032226699745,"y":-0.2454229994693332},{"x":0.08583926732425713,"y":-0.26166026970436695},{"x":0.08492350974582563,"y":-0.27884991058963776},{"x":0.0840535400463157,"y":-0.296142378973548},{"x":0.08322706883178126,"y":-0.3126504164001713},{"x":0.08244192117797354,"y":-0.3283330519554635},{"x":0.08169603090685622,"y":-0.343231555732991},{"x":0.08098743514929475,"y":-0.3573851343216422},{"x":0.08031426917961136,"y":-0.3708310339808608},{"x":0.07967476150841214,"y":-0.38360463865711847},{"x":0.07906722922077289,"y":-0.39573956309956326},{"x":0.0784900735475156,"y":-0.4072677413198858},{"x":0.07794177565792117,"y":-0.4182195106291922},{"x":0.07742089266280645,"y":-0.4286236914730333},{"x":0.07692605381744748,"y":-0.4385076632746824},{"x":0.07645595691435646,"y":-0.44789743648624897},{"x":0.07600936485641999,"y":-0.4568177210372372},{"x":0.07558510240138033,"y":-0.46529199136067606},{"x":0.07518205306909266,"y":-0.47334254816794297},{"x":0.07479915620341938,"y":-0.48099057713484655},{"x":0.07443540418102977,"y":-0.48825620465340497},{"x":0.07408983975975963,"y":-0.49515855079603543},{"x":0.07376155355955301,"y":-0.5017157796315344},{"x":0.07344968166935671,"y":-0.5079451470252584},{"x":0.07315340337367023,"y":-0.5138630460492962},{"x":0.07287193899276806,"y":-0.5194850501221321},{"x":0.07260454783091101,"y":-0.5248259539913263},{"x":0.07235052622714681,"y":-0.5298998126670607},{"x":0.07210920570357082,"y":-0.5347199784090083},{"x":0.07187995120617363,"y":-0.5392991358638586},{"x":0.0716621594336463,"y":-0.5436493354459664},{"x":0.07145525724974534,"y":-0.5477820250489688},{"x":0.07125870017503942,"y":-0.551708080171821},{"x":0.0710719709540688,"y":-0.5554378325385307},{"x":0.0708945781941467,"y":-0.5589810972869049},{"x":0.07072605507222071,"y":-0.5623471987978604},{"x":0.07056595810639102,"y":-0.5655449952332682},{"x":0.07041386598885283,"y":-0.5685829018469055},{"x":0.07026937847719153,"y":-0.5714689131298609},{"x":0.0701321153411133,"y":-0.5742106238486686},{"x":0.07000171536183898,"y":-0.5768152490315359},{"x":0.06987783538152838,"y":-0.5792896429552599},{"x":0.06976014940023331,"y":-0.5816403171827976},{"x":0.06964834771800299,"y":-0.5838734576989585},{"x":0.0708283097533247,"y":-0.585674171341677},{"x":0.07420007754540123,"y":-0.5864225397593565},{"x":0.08045791932729515,"y":-0.5857702179037063},{"x":0.09074370503295612,"y":-0.5833060855169412},{"x":0.1044541082057456,"y":-0.579120733125617},{"x":0.12077481115558694,"y":-0.5740219538871388},{"x":0.13844989696436708,"y":-0.5683761889914988},{"x":0.15676855967241882,"y":-0.5628523274168236},{"x":0.17481437606178823,"y":-0.5572838890732478},{"x":0.1919579016316892,"y":-0.5519938726468508},{"x":0.20824425092309506,"y":-0.5469683570417737},{"x":0.22371628274993066,"y":-0.5421941172169504},{"x":0.2384147129854245,"y":-0.5376585893833683},{"x":0.2523782217091436,"y":-0.5333498379414653},{"x":0.26564355499667675,"y":-0.5292565240716575},{"x":0.27824562161983324,"y":-0.5253678758953401},{"x":0.2902175849118319,"y":-0.5216736601278384},{"x":0.30159095003923064,"y":-0.518164155148712},{"x":0.31239564691025945,"y":-0.5148301254185418},{"x":0.32266010893773683,"y":-0.5116627971748802},{"x":0.33241134786384036,"y":-0.5086538353434016},{"x":0.3416750248436387,"y":-0.5057953216034969},{"x":0.35047551797444715,"y":-0.5030797335505875},{"x":0.3588359864487151,"y":-0.5004999249003236},{"x":0.3667784314992697,"y":-0.49804910668257285},{"x":0.3743237542972966,"y":-0.49572082937570966},{"x":0.3814918109554221,"y":-0.49350896593418964},{"x":0.38830146478064137,"y":-0.49140769566474557},{"x":0.39477063591459965,"y":-0.48941148890877373},{"x":0.40091634849186003,"y":-0.4875150924906005},{"x":0.4067547754402574,"y":-0.4857135158933359},{"x":0.41230128104123487,"y":-0.4840020181259345},{"x":0.41757046136216347,"y":-0.4823760952469032},{"x":0.42257618266704566,"y":-0.4808314685118235},{"x":0.4273316179066837,"y":-0.47936407311349777},{"x":0.43184928138433987,"y":-0.4779700474850883},{"x":0.43614106168811323,"y":-0.47664572313809933},{"x":0.4402182529766979,"y":-0.4753876150084598},{"x":0.44409158470085336,"y":-0.47419241228530223},{"x":0.44777124983880107,"y":-0.4730569696983026},{"x":0.4512669317198514,"y":-0.4719782992406529},{"x":0.4545878295068492,"y":-0.47095356230588564},{"x":0.45774268240449706,"y":-0.4699800622178568},{"x":0.46073979265726256,"y":-0.4690552371342294},{"x":0.46358704739738976,"y":-0.46817665330478336},{"x":0.4662919394005106,"y":-0.46734199866680964},{"x":0.46918313021183555,"y":-0.4665490767607346},{"x":0.47321593511603477,"y":-0.4665977255690491},{"x":0.4784940451126446,"y":-0.46856856102275385},{"x":0.4854375100595847,"y":-0.472606051175305},{"x":0.49412383391351866,"y":-0.47844647836794313},{"x":0.5040639444686466,"y":-0.4852779635914866},{"x":0.5148736089815487,"y":-0.4924094142491216},{"x":0.525946648789706,"y":-0.4996654471453263},{"x":0.5366268083116355,"y":-0.5065586783967208},{"x":0.5467729598574684,"y":-0.5131072480855455},{"x":0.5564118038260097,"y":-0.5193283892899291},{"x":0.565568705596124,"y":-0.5252384734340935},{"x":0.5742677622777326,"y":-0.5308530533710496},{"x":0.5825318661252608,"y":-0.5361869043111579},{"x":0.5903827647804125,"y":-0.5412540627042608},{"x":0.5978411185028066,"y":-0.5460678631777085},{"x":0.6049265545390811,"y":-0.5506409736274839},{"x":0.6116577187735418,"y":-0.5549854285547705},{"x":0.6180523247962795,"y":-0.5591126607356928},{"x":0.6241272005178803,"y":-0.563033531307569},{"x":0.6298983324534011,"y":-0.5667583583508513},{"x":0.6353809077921458,"y":-0.5702969440419695},{"x":0.6405893543639534,"y":-0.5736586004485318},{"x":0.6455373786071705,"y":-0.576852174034766},{"x":0.6502380016382268,"y":-0.5798860689416885},{"x":0.6547035935177302,"y":-0.5827682691032648},{"x":0.6589459058032585,"y":-0.5855063592567624},{"x":0.6629761024745103,"y":-0.5881075449025851},{"x":0.6668047893121996,"y":-0.5905786712661166},{"x":0.6704420418080044,"y":-0.5929262413114715},{"x":0.6738974316790189,"y":-0.5951564328545588},{"x":0.6771800520564828,"y":-0.5972751148204917},{"x":0.6802985414150734,"y":-0.5992878626881278},{"x":0.6832611063057346,"y":-0.6011999731623823},{"x":0.6860755429518626,"y":-0.6030164781129239},{"x":0.6887492577656842,"y":-0.6047421578159385},{"x":0.6912892868388147,"y":-0.6063815535338024},{"x":0.6937023144582888,"y":-0.607938979465773},{"x":0.6959946906967891,"y":-0.6094185341011451},{"x":0.6981724481233644,"y":-0.6108241110047486},{"x":0.700241317678611,"y":-0.612159409063172},{"x":0.7022067437560953,"y":-0.6134279422186742},{"x":0.7040738985297053,"y":-0.6146330487164013},{"x":0.7058476955646348,"y":-0.615777899889242},{"x":0.7075328027478178,"y":-0.6168655085034407},{"x":0.7091336545718417,"y":-0.6178987366869294},{"x":0.7106544638046645,"y":-0.6188803034612437},{"x":0.7120992325758461,"y":-0.6198127918968422},{"x":0.7134717629084686,"y":-0.6206986559106609},{"x":0.7147756667244599,"y":-0.6215402267237886},{"x":0.7160143753496517,"y":-0.62233971899626},{"x":0.7171911485435839,"y":-0.6230992366551077},{"x":0.7184698547819995,"y":-0.6246227030500989},{"x":0.7196846257084945,"y":-0.6279946152111465},{"x":0.7205975005323945,"y":-0.6337640905452163},{"x":0.7210628023546494,"y":-0.6421320207412915},{"x":0.7206205947128012,"y":-0.6526477132086375},{"x":0.719477024784235,"y":-0.6647226250622392},{"x":0.7169436880144766,"y":-0.678278795332784},{"x":0.7143762463790261,"y":-0.691638311861253},{"x":0.7112940900086279,"y":-0.7056931244157445},{"x":0.7080444980483894,"y":-0.7194461586520543},{"x":0.7047162281298928,"y":-0.7331530808718173},{"x":0.7014739858552309,"y":-0.7464954268282264},{"x":0.6983938556943021,"y":-0.7591706554868152},{"x":0.6954677320414198,"y":-0.7712121227124744},{"x":0.6926879145711816,"y":-0.7826515165768507},{"x":0.6900470879744554,"y":-0.7935189407480082},{"x":0.6875383027075654,"y":-0.8038429937106079},{"x":0.6851549567040199,"y":-0.8136508440250775},{"x":0.6828907780006518,"y":-0.8229683018238236},{"x":0.680739808232452,"y":-0.8318198867326324},{"x":0.6786963869526621,"y":-0.8402288923960007},{"x":0.6767551367368618,"y":-0.8482174477762007},{"x":0.6749109490318516,"y":-0.8558065753873907},{"x":0.6731589707120917,"y":-0.8630162466180211},{"x":0.6714945913083199,"y":-0.86986543428712},{"x":0.6699134308747368,"y":-0.8763721625727641},{"x":0.6684113284628327,"y":-0.8825535544441259},{"x":0.6669843311715239,"y":-0.8884258767219195},{"x":0.6656286837447805,"y":-0.8940045828858235},{"x":0.6643408186893742,"y":-0.8993043537415324},{"x":0.6631173468867383,"y":-0.9043391360544558},{"x":0.6619550486742342,"y":-0.909122179251733},{"x":0.6608508653723553,"y":-0.9136660702891464},{"x":0.6598018912355703,"y":-0.917982766774689},{"x":0.6588053658056245,"y":-0.9220836284359546},{"x":0.6578586666471761,"y":-0.9259794470141569},{"x":0.65695930244665,"y":-0.929680474663449},{"x":0.6561049064561503,"y":-0.9331964509302766},{"x":0.6552932302651756,"y":-0.9365366283837627},{"x":0.6545221378837496,"y":-0.9397097969645746},{"x":0.6537896001213949,"y":-0.9427243071163458},{"x":0.6530936892471579,"y":-0.9455880917605285},{"x":0.6524325739166328,"y":-0.948308687172502},{"x":0.651804514352634,"y":-0.9508932528138769},{"x":0.6512078577668351,"y":-0.9533485901731831},{"x":0.6506410340103261,"y":-0.9556811606645239},{"x":0.6501025514416426,"y":-0.9578971026312977},{"x":0.6495909930013933,"y":-0.9600022474997328},{"x":0.6491050124831564,"y":-0.9620021351247462},{"x":0.6486433309908314,"y":-0.9639020283685089},{"x":0.6482047335731226,"y":-0.9657069269500834},{"x":0.6477880660262992,"y":-0.9674215806025792},{"x":0.647392231856817,"y":-0.9690505015724502},{"x":0.647016189395809,"y":-0.9705979764938277},{"x":0.6466589490578513,"y":-0.9720680776691364},{"x":0.6463195707367915,"y":-0.9734646737856796},{"x":0.6459971613317848,"y":-0.9747914400963956},{"x":0.6456908723970283,"y":-0.9760518680915758},{"x":0.6453998979090096,"y":-0.9772492746869971},{"x":0.645123472145392,"y":-0.9783868109526472}]
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56976,7 +57054,7 @@ function () {
 exports.default = CancasPaint;
 
 /***/ }),
-/* 28 */
+/* 32 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

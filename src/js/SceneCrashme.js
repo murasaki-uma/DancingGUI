@@ -96,6 +96,25 @@ export default class SceneCrashme{
         }
 
 
+        this.manager.gui.dancingErrorbaseWindowScale.onChange((e)=>{
+            for(let i = 0; i < this.dancingErrors.length; i++)
+            {
+                this.dancingErrors[i].getMesh().material.uniforms.baseWindowScale.value = e;
+            }
+
+        });
+
+
+        this.manager.gui.visibleDancingErrors.onChange((e)=>{
+            for(let i = 0; i < this.dancingErrors.length; i++)
+            {
+                this.dancingErrors[i].getMesh().material.visible = e;
+            }
+
+        });
+
+
+
 
 
 
@@ -182,8 +201,7 @@ export default class SceneCrashme{
         }
 
         group.rotateY(Math.PI/2);
-        // group.position.set(0,0,-200);
-
+        group.position.set(0,0,-2500);
         this.scene.add(group);
 
         this.manager.gui.visibleOuterWalls.onChange((e)=>{
@@ -193,6 +211,7 @@ export default class SceneCrashme{
             }
 
         });
+
 
 
 
