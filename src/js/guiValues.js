@@ -3,6 +3,10 @@ export default class guiValues{
     constructor()
     {
 
+
+        this.displayFps = true;
+        this.displayDebugInfo = true;
+
         this.visibleDancingErrors = false;
         this.visibleErrors = false;
         this.visibleMail = false;
@@ -17,6 +21,8 @@ export default class guiValues{
         this.cameraAnimeation01LookX = 0.0;
         this.cameraAnimeation01LookY = 0.0;
         this.cameraAnimeation01LookZ = 0.0;
+        this.cameraStartFov = 50;
+        this.cameraAfterFov = 100;
 
         this.dancingErrorbaseWindowScale = 1.0;
         this.dancingErrorWorkAreaWidth = 5;
@@ -46,8 +52,14 @@ export default class guiValues{
         this.diffErrorPosY = 0;
         this.diffErrorPosZ = 0;
         this.errorPopUpDuration = 0.5;
+        this.errorBaseWindowScale = 1.0;
 
 
+
+
+        this.outerWallPositionX = 0.0;
+        this.outerWallPositionY = 0.0;
+        this.outerWallPositionZ = -2500;
 
 
         this.backgroundAnimationX = 0.0;
@@ -59,6 +71,7 @@ export default class guiValues{
         this.gradThresholdDulation = 2.0;
 
 
+        this.backgroundColor = [255,215,255];
 
 
 

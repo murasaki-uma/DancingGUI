@@ -4,11 +4,10 @@ import 'imports-loader?THREE=three!../../node_modules/three/examples/js/controls
 import Gui from "./gui";
 import Stats from '../../node_modules/stats-js';
 export default class SceneManager{
-    constructor()
+    constructor(guijson)
     {
 
         // this.bpmCalculater = bpmCalculater;
-
 
         this.width = window.innerWidth;
         this.height= window.innerHeight;
@@ -36,10 +35,14 @@ export default class SceneManager{
         this.scenes = [];
         this.sceneNum = 0;
 
-        this.gui = new Gui();
 
+
+
+        this.gui = new Gui(guijson);
         this.init();
     }
+
+
 
     init()
     {
@@ -71,6 +74,16 @@ export default class SceneManager{
 
         this.stats = new Stats();
         document.body.appendChild(this.stats.domElement);
+
+        console.log(this.stats);
+        if(this.gui.values.displayFps)
+        {
+            this.stats.domElement.style.display = "block"
+        } else
+        {
+            this.stats.domElement.style.display = "none"
+        }
+
         // this.update();
     }
 

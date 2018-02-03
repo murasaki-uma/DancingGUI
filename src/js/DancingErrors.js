@@ -134,11 +134,7 @@ export default class DancingErrors
         // this.scene.add( this.errorGui );
 
 
-        this.gui.errorGuiColor.onChange((e)=>{
-            this.errorGui.material.uniforms.gradationColor.value.r = e[0]/255;
-            this.errorGui.material.uniforms.gradationColor.value.g = e[1]/255;
-            this.errorGui.material.uniforms.gradationColor.value.b = e[2]/255;
-        });
+
 
 
         // this.gui.visibleErrors.onChange((e)=>{

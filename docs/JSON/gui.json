@@ -6,12 +6,14 @@
         "visibleOuterWalls": false,
         "visibleBackground": true,
         "visibleDancingErrors": true,
-        "visibleErrors": false,
+        "visibleErrors": true,
         "visibleMail": false,
         "errorsLoiter": true,
-        "cameraAnimeation01PosX": -125.38123705021472,
+        "displayFps": false,
+        "displayDebugInfo": false,
+        "cameraAnimeation01PosX": -39.664801153072915,
         "cameraAnimeation01PosY": 0,
-        "cameraAnimeation01PosZ": 111.98791189045085,
+        "cameraAnimeation01PosZ": 32.864661023241524,
         "cameraAnimeation01LookX": 3.8943074167596876,
         "cameraAnimeation01LookY": 0,
         "cameraAnimeation01LookZ": 0,
@@ -21,9 +23,9 @@
         "dancingErrorbaseWindowScale": 0.5512237515637334,
         "errorGuiInterval": 20,
         "errorGuiColor": [
-          0,
-          255,
-          223.06396016851787
+          198.2319118407358,
+          128.7212506462546,
+          207.5
         ],
         "dancingErrorOffsetX": 0,
         "dancingErrorOffsetY": 0,
@@ -56,6 +58,9 @@
         "diffErrorPosZ": 0,
         "errorPopUpDuration": 0.5,
         "errorBaseWindowScale": 0.4721007019168449,
+        "outerWallPositionX": 0,
+        "outerWallPositionY": 0,
+        "outerWallPositionZ": -2500,
         "gradThreshold": 0,
         "gradThresholdDulation": 2
       }
@@ -80,15 +85,20 @@
     },
     "dancing errors": {
       "preset": "Default",
-      "closed": false,
+      "closed": true,
       "folders": {}
     },
     "error gui": {
       "preset": "Default",
-      "closed": false,
+      "closed": true,
       "folders": {}
     },
     "background": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    },
+    "outerWall": {
       "preset": "Default",
       "closed": true,
       "folders": {}

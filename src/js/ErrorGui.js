@@ -133,6 +133,9 @@ export default class ErrorGui
         this.mesh = new THREE.Mesh(geo,mats);
 
 
+
+
+
         this.gui.gradThreshold.onChange((e)=>{
             this.gradThreshold.value = e;
         });

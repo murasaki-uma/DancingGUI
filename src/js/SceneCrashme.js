@@ -25,11 +25,13 @@ export default class SceneCrashme{
     {
         this.manager = manager;
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(50,window.innerWidth/window.innerHeight,0.1,10000);
+        this.camera = new THREE.PerspectiveCamera(this.manager.gui.values.cameraStartFov,window.innerWidth/window.innerHeight,0.1,10000);
         this.time = 0;
         this.isRecord = false;
         this.curlNoise = new CurlNoise();
         this.cameraLookAt = new THREE.Vector3();
+
+        // this.camera.fov
 
         this.backgroundPlane;
         this.backgroundScale = {value:1.0};
@@ -40,6 +42,8 @@ export default class SceneCrashme{
         this.outerWalls = [];
         this.dancingErrors = [];
         this.record = [];
+
+        this.backgroundColor = new THREE.Color(255,255,255);
 
 
 
@@ -54,6 +58,9 @@ export default class SceneCrashme{
 
     init()
     {
+
+
+
         this.camera.position.set(0,0,100);
         this.camera.lookAt(new THREE.Vector3(0,0,0));
 
@@ -76,6 +83,14 @@ export default class SceneCrashme{
             this.backgroundPlane.material.visible = e;
         })
 
+
+
+        document.body.style.background = "rgb("+this.manager.gui.values.backgroundColor[0] + "," + this.manager.gui.values.backgroundColor[1] + "," + this.manager.gui.values.backgroundColor[2] + ")" ;
+
+        this.manager.gui.backgroundColor.onChange((e)=>{
+            console.log( "rgb("+e[0] + "," + e[1] + "," + e[2] + ")");
+            document.body.style.background = "rgb("+ Math.floor(e[0]) + "," +  Math.floor(e[1]) + "," +  Math.floor(e[2]) + ")" ;
+        });
 
 
 
@@ -113,6 +128,14 @@ export default class SceneCrashme{
 
         });
 
+        this.manager.gui.errorGuiColor.onChange((e)=>{
+            for(let i = 0; i < this.dancingErrors.length; i++) {
+                this.dancingErrors[i].getMesh().material.uniforms.gradationColor.value.r = e[0] / 255;
+                this.dancingErrors[i].getMesh().material.uniforms.gradationColor.value.g = e[1] / 255;
+                this.dancingErrors[i].getMesh().material.uniforms.gradationColor.value.b = e[2] / 255;
+            }
+        });
+
 
 
 
@@ -147,6 +170,14 @@ export default class SceneCrashme{
         }
 
 
+        this.manager.gui.errorBaseWindowScale.onChange((e)=>{
+            for(let i = 0; i < this.errors.length; i++)
+            {
+                this.errors[i].getMesh().scale.set(e,e,e);
+            }
+        });
+
+
         this.manager.gui.errorGuiSide.onChange((e)=>{
             for(let error of this.errors)
             {
@@ -176,7 +207,7 @@ export default class SceneCrashme{
 
 
         let rad = Math.PI*2/4;
-        let radius = 400;
+        let radius = 800;
         let group = new THREE.Group();
         for(let i = 0; i < 4; i++)
         {
@@ -201,7 +232,38 @@ export default class SceneCrashme{
         }
 
         group.rotateY(Math.PI/2);
-        group.position.set(0,0,-2500);
+        group.position.set(
+            this.manager.gui.values.outerWallPositionX,
+            this.manager.gui.values.outerWallPositionY,
+            this.manager.gui.values.outerWallPositionZ
+        );
+
+        this.manager.gui.outerWallPositionX.onChange((e)=>{
+            group.position.set(
+                this.manager.gui.values.outerWallPositionX,
+                this.manager.gui.values.outerWallPositionY,
+                this.manager.gui.values.outerWallPositionZ
+            );
+        });
+
+        this.manager.gui.outerWallPositionY.onChange((e)=>{
+            group.position.set(
+                this.manager.gui.values.outerWallPositionX,
+                this.manager.gui.values.outerWallPositionY,
+                this.manager.gui.values.outerWallPositionZ
+            );
+        });
+
+
+        this.manager.gui.outerWallPositionZ.onChange((e)=>{
+            group.position.set(
+                this.manager.gui.values.outerWallPositionX,
+                this.manager.gui.values.outerWallPositionY,
+                this.manager.gui.values.outerWallPositionZ
+            );
+        });
+
+
         this.scene.add(group);
 
         this.manager.gui.visibleOuterWalls.onChange((e)=>{
@@ -231,6 +293,13 @@ export default class SceneCrashme{
 
     resetAnimation()
     {
+
+        TweenMax.to(this.camera , 1.0 , {
+            fov : this.manager.gui.values.cameraStartFov,
+            // delay : 0.5,
+            ease :Power2.easeInOut
+        });
+
         for(let i = 0; i < this.dancingErrors.length; i++)
         {
             this.dancingErrors[i].resetAnimation();
@@ -267,6 +336,18 @@ export default class SceneCrashme{
             // delay : 0.5,
             ease :Power2.easeInOut
         });
+
+
+        // TweenMax.to(this.backgroundColor , 4.0 , {
+        //     r : 255,
+        //     g : 255,
+        //     b : 255,
+        //     delay : 0.5,
+        //     onUpdate:()=>{
+        //         document.body.style.background = "rgb("+this.backgroundColor.r + "," + this.backgroundColor.g + "," + this.backgroundColor.b + ")" ;
+        //     },
+        //     ease :Power1.easeInOut
+        // });
     }
 
     cameraAnimation()
@@ -275,20 +356,27 @@ export default class SceneCrashme{
         for(let i = 0; i < this.dancingErrors.length; i++) {
             this.dancingErrors[i].animationStart();
         }
-        TweenMax.to(this.camera.position , 1.0 , {
+        TweenMax.to(this.camera.position , 2.5 , {
             x : this.manager.gui.values.cameraAnimeation01PosX,
             y : this.manager.gui.values.cameraAnimeation01PosY,
             z : this.manager.gui.values.cameraAnimeation01PosZ,
-            delay : 0.5 ,
-            ease :Power2.easeInOut
+            // delay : 0.5 ,
+            ease :Power1.easeInOut
         });
 
-        TweenMax.to(this.cameraLookAt , 1.0 , {
+        TweenMax.to(this.camera , 2.5 , {
+            fov : this.manager.gui.values.cameraAfterFov,
+            // delay : 0.5,
+            // ease :Power1.easeInOut
+        });
+
+
+        TweenMax.to(this.cameraLookAt , 2.5 , {
             x : this.manager.gui.values.cameraAnimeation01LookX,
             y : this.manager.gui.values.cameraAnimeation01LookY,
             z : this.manager.gui.values.cameraAnimeation01LookZ,
-            delay : 0.5,
-            ease :Power2.easeInOut
+            // delay : 0.5,
+            ease :Power1.easeInOut
         });
 
 
@@ -297,7 +385,7 @@ export default class SceneCrashme{
             y : this.manager.gui.values.backgroundAnimationY,
             z : this.manager.gui.values.backgroundAnimationZ,
             // delay : 0.5,
-            ease :Power2.easeInOut
+            ease :Power1.easeInOut
         });
 
 
@@ -305,8 +393,21 @@ export default class SceneCrashme{
         TweenMax.to(this.backgroundScale , 4.0 , {
             value : 0.00001,
             // delay : 0.5,
-            ease :Power2.easeInOut
+            ease :Power1.easeInOut
         });
+
+
+        // TweenMax.to(this.backgroundColor , 4.0 , {
+        //     r : this.manager.gui.values.backgroundColor[0],
+        //     g : this.manager.gui.values.backgroundColor[1],
+        //     b : this.manager.gui.values.backgroundColor[2],
+        //     delay : 0.5,
+        //     onUpdate:()=>{
+        //         // console.log(this.backgroundColor.getHex())
+        //         document.body.style.background = "rgb("+this.backgroundColor.r + "," + this.backgroundColor.g + "," + this.backgroundColor.b + ")" ;
+        //     },
+        //     ease :Power1.easeInOut
+        // });
 
     }
 
