@@ -158,6 +158,8 @@ export default class ErrorGui
     start()
     {
 
+        this.isAnimationLoop = true;
+
         // this.posisition.set(
         //     Math.random() * (this.gui.values.errorPopUpRangeX_max-this.gui.values.errorPopUpRangeX_min)+this.gui.values.errorPopUpRangeX_min,
         //     Math.random() * (this.gui.values.errorPopUpRangeY_max-this.gui.values.errorPopUpRangeY_min)+this.gui.values.errorPopUpRangeY_min,
@@ -178,7 +180,7 @@ export default class ErrorGui
         );
 
         // vec.multiplyScalar(Math.random());
-        let delay = 0.5*Math.random();
+        let delay = 1.0*Math.random()+0.5;
 
         TweenMax.to(this.posisition.value , this.gui.values.errorPopUpDuration+delay*0.1 , {
             x:this.gui.values.diffErrorPosX*vec.y * Math.sin((this.radian) + vec.x),

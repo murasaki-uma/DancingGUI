@@ -3,17 +3,24 @@
   "remembered": {
     "Default": {
       "0": {
-        "visibleOuterWalls": false,
-        "visibleBackground": true,
+        "fpsDenominator": 4.812383782688492,
+        "animationDulation01": 6.368470425743967,
+        "animationDulation02": 14.537925301785208,
+        "animationDulation03": 4.812383782688492,
+        "animationDulation04": 10,
+        "visibleOuterWalls": true,
+        "visibleBackground": false,
         "visibleDancingErrors": true,
         "visibleErrors": true,
         "visibleMail": false,
         "errorsLoiter": true,
         "displayFps": false,
         "displayDebugInfo": false,
-        "cameraAnimeation01PosX": -39.664801153072915,
-        "cameraAnimeation01PosY": 0,
-        "cameraAnimeation01PosZ": 32.864661023241524,
+        "cameraStartFov": 48,
+        "cameraAfterFov": 80.30992758684317,
+        "cameraAnimeation01PosX": -33.071213682498865,
+        "cameraAnimeation01PosY": -0.10327632962867028,
+        "cameraAnimeation01PosZ": 46.05223840503112,
         "cameraAnimeation01LookX": 3.8943074167596876,
         "cameraAnimeation01LookY": 0,
         "cameraAnimeation01LookZ": 0,
@@ -47,22 +54,42 @@
           128,
           255
         ],
-        "errorPopUpRangeX_min": -70.30779137153897,
-        "errorPopUpRangeX_max": -10.964584674822902,
+        "errorPopUpRangeX_min": -46.015203804995764,
+        "errorPopUpRangeX_max": 96.40628555940356,
         "errorPopUpRangeY_min": 5.233639932736068,
-        "errorPopUpRangeY_max": -10.590969996641633,
+        "errorPopUpRangeY_max": 5.761078637505008,
         "errorPopUpRangeZ_min": 0,
         "errorPopUpRangeZ_max": 0,
-        "diffErrorPosX": 63.10062002017435,
-        "diffErrorPosY": 132.33328846120182,
+        "diffErrorPosX": 67.45235153109547,
+        "diffErrorPosY": 63.49619904875106,
         "diffErrorPosZ": 0,
         "errorPopUpDuration": 0.5,
-        "errorBaseWindowScale": 0.4721007019168449,
+        "errorBaseWindowScale": 0.4773750889645343,
         "outerWallPositionX": 0,
         "outerWallPositionY": 0,
-        "outerWallPositionZ": -2500,
+        "outerWallPositionZ": -2374.9259760745017,
         "gradThreshold": 0,
-        "gradThresholdDulation": 2
+        "gradThresholdDulation": 2,
+        "backgroundColor": [
+          232.5,
+          98.47075518439797,
+          227.06638196693518
+        ],
+        "backgroundEndColor": [
+          87.8530973546645,
+          95.47938574556665,
+          217.5
+        ],
+        "outerStartColor": [
+          255,
+          229,
+          196
+        ],
+        "outerEndColor": [
+          180.52957871380974,
+          223.32874918478993,
+          232.5
+        ]
       }
     }
   },
@@ -70,7 +97,7 @@
   "folders": {
     "visibles": {
       "preset": "Default",
-      "closed": false,
+      "closed": true,
       "folders": {}
     },
     "animation settings": {
@@ -90,7 +117,7 @@
     },
     "error gui": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
       "folders": {}
     },
     "background": {
@@ -100,7 +127,12 @@
     },
     "outerWall": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
+      "folders": {}
+    },
+    "dom": {
+      "preset": "Default",
+      "closed": false,
       "folders": {}
     }
   }

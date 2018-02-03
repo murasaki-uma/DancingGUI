@@ -25,7 +25,7 @@ export default class SceneManager{
         this.stats;
 
 
-        this.frameFraction = 4;
+        this.frameFraction = 6;
         this.renderFraction = 4;
 
 
@@ -191,7 +191,7 @@ export default class SceneManager{
             this.scenes[this.sceneNum].update(this.frameCount);
 
 
-            if(this.frameCount % this.frameFraction == 0)
+            if(this.frameCount % Math.floor(this.gui.values.fpsDenominator) == 0)
             {
 
 

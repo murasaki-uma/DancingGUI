@@ -3,15 +3,17 @@
   "remembered": {
     "Default": {
       "0": {
-        "visibleOuterWalls": false,
+        "visibleOuterWalls": true,
         "visibleBackground": true,
         "visibleDancingErrors": true,
-        "visibleErrors": false,
+        "visibleErrors": true,
         "visibleMail": false,
         "errorsLoiter": true,
-        "cameraAnimeation01PosX": -125.38123705021472,
+        "displayFps": false,
+        "displayDebugInfo": false,
+        "cameraAnimeation01PosX": -39.664801153072915,
         "cameraAnimeation01PosY": 0,
-        "cameraAnimeation01PosZ": 111.98791189045085,
+        "cameraAnimeation01PosZ": 17.699490329049524,
         "cameraAnimeation01LookX": 3.8943074167596876,
         "cameraAnimeation01LookY": 0,
         "cameraAnimeation01LookZ": 0,
@@ -21,14 +23,14 @@
         "dancingErrorbaseWindowScale": 0.5512237515637334,
         "errorGuiInterval": 20,
         "errorGuiColor": [
-          0,
-          255,
-          223.06396016851787
+          198.2319118407358,
+          128.7212506462546,
+          207.5
         ],
         "dancingErrorOffsetX": 0,
         "dancingErrorOffsetY": 0,
-        "dancingErrorNoiseScaleX": 0.005670469127068017,
-        "dancingErrorNoiseScaleY": 0.003824272684120115,
+        "dancingErrorNoiseScaleX": 0.008044144518849012,
+        "dancingErrorNoiseScaleY": 0.006066068277676799,
         "dancingErrorWorkAreaWidth": 3.63965706423174,
         "dancingErrorWorkAreaHeight": 11.024475031274667,
         "dancingErrorTrackAreaWidth": 20.374181259667377,
@@ -56,8 +58,31 @@
         "diffErrorPosZ": 0,
         "errorPopUpDuration": 0.5,
         "errorBaseWindowScale": 0.4721007019168449,
+        "outerWallPositionX": 0,
+        "outerWallPositionY": 0,
+        "outerWallPositionZ": -2500,
         "gradThreshold": 0,
-        "gradThresholdDulation": 2
+        "gradThresholdDulation": 2,
+        "backgroundColor": [
+          237,
+          163,
+          234
+        ],
+        "backgroundEndColor": [
+          161,
+          211,
+          200
+        ],
+        "outerStartColor": [
+          87.00010411879595,
+          217.5,
+          217.5
+        ],
+        "outerEndColor": [
+          235.00000000000003,
+          222.74857148167175,
+          130.86285759420957
+        ]
       }
     }
   },
@@ -80,15 +105,25 @@
     },
     "dancing errors": {
       "preset": "Default",
-      "closed": false,
+      "closed": true,
       "folders": {}
     },
     "error gui": {
       "preset": "Default",
-      "closed": false,
+      "closed": true,
       "folders": {}
     },
     "background": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    },
+    "outerWall": {
+      "preset": "Default",
+      "closed": true,
+      "folders": {}
+    },
+    "dom": {
       "preset": "Default",
       "closed": true,
       "folders": {}

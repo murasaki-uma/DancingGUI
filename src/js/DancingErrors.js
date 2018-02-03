@@ -52,7 +52,7 @@ export default class DancingErrors
 
         this.isRecordPlay = false;
         this.simplex = new SimplexNoise();
-        this.ANIMATION_NUM = 2;
+        this.ANIMATION_NUM = 1;
         this.excursionRad = excursionRad;
 
         this.init();
@@ -213,8 +213,9 @@ export default class DancingErrors
         {
 
             // if(this.discreateEnd) {
-
             this.valueInit();
+            this.scaleDown();
+
 
             this.ANIMATION_NUM = 3;
             // }
@@ -223,27 +224,33 @@ export default class DancingErrors
         if(e.key == '0')
         {
 
-            this.discreateEnd = false;
-            // if(!this.discreateEnd)
-            // {
-                TweenMax.to(this.scale , 3.0 , {
-                    value : 0.0,
-                    // delay : 0.5,
-                    ease :Power2.easeInOut,
-                    onComplete:()=>
-                    {
-                        this.discreateEnd = true;
-                    }
-                });
 
-                // this.discreateEnd = true;
-            // }
 
 
             this.ANIMATION_NUM = 0;
         }
 
         console.log(this.ANIMATION_NUM);
+    }
+
+    scaleDown()
+    {
+
+        this.discreateEnd = false;
+        // if(!this.discreateEnd)
+        // {
+        TweenMax.to(this.scale , 3.0 , {
+            value : 0.0,
+            // delay : 0.5,
+            ease :Power2.easeInOut,
+            onComplete:()=>
+            {
+                this.discreateEnd = true;
+            }
+        });
+
+        // this.discreateEnd = true;
+        // }
     }
 
     resetAnimation()
@@ -377,7 +384,7 @@ export default class DancingErrors
 
                         let last = new THREE.Vector2(this.tmpRecord.x, this.tmpRecord.y);
                         let first = new THREE.Vector2(this.recordPosition[0].x, this.recordPosition[0].y);
-                        console.log(first, last);
+                        // console.log(first, last);
                         if (first.distanceTo(last) > 0.01) {
                             this.tmpRecord.x += (first.x - this.tmpRecord.x) * 0.1;
                             this.tmpRecord.y += (first.y - this.tmpRecord.y) * 0.1;
@@ -424,7 +431,7 @@ export default class DancingErrors
 
                         let last = new THREE.Vector2(this.tmpRecord.x, this.tmpRecord.y);
                         let first = new THREE.Vector2(this.importedRecord[0].x, this.importedRecord[0].y);
-                        console.log(first, last);
+                        // console.log(first, last);
                         if (first.distanceTo(last) > 0.01) {
                             this.tmpRecord.x += (first.x - this.tmpRecord.x) * 0.1;
                             this.tmpRecord.y += (first.y - this.tmpRecord.y) * 0.1;

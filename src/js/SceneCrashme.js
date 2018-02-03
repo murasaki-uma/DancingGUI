@@ -46,9 +46,16 @@ export default class SceneCrashme{
         this.backgroundColor = new THREE.Color(255,255,255);
 
 
+        this.isAnimationStarted = false;
+        this.isAnimationReset = false;
+
+
 
         this.debugMesh = document.querySelector('.mesh');
 
+
+        this.startCameraAnimationTiming = Math.random();
+        this.resetCameraAnimationTiming = Math.random();
 
 
 
@@ -85,11 +92,32 @@ export default class SceneCrashme{
 
 
 
-        document.body.style.background = "rgb("+this.manager.gui.values.backgroundColor[0] + "," + this.manager.gui.values.backgroundColor[1] + "," + this.manager.gui.values.backgroundColor[2] + ")" ;
+        let bgs = this.manager.gui.values.backgroundColor;
+        let bge = this.manager.gui.values.backgroundEndColor;
+
+        document.body.style.background = "linear-gradient(to right, " +
+            "rgb("+ Math.floor(bgs[0]) + "," +  Math.floor(bgs[1]) + "," +  Math.floor(bgs[2]) + ")" + "0%," +
+            "rgb("+ Math.floor(bge[0]) + "," +  Math.floor(bge[1]) + "," +  Math.floor(bge[2]) + ")" + "100%)"
+        ;
 
         this.manager.gui.backgroundColor.onChange((e)=>{
-            console.log( "rgb("+e[0] + "," + e[1] + "," + e[2] + ")");
-            document.body.style.background = "rgb("+ Math.floor(e[0]) + "," +  Math.floor(e[1]) + "," +  Math.floor(e[2]) + ")" ;
+            let bg = this.manager.gui.values.backgroundEndColor;
+
+            document.body.style.background = "linear-gradient(to right, " +
+                "rgb("+ Math.floor(e[0]) + "," +  Math.floor(e[1]) + "," +  Math.floor(e[2]) + ")" + "0%," +
+                "rgb("+ Math.floor(bg[0]) + "," +  Math.floor(bg[1]) + "," +  Math.floor(bg[2]) + ")" + "100%)"
+            ;
+        });
+
+
+
+        this.manager.gui.backgroundEndColor.onChange((e)=>{
+            let bg = this.manager.gui.values.backgroundColor;
+
+            document.body.style.background = "linear-gradient(to right, " +
+                "rgb("+ Math.floor(bg[0]) + "," +  Math.floor(bg[1]) + "," +  Math.floor(bg[2]) + ")" + "0%," +
+                "rgb("+ Math.floor(e[0]) + "," +  Math.floor(e[1]) + "," +  Math.floor(e[2]) + ")" + "100%)"
+            ;
         });
 
 
@@ -97,12 +125,12 @@ export default class SceneCrashme{
 
         this.record.push(record_cricle);
         this.record.push(jumpingsidetoside01);
-        this.record.push(leftuptprightdown);
+        // this.record.push(leftuptprightdown);
         this.record.push(rightuptoleftdownloop);
         // console.log(record_cricle);
-        for(let i = 0; i <4; i++)
+        for(let i = 0; i <3; i++)
         {
-            let r = i * Math.PI/2;
+            let r = i * Math.PI*2/3;
             let d = new DancingErrors(this.manager.gui,this.record[i],r);
             this.dancingErrors.push(d);
 
@@ -225,10 +253,6 @@ export default class SceneCrashme{
             o.getMesh().rotateX(r+Math.PI/2);
             group.add(o.getMesh());
 
-
-
-
-
         }
 
         group.rotateY(Math.PI/2);
@@ -270,6 +294,31 @@ export default class SceneCrashme{
             for(let i = 0; i < this.outerWalls.length; i++)
             {
                 this.outerWalls[i].getMesh().material.visible = e;
+            }
+
+        });
+
+        this.manager.gui.outerEndColor.onChange((e)=>{
+            for(let i = 0; i < this.outerWalls.length; i++)
+            {
+                this.outerWalls[i].startColor.value.setRGB(
+                    e[0]/255,
+                    e[1]/255,
+                    e[2]/255,
+                );
+            }
+
+        });
+
+
+        this.manager.gui.outerStartColor.onChange((e)=>{
+            for(let i = 0; i < this.outerWalls.length; i++)
+            {
+                this.outerWalls[i].endColor.value.setRGB(
+                    e[0]/255,
+                    e[1]/255,
+                    e[2]/255,
+                );
             }
 
         });
@@ -496,6 +545,111 @@ export default class SceneCrashme{
             this.backgroundScale.value,
             this.backgroundScale.value
         );
+
+
+        let timing01 = this.manager.gui.values.animationDulation01*60;
+        let timing02 = timing01 + this.manager.gui.values.animationDulation02*60;
+        let timing03 = timing02 + this.manager.gui.values.animationDulation03*60;
+        let timing04 = timing03 + this.manager.gui.values.animationDulation03*60;
+
+
+        // console.log(this.time);
+        // console.log(timing01);
+        // console.log(timing02);
+        // console.log(timing03);
+
+
+
+        if(this.isAnimationStarted == false)
+        {
+
+            // this.isAnimationReset = false;
+            // this.cameraAnimation();
+            // this.isAnimationStarted = true;
+        }
+
+
+
+        if(timing01 > this.time && 0 < this.time)
+        {
+            for(let i = 0; i < this.dancingErrors.length; i++) {
+                this.dancingErrors[i].ANIMATION_NUM = 1;
+            }
+
+
+            console.log('scene 01')
+
+
+        }
+
+        if(timing02 > this.time && timing01 <= this.time)
+        {
+
+
+            for(let i = 0; i < this.dancingErrors.length; i++) {
+                this.dancingErrors[i].valueInit();
+                this.dancingErrors[i].ANIMATION_NUM = 2;
+            }
+
+
+
+
+            console.log('scene 02')
+
+        }
+
+        if(timing03 > this.time && timing02 <= this.time)
+        {
+
+            // if(timing02 + 10 > this.time && this.isAnimationReset == false)
+            // {
+            //     console.log('reset');
+            //     this.resetAnimation();
+            //
+            //     this.isAnimationReset = true;
+            //
+            // }
+
+
+            this.isAnimationStarted = false;
+            for(let i = 0; i < this.dancingErrors.length; i++) {
+                this.dancingErrors[i].valueInit();
+                this.dancingErrors[i].ANIMATION_NUM = 3;
+            }
+            // this.time = 0;
+
+            console.log('scene 03')
+        }
+
+
+        if(timing04 > this.time && timing03 <= this.time)
+        {
+
+            if(this.time < timing03+2)
+            {
+                for(let i = 0; i < this.dancingErrors.length; i++) {
+                    this.dancingErrors[i].valueInit();
+                    this.dancingErrors[i].ANIMATION_NUM = 0;
+                    this.dancingErrors[i].scaleDown();
+                }
+            }
+
+
+            console.log('scene 04')
+
+            if(this.time > timing04 -10)
+            {
+                for(let i = 0; i < this.dancingErrors.length; i++) {
+                    this.dancingErrors[i].valueInit();
+                    this.time = 0;
+                    // this.isAnimationStarted = false;
+
+                }
+            }
+        }
+
+
+
         // this.errorOffsetAttribute.needsUpdate = true;
         // console.log(this.errorOffsetAttribute.array);
 

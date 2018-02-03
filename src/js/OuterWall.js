@@ -25,8 +25,16 @@ export default class OuterWall{
         this.time = {value:0.0};
 
 
-        let purple = new THREE.Color(125,31,164);
-        let white = new THREE.Color(255,255,255);
+        this.startColor ={value : new THREE.Color(
+                this.gui.values.outerStartColor[0]/255,
+                this.gui.values.outerStartColor[1]/255,
+                this.gui.values.outerStartColor[2]/255
+            )};
+        this.endColor = {value : new THREE.Color(
+                this.gui.values.outerEndColor[0]/255,
+                this.gui.values.outerEndColor[1]/255,
+                this.gui.values.outerEndColor[2]/255
+            )};
 
         // let Bac
 
@@ -115,13 +123,21 @@ export default class OuterWall{
             uniforms: {
                 width:{value:this.width},
                 threshold:this.threshold,
-                time:this.time
+                time:this.time,
+                startColor:this.startColor,
+                endColor:this.endColor
                 // map: { value: new THREE.TextureLoader().load( 'textures/crate.gif' ) }
             },
             vertexShader: vertex,
             fragmentShader: fragment,
             side:THREE.DoubleSide
         } );
+
+
+        console.log(this.startColor.value);
+
+
+
         this.mesh = new THREE.Mesh( geometry, material );
         this.mesh.frustumCulled = false;
 

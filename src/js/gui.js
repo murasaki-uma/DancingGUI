@@ -19,6 +19,7 @@ export default class GUI{
         this.gui.remember(this.values);
 
 
+        // this.renderer = this.gui.addFolder('renderer');
         this.visibles = this.gui.addFolder('visibles');
 
         this.animationSettings= this.gui.addFolder('animation settings');
@@ -51,14 +52,32 @@ export default class GUI{
         this.outerWallPositionZ;
 
         this.backgroundColor;
+        this.backgroundEndColor;
+
+        this.outerStartColor;
+        this.outerEndColor;
 
         this.init();
+
+
 
         dat.GUI.toggleHide();
     }
 
     init()
     {
+
+
+        this.animationSettings.add(this.values,'fpsDenominator',1,60);
+
+        this.animationSettings.add(this.values,'animationDulation01',1,60);
+
+        this.animationSettings.add(this.values,'animationDulation02',1,60);
+
+        this.animationSettings.add(this.values,'animationDulation03',1,60);
+
+        this.animationSettings.add(this.values,'animationDulation04',1,60);
+
 
         this.visibleOuterWalls = this.visibles.add(this.values,'visibleOuterWalls');
         this.visibleBackground = this.visibles.add(this.values,'visibleBackground');
@@ -70,6 +89,10 @@ export default class GUI{
         this.displayFps = this.visibles.add(this.values,'displayFps');
         this.displayDebugInfo = this.visibles.add(this.values,'displayDebugInfo');
 
+
+        this.cameraAnimation.add(this.values,'cameraStartFov',0,100);
+
+        this.cameraAnimation.add(this.values,'cameraAfterFov',0,100);
 
         this.cameraAnimation.add(this.values,'cameraAnimeation01PosX',-250,250);
         this.cameraAnimation.add(this.values,'cameraAnimeation01PosY',-250,250);
@@ -128,6 +151,11 @@ export default class GUI{
         this.errorGui.add(this.values,'gradThresholdDulation', 0.0,5.0);
 
         this.backgroundColor = this.dom.addColor(this.values,'backgroundColor');
+        this.backgroundEndColor = this.dom.addColor(this.values,'backgroundEndColor');
+
+
+        this.outerStartColor = this.outerWall.addColor(this.values,'outerStartColor');
+        this.outerEndColor = this.outerWall.addColor(this.values,'outerEndColor');
 
 
         if(this.values.displayDebugInfo)

@@ -4,6 +4,11 @@ export default class guiValues{
     {
 
 
+        this.animationDulation01 = 10;
+        this.animationDulation02 = 10;
+        this.animationDulation03 = 10;
+        this.animationDulation04 = 10;
+
         this.displayFps = true;
         this.displayDebugInfo = true;
 
@@ -61,6 +66,9 @@ export default class guiValues{
         this.outerWallPositionY = 0.0;
         this.outerWallPositionZ = -2500;
 
+        this.outerStartColor = [255,229,196];
+        this.outerEndColor = [151,174,206];
+
 
         this.backgroundAnimationX = 0.0;
         this.backgroundAnimationY = 0.0;
@@ -71,7 +79,10 @@ export default class guiValues{
         this.gradThresholdDulation = 2.0;
 
 
-        this.backgroundColor = [255,215,255];
+        this.backgroundColor = [237,163,234];
+        this.backgroundEndColor = [161,211,200];
+
+        this.fpsDenominator = 5;
 
 
 
