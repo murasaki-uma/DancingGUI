@@ -55851,7 +55851,7 @@ function () {
       console.log(this.time);
       console.log(this.startCameraAnimationTiming);
       var camerastart = this.manager.gui.values.cameraAnimationStartTiming * 60;
-      var cameraend = this.manager.gui.values.cameraAnimationStartTiming * 60 + this.manager.gui.values.cameraAnimationDulation * 60;
+      var cameraend = timing03 + 60 * 2;
 
       if (this.time >= camerastart && this.time < cameraend) {
         console.log('true');
@@ -55871,8 +55871,8 @@ function () {
         this.isAnimationStarted = false;
       }
 
-      var errorOut = this.manager.gui.values.errorInTIming * 60 + this.manager.gui.values.errorOutTiming * 60;
-      var errorIn = this.manager.gui.values.errorInTIming * 60;
+      var errorOut = cameraend - 60 * 2;
+      var errorIn = camerastart + 60 * 2;
 
       if (this.time >= errorIn && this.time < errorOut) {
         if (!this.isErrorIn) {
@@ -56900,7 +56900,7 @@ function () {
         }
       } else {
         /************ animation 1 **********/
-        if (this.ANIMATION_NUM == 1) {
+        if (this.ANIMATION_NUM == 2) {
           if (this.importedRecord.length > 0) {
             if (this.importedRecordCount < this.importedRecord.length) {
               this.tmpRecord.x = this.importedRecord[this.importedRecordCount].x;
@@ -56928,7 +56928,7 @@ function () {
         /************ animation 2 **********/
 
 
-        if (this.ANIMATION_NUM == 2) {
+        if (this.ANIMATION_NUM == 1) {
           var px = p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
           var py = p.z * this.gui.values.dancingErrorWorkAreaHeight + this.gui.values.dancingErrorOffsetY;
           this.errorGuiPos.set( // px * this.walkAreaScale + mousex,

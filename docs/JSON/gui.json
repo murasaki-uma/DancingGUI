@@ -4,13 +4,13 @@
     "Default": {
       "0": {
         "fpsDenominator": 4.812383782688492,
-        "animationDulation01": 6.368470425743967,
-        "animationDulation02": 7.233218498799457,
-        "animationDulation03": 4.812383782688492,
-        "animationDulation04": 5.656435953648606,
-        "cameraAnimationStartTiming": 7,
-        "cameraAnimationDulation": 7,
-        "errorInTIming": 7,
+        "animationDulation01": 18.227154306656928,
+        "animationDulation02": 18.227154306656928,
+        "animationDulation03": 18.227154306656928,
+        "animationDulation04": 5.619474840880634,
+        "cameraAnimationStartTiming": 21.379074173101003,
+        "cameraAnimationDulation": 28.470893872600165,
+        "errorInTIming": 11.923314573768781,
         "errorOutTiming": 7,
         "visibleOuterWalls": true,
         "visibleBackground": false,
@@ -31,7 +31,7 @@
         "backgroundAnimationX": 0,
         "backgroundAnimationY": 0,
         "backgroundAnimationZ": -50,
-        "dancingErrorbaseWindowScale": 0.5512237515637334,
+        "dancingErrorbaseWindowScale": 0.8644387781719532,
         "errorGuiInterval": 20,
         "errorGuiColor": [
           198.2319118407358,
@@ -42,12 +42,12 @@
         "dancingErrorOffsetY": 0,
         "dancingErrorNoiseScaleX": 0.005670469127068017,
         "dancingErrorNoiseScaleY": 0.003824272684120115,
-        "dancingErrorWorkAreaWidth": 3.63965706423174,
+        "dancingErrorWorkAreaWidth": 20.49411780050083,
         "dancingErrorWorkAreaHeight": 11.024475031274667,
-        "dancingErrorTrackAreaWidth": 20.374181259667377,
+        "dancingErrorTrackAreaWidth": 37.63768063960768,
         "dancingErrorTrackAreaHeight": 46.08917239490615,
-        "dancingErrorExcursionWidth": 17.736746271437763,
-        "dancingErrorExcursionHeight": 37.51750868315989,
+        "dancingErrorExcursionWidth": 41.310468619574294,
+        "dancingErrorExcursionHeight": 37.30379082324708,
         "errorGuiSide": [
           33.9241382355327,
           129.64860206817312,
@@ -116,7 +116,7 @@
     },
     "dancing errors": {
       "preset": "Default",
-      "closed": true,
+      "closed": false,
       "folders": {}
     },
     "error gui": {

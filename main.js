@@ -8,6 +8,7 @@ const app = electron.app;
 
 // ウィンドウを作成するモジュール
 const BrowserWindow = electron.BrowserWindow;
+// BrowserWindow.setFullScreen(true);
 
 // メインウィンドウはGCされないようにグローバル宣言
 let mainWindow = null;
@@ -23,7 +24,7 @@ app.on("window-all-closed", () => {
 // Electronの初期化完了後に実行
 app.on("ready", () => {
     //ウィンドウサイズを1280*720（フレームサイズを含まない）に設定する
-    mainWindow = new BrowserWindow({width: 1280, height: 720, useContentSize: true});
+    mainWindow = new BrowserWindow({width: 3840, height: 2160, 'fullscreen': true, 'frame': false, useContentSize: true});
     //使用するhtmlファイルを指定する
     mainWindow.loadURL(`file://${__dirname}/docs/index.html`);
 

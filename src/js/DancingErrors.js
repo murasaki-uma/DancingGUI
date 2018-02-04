@@ -416,7 +416,7 @@ export default class DancingErrors
 
             /************ animation 1 **********/
 
-            if(this.ANIMATION_NUM == 1) {
+            if(this.ANIMATION_NUM == 2) {
                 if (this.importedRecord.length > 0) {
 
 
@@ -456,7 +456,7 @@ export default class DancingErrors
 
             /************ animation 2 **********/
 
-            if(this.ANIMATION_NUM == 2)
+            if(this.ANIMATION_NUM == 1)
             {
 
                 let px =  p.x * this.gui.values.dancingErrorWorkAreaWidth + this.gui.values.dancingErrorOffsetX;
