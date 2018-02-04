@@ -315,6 +315,7 @@ export default class ErrorGui
             // this.isStart = !this.isStart;
             // if(this.isStart)
             // {
+                this.isAnimationLoop = true;
                 this.start();
             // } else
             // {

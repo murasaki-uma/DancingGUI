@@ -48,14 +48,14 @@ export default class SceneCrashme{
 
         this.isAnimationStarted = false;
         this.isAnimationReset = false;
-
+        this.isErrorIn = false;
 
 
         this.debugMesh = document.querySelector('.mesh');
 
 
-        this.startCameraAnimationTiming = Math.random();
-        this.resetCameraAnimationTiming = Math.random();
+        this.startCameraAnimationTiming = 0;
+        this.resetCameraAnimationTiming = 0;
 
 
 
@@ -325,8 +325,29 @@ export default class SceneCrashme{
 
 
 
+        this.initCameraAnimationStartTiming();
 
 
+
+
+
+    }
+
+
+    initCameraAnimationStartTiming()
+    {
+        let timing01 = this.manager.gui.values.animationDulation01*60;
+        let timing02 = timing01 + this.manager.gui.values.animationDulation02*60;
+        let timing03 = timing02 + this.manager.gui.values.animationDulation03*60;
+        let timing04 = timing03 + this.manager.gui.values.animationDulation04*60;
+        let cameraDulation = this.manager.gui.values.cameraAnimationDulation * 60;
+        console.log(Math.random() * timing04);
+        this.startCameraAnimationTiming = Math.floor(Math.random() * timing04*10);
+        if(timing04-cameraDulation-60 < this.startCameraAnimationTiming)
+        {
+            this.startCameraAnimationTiming = timing04 - cameraDulation -60;
+        }
+        this.resetCameraAnimationTiming = this.startCameraAnimationTiming + cameraDulation;
 
     }
 
@@ -438,9 +459,9 @@ export default class SceneCrashme{
         });
 
 
-
+1
         TweenMax.to(this.backgroundScale , 4.0 , {
-            value : 0.00001,
+            value : 0.0001,
             // delay : 0.5,
             ease :Power1.easeInOut
         });
@@ -550,7 +571,7 @@ export default class SceneCrashme{
         let timing01 = this.manager.gui.values.animationDulation01*60;
         let timing02 = timing01 + this.manager.gui.values.animationDulation02*60;
         let timing03 = timing02 + this.manager.gui.values.animationDulation03*60;
-        let timing04 = timing03 + this.manager.gui.values.animationDulation03*60;
+        let timing04 = timing03 + this.manager.gui.values.animationDulation04*60;
 
 
         // console.log(this.time);
@@ -611,7 +632,7 @@ export default class SceneCrashme{
             // }
 
 
-            this.isAnimationStarted = false;
+            // this.isAnimationStarted = false;
             for(let i = 0; i < this.dancingErrors.length; i++) {
                 this.dancingErrors[i].valueInit();
                 this.dancingErrors[i].ANIMATION_NUM = 3;
@@ -650,8 +671,70 @@ export default class SceneCrashme{
 
 
 
-        // this.errorOffsetAttribute.needsUpdate = true;
-        // console.log(this.errorOffsetAttribute.array);
+        console.log(this.time);
+        console.log(this.startCameraAnimationTiming);
+
+
+        let camerastart = this.manager.gui.values.cameraAnimationStartTiming*60;
+        let cameraend = this.manager.gui.values.cameraAnimationStartTiming*60 + this.manager.gui.values.cameraAnimationDulation * 60;
+        if(this.time >= camerastart && this.time < cameraend)
+        {
+
+            console.log('true');
+            if(!this.isAnimationStarted)
+            {
+                this.cameraAnimation();
+                this.isAnimationStarted = true;
+            }
+
+        }
+
+
+        if(this.time >= cameraend )
+        {
+            // console.log('false');
+            if(this.isAnimationStarted)
+            {
+                this.resetAnimation();
+            }
+            this.isAnimationStarted = false;
+        }
+
+
+
+
+        let errorOut = this.manager.gui.values.errorInTIming*60 + this.manager.gui.values.errorOutTiming * 60;
+        let errorIn = this.manager.gui.values.errorInTIming*60;
+        if(this.time >= errorIn && this.time < errorOut)
+        {
+
+            if(!this.isErrorIn)
+            {
+                for(let i =0; i < this.errors.length; i++)
+                {
+                    this.errors[i].start();
+                }
+            }
+
+            this.isErrorIn = true;
+
+        }
+
+
+        if(this.time >= errorOut)
+        {
+
+            if(this.isErrorIn)
+            {
+                for(let i =0; i < this.errors.length; i++)
+                {
+                    this.errors[i].isAnimationLoop = false;
+                }
+            }
+
+            this.isErrorIn = false;
+
+        }
 
 
     }

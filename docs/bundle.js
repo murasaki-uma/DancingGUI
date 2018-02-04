@@ -55070,6 +55070,10 @@ function () {
       this.animationSettings.add(this.values, 'animationDulation02', 1, 60);
       this.animationSettings.add(this.values, 'animationDulation03', 1, 60);
       this.animationSettings.add(this.values, 'animationDulation04', 1, 60);
+      this.animationSettings.add(this.values, 'cameraAnimationStartTiming', 1, 60);
+      this.animationSettings.add(this.values, 'cameraAnimationDulation', 1, 60);
+      this.animationSettings.add(this.values, 'errorInTIming', 1, 60);
+      this.animationSettings.add(this.values, 'errorOutTiming', 1, 60);
       this.visibleOuterWalls = this.visibles.add(this.values, 'visibleOuterWalls');
       this.visibleBackground = this.visibles.add(this.values, 'visibleBackground');
       this.visibleDancingErrors = this.visibles.add(this.values, 'visibleDancingErrors');
@@ -55185,6 +55189,10 @@ var guiValues = function guiValues() {
   this.animationDulation02 = 10;
   this.animationDulation03 = 10;
   this.animationDulation04 = 10;
+  this.cameraAnimationStartTiming = 7;
+  this.cameraAnimationDulation = 7;
+  this.errorInTIming = 7;
+  this.errorOutTiming = 7;
   this.displayFps = true;
   this.displayDebugInfo = true;
   this.visibleDancingErrors = false;
@@ -55337,9 +55345,10 @@ function () {
     this.backgroundColor = new THREE.Color(255, 255, 255);
     this.isAnimationStarted = false;
     this.isAnimationReset = false;
+    this.isErrorIn = false;
     this.debugMesh = document.querySelector('.mesh');
-    this.startCameraAnimationTiming = Math.random();
-    this.resetCameraAnimationTiming = Math.random();
+    this.startCameraAnimationTiming = 0;
+    this.resetCameraAnimationTiming = 0;
     this.init();
   }
 
@@ -55562,6 +55571,24 @@ function () {
           _this2.outerWalls[_i9].endColor.value.setRGB(e[0] / 255, e[1] / 255, e[2] / 255);
         }
       });
+      this.initCameraAnimationStartTiming();
+    }
+  }, {
+    key: "initCameraAnimationStartTiming",
+    value: function initCameraAnimationStartTiming() {
+      var timing01 = this.manager.gui.values.animationDulation01 * 60;
+      var timing02 = timing01 + this.manager.gui.values.animationDulation02 * 60;
+      var timing03 = timing02 + this.manager.gui.values.animationDulation03 * 60;
+      var timing04 = timing03 + this.manager.gui.values.animationDulation04 * 60;
+      var cameraDulation = this.manager.gui.values.cameraAnimationDulation * 60;
+      console.log(Math.random() * timing04);
+      this.startCameraAnimationTiming = Math.floor(Math.random() * timing04 * 10);
+
+      if (timing04 - cameraDulation - 60 < this.startCameraAnimationTiming) {
+        this.startCameraAnimationTiming = timing04 - cameraDulation - 60;
+      }
+
+      this.resetCameraAnimationTiming = this.startCameraAnimationTiming + cameraDulation;
     }
   }, {
     key: "resetAnimation",
@@ -55653,8 +55680,10 @@ function () {
         ease: Power1.easeInOut
       });
 
+      1;
+
       _gsap.TweenMax.to(this.backgroundScale, 4.0, {
-        value: 0.00001,
+        value: 0.0001,
         // delay : 0.5,
         ease: Power1.easeInOut
       }); // TweenMax.to(this.backgroundColor , 4.0 , {
@@ -55749,7 +55778,7 @@ function () {
       var timing01 = this.manager.gui.values.animationDulation01 * 60;
       var timing02 = timing01 + this.manager.gui.values.animationDulation02 * 60;
       var timing03 = timing02 + this.manager.gui.values.animationDulation03 * 60;
-      var timing04 = timing03 + this.manager.gui.values.animationDulation03 * 60; // console.log(this.time);
+      var timing04 = timing03 + this.manager.gui.values.animationDulation04 * 60; // console.log(this.time);
       // console.log(timing01);
       // console.log(timing02);
       // console.log(timing03);
@@ -55786,8 +55815,7 @@ function () {
         //     this.isAnimationReset = true;
         //
         // }
-        this.isAnimationStarted = false;
-
+        // this.isAnimationStarted = false;
         for (var _i13 = 0; _i13 < this.dancingErrors.length; _i13++) {
           this.dancingErrors[_i13].valueInit();
 
@@ -55818,9 +55846,53 @@ function () {
             this.time = 0; // this.isAnimationStarted = false;
           }
         }
-      } // this.errorOffsetAttribute.needsUpdate = true;
-      // console.log(this.errorOffsetAttribute.array);
+      }
 
+      console.log(this.time);
+      console.log(this.startCameraAnimationTiming);
+      var camerastart = this.manager.gui.values.cameraAnimationStartTiming * 60;
+      var cameraend = this.manager.gui.values.cameraAnimationStartTiming * 60 + this.manager.gui.values.cameraAnimationDulation * 60;
+
+      if (this.time >= camerastart && this.time < cameraend) {
+        console.log('true');
+
+        if (!this.isAnimationStarted) {
+          this.cameraAnimation();
+          this.isAnimationStarted = true;
+        }
+      }
+
+      if (this.time >= cameraend) {
+        // console.log('false');
+        if (this.isAnimationStarted) {
+          this.resetAnimation();
+        }
+
+        this.isAnimationStarted = false;
+      }
+
+      var errorOut = this.manager.gui.values.errorInTIming * 60 + this.manager.gui.values.errorOutTiming * 60;
+      var errorIn = this.manager.gui.values.errorInTIming * 60;
+
+      if (this.time >= errorIn && this.time < errorOut) {
+        if (!this.isErrorIn) {
+          for (var _i16 = 0; _i16 < this.errors.length; _i16++) {
+            this.errors[_i16].start();
+          }
+        }
+
+        this.isErrorIn = true;
+      }
+
+      if (this.time >= errorOut) {
+        if (this.isErrorIn) {
+          for (var _i17 = 0; _i17 < this.errors.length; _i17++) {
+            this.errors[_i17].isAnimationLoop = false;
+          }
+        }
+
+        this.isErrorIn = false;
+      }
     }
   }]);
 
@@ -55904,6 +55976,8 @@ function () {
         // this.isStart = !this.isStart;
         // if(this.isStart)
         // {
+        _this.isAnimationLoop = true;
+
         _this.start(); // } else
         // {
         // this.reset();

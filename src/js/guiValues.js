@@ -8,6 +8,11 @@ export default class guiValues{
         this.animationDulation02 = 10;
         this.animationDulation03 = 10;
         this.animationDulation04 = 10;
+        this.cameraAnimationStartTiming = 7;
+        this.cameraAnimationDulation = 7;
+
+        this.errorInTIming = 7;
+        this.errorOutTiming = 7;
 
         this.displayFps = true;
         this.displayDebugInfo = true;

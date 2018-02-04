@@ -78,6 +78,12 @@ export default class GUI{
 
         this.animationSettings.add(this.values,'animationDulation04',1,60);
 
+        this.animationSettings.add(this.values,'cameraAnimationStartTiming',1,60);
+        this.animationSettings.add(this.values,'cameraAnimationDulation',1,60);
+
+        this.animationSettings.add(this.values,'errorInTIming',1,60);
+        this.animationSettings.add(this.values,'errorOutTiming',1,60);
+
 
         this.visibleOuterWalls = this.visibles.add(this.values,'visibleOuterWalls');
         this.visibleBackground = this.visibles.add(this.values,'visibleBackground');
