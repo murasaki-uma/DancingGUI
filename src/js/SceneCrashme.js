@@ -676,7 +676,7 @@ export default class SceneCrashme{
 
 
         let camerastart = this.manager.gui.values.cameraAnimationStartTiming*60;
-        let cameraend = this.manager.gui.values.cameraAnimationStartTiming*60 + this.manager.gui.values.cameraAnimationDulation * 60;
+        let cameraend = timing03 +60*2;
         if(this.time >= camerastart && this.time < cameraend)
         {
 
@@ -703,8 +703,8 @@ export default class SceneCrashme{
 
 
 
-        let errorOut = this.manager.gui.values.errorInTIming*60 + this.manager.gui.values.errorOutTiming * 60;
-        let errorIn = this.manager.gui.values.errorInTIming*60;
+        let errorOut =cameraend-60*2;
+        let errorIn = camerastart + 60*2;
         if(this.time >= errorIn && this.time < errorOut)
         {
 
