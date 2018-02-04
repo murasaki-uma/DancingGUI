@@ -2,7 +2,7 @@
   "name": "DancingGUI",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "build": "webpack -p --progress",
     "start": "webpack-dev-server --port 3000 --hot --host 0.0.0.0"
@@ -30,6 +30,7 @@
     "css-loader": "^0.28.7",
     "dat.gui": "^0.6.1",
     "delaunay-fast": "^1.0.1",
+    "electron": "^1.7.12",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
     "html-webpack-pug-plugin": "^0.2.1",
