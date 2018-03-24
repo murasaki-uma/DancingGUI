@@ -53,9 +53,6 @@ export default class CancasPaint
         this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
-
-
-
 //マウス動いていて、かつ左クリック時に発火。
     onMove =(e)=>
     {

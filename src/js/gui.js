@@ -1,7 +1,7 @@
 /**
  * Created by PurpleUma on 2018/01/06.
  */
-import dat from '../../node_modules/dat.gui/build/dat.gui.min'
+import dat from './dat.gui.min'
 
 import guiValues from './guiValues'
 // const setting = require('./JSON/gui.json');
